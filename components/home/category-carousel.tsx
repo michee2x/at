@@ -6,8 +6,8 @@ import CardOne from "../cards/cardOne";
 
 const CategoryCarousel = () => {
   return (
-    <section className="w-full gap-[64px] flex flex-col items-center mt-10">
-      <div className="carousel w-full mt-10 gap-[24px]">
+    <section className="w-full gap-[64px] flex flex-col items-center">
+      <div className="carousel w-full gap-[24px]">
         {[
           "/home/category%20images/d3cee6708c8c81e5e29f833e2e6302099c7844fb.png",
           "/home/category images/7f3d186b0269a780935752f43b5285fcec53c8d3.png",
@@ -16,7 +16,7 @@ const CategoryCarousel = () => {
           "/home/category%20images/d65396930de72559eafd08000dbb3176a0e6fa41.png",
         ].map((img) => {
           return (
-            <CardOne key={img} img={img} />
+            <CardOne fillViewport={false} key={img} img={img} />
           );
         })}
       </div>

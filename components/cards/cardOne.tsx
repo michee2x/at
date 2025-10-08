@@ -1,13 +1,13 @@
 import Image from "next/image";
 import React from "react";
 
-const CardOne = ({ img }: { img: string }) => {
+const CardOne = ({ img, fillViewport = true }: { img: string, fillViewport?: boolean }) => {
   return (
     <div
       key={img}
-      className="carousel-item lg:w-[244px] w-full h-[312px] gap-[4px] flex flex-col"
+      className= {`carousel-item lg:w-[244px] ${fillViewport ? "w-full" : "w-[240px]"} h-[312px] gap-[4px] flex flex-col`}
     >
-      <div className="relative overflow-hidden h-[244px] w-full lg:w-[244px] rounded-xl bg-[#FAFAFA]">
+      <div className="relative overflow-hidden h-[185px] w-full lg:w-[244px] rounded-xl bg-[#FAFAFA]">
         <Image
           fill
           src={img}

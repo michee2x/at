@@ -40,13 +40,13 @@ export default function Home() {
     <div className="w-screen flex-col min-h-screen relative flex justify-center">
       <Hero />
 
-      <section className="w-full lg:px-[28px] mt-52 min-h-screen flex flex-col items-center">
+      <section className="w-full lg:px-[28px] mt-20 lg:mt-52 min-h-screen flex flex-col items-center">
         <h1 className="text-[20px] lg:text-[42px] font-display text-center w-[1252px] h-[56px] leading-[100%] tracking-[0%] align-middle text-[#000000]">
           Discover the best brands & products <br className="lg:hidden" /> from
           Africa
         </h1>
 
-        <div className="w-full h-auto">
+        <div className="w-full pl-4 h-auto">
           <ul className="list-none w-full gap-[16px] scrollcat items-center mt-5 flex">
             {[
               "Home Decor",
@@ -82,7 +82,9 @@ export default function Home() {
           </ul>
         </div>
 
-        <CategoryCarousel />
+        <div className="w-full mt-8 h-auto px-4">
+          <CategoryCarousel />
+        </div>
 
         <BrandShowCase
           data={brandCatTwo}

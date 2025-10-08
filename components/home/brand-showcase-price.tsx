@@ -27,9 +27,9 @@ const BrandShowCase = ({
     >
       <div className="w-full h-auto flex items-center justify-center p-4">
         <div className="flex-1 grid grid-cols-2 gap-2.5 lg:gap-5 lg:flex lg:flex-col lg:place-content-between">
-          {[data.slice(0, 3), data.slice(3, 6)].map((arr) => {
+          {[data.slice(0, 3), data.slice(3, 6)].map((arr, idx) => {
             return (
-              <div className="lg:flex hidden w-full justify-between items-center h-fit">
+              <div key={`${idx}`} className="lg:flex hidden w-full justify-between items-center h-fit">
                 {arr.map((d) => {
                   return <CardOne key={d} img={d} />;
                 })}
@@ -39,8 +39,8 @@ const BrandShowCase = ({
 
           {data.map((d) => {
             return (
-              <div className="w-full h-auto lg:hidden">
-                <CardOne key={d} img={d} />
+              <div key={`${d}`} className="w-full h-auto lg:hidden">
+                <CardOne img={d} />
               </div>
             );
           })}
@@ -53,8 +53,8 @@ const BrandShowCase = ({
           alt="category image"
           className="object-cover object-center"
         />
-        <div className="absolute  flex flex-col items-center bottom-24 transform -translate-x-1/2 left-1/2 gap-2 h-auto w-full lg:w-[488px]">
-          <h1 className="font-display w-[90%] flex items-center justify-center h-auto text-[18.35px] lg:text-[24px] text-white text-center font-semibold align-middle">
+        <div className="absolute  flex flex-col items-center bottom-16 lg:bottom-24 transform -translate-x-1/2 left-1/2 gap-2 h-auto w-full lg:w-[488px]">
+          <h1 className="font-display w-[85%] flex items-center justify-center h-auto  text-[18.35px] lg:text-[24px] text-white text-center font-semibold align-middle">
             {bannerText}
           </h1>
 
@@ -64,7 +64,7 @@ const BrandShowCase = ({
                 <button key={con} className="w-fit h-fit">
                   <Link
                     href="/"
-                    className="w-[136px] h-[43px] border-[1px] border-[#C4C4C4] flex items-center justify-center px-[32px] py-[12px]"
+                    className="lg:w-[136px] w-[110px] h-[33px] lg:h-[43px] border-[1px] border-[#C4C4C4] flex items-center justify-center px-[32px] py-[12px]"
                   >
                     <span className="text-[12.23px] lg:text-[16px] gap-[12px] text-white text-nowrap leading-[100%] tracking-[0%]">
                       {con}

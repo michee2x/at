@@ -39,9 +39,9 @@ const SubCategorySection = () => {
         Shop your favourite products from global brands
       </h3>
       <div className="carousel w-full mt-10 gap-[24px]">
-        {images.map((data) => {
+        {images.map((data, idx) => {
           return (
-            <div className="w-[244px] carousel-item flex flex-col h-[285px]">
+            <div key={`${data.img}--${idx}`} className="w-[244px] carousel-item flex flex-col h-[285px]">
               <div className="w-full rounded-[12px] relative bg-[#FAFAFA] h-[244px]">
                 <Image
                   fill

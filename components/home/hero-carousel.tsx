@@ -27,7 +27,7 @@ const HeroCarousel = () => {
               ].map((img) => {
                 return (
                   <>
-                    {/* <li
+                    <li
                       key={img.src}
                       style={{
                         transformStyle: "preserve-3d",
@@ -42,14 +42,14 @@ const HeroCarousel = () => {
                         fill
                         alt={img.src}
                       />
-                    </li> */}
+                    </li>
 
                     <li
-                      key={img.src}
+                      key={`${img.src}-mobile`}
                       style={{
                         transformStyle: "preserve-3d",
                       }}
-                      className="relative lg:hidden rounded-[24px] overflow-hidden w-full min-h-[170px]"
+                      className="relative lg:hidden rounded-[24px] overflow-hidden w-full min-h-[240px]"
                     >
                       <Image
                         style={{ transformStyle: "preserve-3d" }}

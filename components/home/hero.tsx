@@ -7,7 +7,7 @@ const Hero = () => {
   return (
     <section
       style={{ perspective: "100vh", transformStyle: "preserve-3d" }}
-      className="max-w-screen px-4 relative overflow-hidden pt-[198px] flex flex-col items-center h-[125vh]"
+      className="max-w-screen px-4 relative overflow-hidden pt-[198px] flex flex-col items-center h-screen lg:h-[125vh]"
     >
       <div className="max-w-[890px] left-0 top-0 flex items-center flex-col h-[235px] gap-[14px] lg:gap-[24px]">
         <div className="flex flex-col justify-center items-center gap-[4px] max-w-[890px] max-h-[137px] ">
@@ -32,7 +32,7 @@ const Hero = () => {
 
       <HeroCarousel />
 
-      <div className="absolute bottom-0 w-full h-40 bg-gradient-to-b from-transparent via-white/30 to-white z-10 left-0"></div>
+      <div className="absolute bottom-0 w-full h-20 lg:h-40 bg-gradient-to-b from-transparent via-white/30 to-white z-10 left-0"></div>
     </section>
   );
 };

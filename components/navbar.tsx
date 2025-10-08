@@ -4,13 +4,13 @@ import { IoMenuSharp } from "react-icons/io5";
 
 const NavBar = () => {
   return (
-    <div className="w-full hidden lg:flex flex-col h-[112px] absolute">
+    <div className="w-full flex flex-col h-[112px] absolute">
       <div className="h-[40px] flex justify-between items-center px-4 w-full">
         <h1 className="h-full aspect-square font-display text-[18px] tracking-[0%] leading-[100%] text-[#2B2B2B] flex items-center justify-center">
           ATLAZE
         </h1>
 
-        <ul className="flex h-[50%] w-fit mr-4">
+        <ul className="lg:flex hidden h-[50%] w-fit lg:mr-4">
           {["Find a Store", "Help", "Become a Seller", "Sign In"].map(
             (text, idx) => {
               return (
@@ -28,7 +28,7 @@ const NavBar = () => {
         </ul>
       </div>
 
-      <div className="w-full px-[60px] flex justify-center items-center flex-1">
+      <div className="w-full px-4 lg:px-[60px] flex justify-center items-center flex-1">
         <div className="w-full flex justify-between items-center h-fit">
           <div className="flex gap-2.5 items-center">
             <IoMenuSharp className="text-[30px]" />
@@ -46,10 +46,10 @@ const NavBar = () => {
                 width={24}
                 height={24}
               />
-              <span className="leading-[24px] tracking-[-0.5%] text-[16px] text-[#0E0F0C] ">
+              <span className="leading-[24px] hidden lg:flex tracking-[-0.5%] text-[16px] text-[#0E0F0C] ">
                 NGN
               </span>
-              <span className="text-[14px] leading-[22px] tracking-[1%] text-[#454745]">
+              <span className="text-[14px] hidden lg:flex leading-[22px] tracking-[1%] text-[#454745]">
                 Naira
               </span>
             </div>
@@ -57,7 +57,7 @@ const NavBar = () => {
               "/home/vector icons/Vector.png",
               "/home/vector icons/Vector (1).png",
               "/home/vector icons/Vector (2).png",
-            ].map((src) => {
+            ].map((src, idx) => {
               return (
                 <Image
                   width={19}
@@ -65,6 +65,7 @@ const NavBar = () => {
                   src={src}
                   alt="love icon"
                   key={src}
+                  className={`${idx === 0 ? "hidden" : "flex"}`}
                 />
               );
             })}
