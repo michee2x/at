@@ -1,0 +1,37 @@
+import Image from "next/image";
+import React from "react";
+import { CiCircleInfo } from "react-icons/ci";
+
+const SearchInput = () => {
+  return (
+    <section className="w-fit h-fit">
+      <div className="lg:w-[612px] lg:h-[60px] w-[90vw] h-[44px] relative bg-gradient-to-r from-[#EBCC97] to-[#9747FF] rounded-[36px] p-[1.5px]">
+        <div className="lg:w-[608px] w-[89vw] h-[40px] lg:h-[56px] flex items-center absolute transform -translate-x-1/2 left-1/2 -translate-y-1/2 top-1/2 gap-3 p-[12px] rounded-[36px] bg-white">
+          <span className="flex size-[28px] bg-gradient-to-r from-[#EBCC97] to-[#9747FF] rounded-full"></span>
+
+          <input
+            type="search"
+            placeholder="Search by keywords or upload/take photo"
+            className="flex-1 align-middle text-[14px] tracking-[0%] leading-[100%] text-[#6C757D]"
+          />
+
+          <Image
+            alt="atlaze AI search logo"
+            src="/home/hero/d49ad3ba235d33ba9a0d6da5cd9ff0aefadb2ca5.png"
+            width={36}
+            height={36}
+          />
+        </div>
+      </div>
+      <span className="flex gap-[1.5px] items-center">
+        <CiCircleInfo />
+        <span className="text-[10px] mt-1 italic text-[#6C757D] tracking-[0%] leading-[100%]">
+          AI assisted search engine
+        </span>
+      </span>
+    </section>
+  );
+};
+
+export default SearchInput;
+//https://www.figma.com/design/E75rN8nKlexn3ivqEOeinI/Atlaze--E-commerce?node-id=1510-809&t=IdUpMIhsoWxkXOjc-0
