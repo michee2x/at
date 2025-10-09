@@ -30,11 +30,16 @@ export async function GET(request: Request) {
     const products = await response.json();
 
     return NextResponse.json(products);
-  } catch (err: any) {
-    console.error('Error fetching products:', err);
-    return NextResponse.json(
-      { error: err.message || 'Failed to fetch products' },
-      { status: 500 }
-    );
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error("Error fetching categories:", error.message);
+    } else if (typeof error === "object" && error !== null && "response" in error) {
+      // This handles WooCommerce API errors that contain response data
+      console.error("Error fetching categories:", (error as { response?: { data?: unknown } }).response?.data);
+    } else {
+      console.error("Unknown error fetching categories:", error);
+    }
+
+    return Response.json({ error: "Failed to fetch categories" }, { status: 500 });
   }
 }
