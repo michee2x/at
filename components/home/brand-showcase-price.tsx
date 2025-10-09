@@ -3,15 +3,16 @@ import Link from "next/link";
 import React from "react";
 import { GoArrowUpRight } from "react-icons/go";
 import CardOne from "../cards/cardOne";
+import { WooProduct } from "@/types";
 
 const BrandShowCase = ({
-  data,
+  product,
   banner,
   bannerText,
   reverseHorizontally,
   reverseVertically,
 }: {
-  data: string[];
+  product: WooProduct[];
   banner: string;
   bannerText: string;
   reverseHorizontally?: boolean;
@@ -27,20 +28,20 @@ const BrandShowCase = ({
     >
       <div className="w-full h-auto flex items-center justify-center p-4">
         <div className="flex-1 grid grid-cols-2 gap-2.5 lg:gap-5 lg:flex lg:flex-col lg:place-content-between">
-          {[data.slice(0, 3), data.slice(3, 6)].map((arr, idx) => {
+          {/* {[product.slice(0, 3), product.slice(3, 6)].map((arr, idx) => {
             return (
               <div key={`${idx}`} className="lg:flex hidden w-full justify-between items-center h-fit">
-                {arr.map((d) => {
-                  return <CardOne key={d} img={d} />;
+                {arr.map((data) => {
+                  return <CardOne key={data?.id} data={data} />;
                 })}
               </div>
             );
-          })}
+          })} */}
 
-          {data.map((d) => {
+          {product.map((data) => {
             return (
-              <div key={`${d}`} className="w-full h-auto lg:hidden">
-                <CardOne img={d} />
+              <div key={`${data?.id}-mobile`} className="w-full h-auto lg:hidden">
+                <CardOne data={data} />
               </div>
             );
           })}

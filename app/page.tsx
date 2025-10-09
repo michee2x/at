@@ -8,6 +8,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { BsArrowUpRight } from "react-icons/bs";
 import { GoArrowUpRight } from "react-icons/go";
+import ProductList from "@/components/ProductList";
 
 export default function Home() {
   const brandCat = [
@@ -39,6 +40,13 @@ export default function Home() {
   return (
     <div className="w-screen flex-col min-h-screen relative flex justify-center">
       <Hero />
+
+      <ProductList
+        banner="/home/section%20five/6be3e01dd669b8514f40fdab79d557342ea0f45c.jpg"
+        bannerText="EXPLORE THE BEST OF AFRICAN JEWELLERY"
+        reverseVertically={true}
+        category={22}
+      />
 
       <section className="w-full lg:px-[28px] mt-20 lg:mt-52 min-h-screen flex flex-col items-center">
         <h1 className="text-[20px] lg:text-[42px] font-display text-center w-[1252px] h-[56px] leading-[100%] tracking-[0%] align-middle text-[#000000]">
@@ -86,16 +94,16 @@ export default function Home() {
           <CategoryCarousel />
         </div>
 
-        <BrandShowCase
+        {/* <BrandShowCase
           data={brandCatTwo}
           banner="/home/section%20five/6be3e01dd669b8514f40fdab79d557342ea0f45c.jpg"
           bannerText="EXPLORE THE BEST OF AFRICAN JEWELLERY"
           reverseVertically={true}
-        />
+        /> */}
 
         <SubCategorySection />
 
-        <BrandShowCasePrice
+        {/* <BrandShowCasePrice
           data={brandCat}
           banner="/home/section%20three/6939971f273e65575e37ad7fdf4efc69b5aec528%20(1).png"
           bannerText="EXPLORE THE BEST OF AFRICAN FASHION"
@@ -107,7 +115,7 @@ export default function Home() {
           banner="/home/bottles/59b73de021e333eda75613c6ac0ec5d1877ef0ac.jpg"
           bannerText="BEAUTY PRODUCTS MADE FOR THE AFRICAN WOMAN"
           reverseVertically={true}
-        />
+        /> */}
 
         <div className="h-[1400px] flex items-center gap-4 w-full">
           <div className="w-[800px] relative flex items-center h-[1000px]">

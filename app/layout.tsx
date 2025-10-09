@@ -3,6 +3,7 @@ import { Geist, Geist_Mono, Red_Hat_Display, Poppins } from "next/font/google";
 import "./globals.css";
 import NavBar from "@/components/navbar";
 import Footer from "@/components/footer";
+import Providers from "./Providers";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -41,9 +42,13 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${redHatDisplay.variable} ${poppins.variable} antialiased`}
       >
-        <NavBar />
-        {children}
-        <Footer />
+        <Providers>
+          <NavBar />
+          <main className="flex flex-col items-center w-full mt-20 px-4">
+            {children}
+          </main>
+          <Footer />
+        </Providers>
       </body>
     </html>
   );
