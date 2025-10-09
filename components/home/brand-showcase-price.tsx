@@ -26,9 +26,9 @@ const BrandShowCasePrice = ({
         reverseHorizontally ? "lg:flex-row-reverse" : "lg:flex-row"
       } justify-between`}
     >
-      <div className="w-full h-auto flex items-center justify-center p-4">
+      <div className="w-full lg:flex-1 h-auto flex items-center justify-center p-4">
         <div className="flex-1 grid grid-cols-2 gap-2.5 lg:gap-5 lg:flex lg:flex-col lg:place-content-between">
-          {/* {[product.slice(0, 3), product.slice(3, 6)].map((arr, idx) => {
+          {[product.slice(0, 3), product.slice(3, 6)].map((arr, idx) => {
             return (
               <div key={`${idx}`} className="lg:flex hidden w-full justify-between items-center h-fit">
                 {arr.map((data) => {
@@ -36,7 +36,7 @@ const BrandShowCasePrice = ({
                 })}
               </div>
             );
-          })} */}
+          })}
 
           {product.map((data) => {
             return (

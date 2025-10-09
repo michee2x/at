@@ -33,12 +33,12 @@ const HeroCarousel = () => {
                         transformStyle: "preserve-3d",
                         transform: `translate3d(0px, ${img.y * -50}px, 0px)`,
                       }}
-                      className="relative hidden lg:flex rounded-[24px] overflow-hidden min-w-[312px] min-h-[450px]"
+                      className="relative hidden lg:flex rounded-[24px] overflow-hidden min-w-[300px] min-h-[450px]"
                     >
                       <Image
                         style={{ transformStyle: "preserve-3d" }}
                         src={img.src}
-                        className="object-contain object-center"
+                        className="object-cover object-right"
                         fill
                         alt={img.src}
                       />

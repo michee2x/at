@@ -3,7 +3,7 @@ import Image from "next/image";
 import React from "react";
 import { GoArrowUpRight } from "react-icons/go";
 
-const CategoryCard = ({category}:{category?:WooCategory}) => {
+const CategoryCard = ({category, img}:{category?:WooCategory, img:string}) => {
     console.log(category)
   return (
     <div className="lg:w-[244px] w-full carousel-item flex flex-col h-[220px] lg:h-[285px]">
@@ -11,7 +11,7 @@ const CategoryCard = ({category}:{category?:WooCategory}) => {
         <Image
           fill
           src={
-            "/home/sub-category-images/8ce9ca94c3d92facb1276f4bac4d0752af06ae45.png"
+            img
           }
           alt="sub-category image"
           className="object-cover object-center"

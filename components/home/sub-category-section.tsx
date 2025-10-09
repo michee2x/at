@@ -41,13 +41,13 @@ const SubCategorySection = () => {
       </h3>
       <div className="carousel hidden lg:inline-flex w-full mt-10 gap-[24px]">
         {images.map((data, idx) => {
-          return <CategoryCard key={`${data.img}${idx}`} />;
+          return <CategoryCard img={data.img} key={`${data.img}${idx}`} />;
         })}
       </div>
 
       <div className=" w-full grid grid-cols-2 h-auto lg:hidden mt-10 gap-2 lg:gap-[24px]">
         {images.map((data, idx) => {
-          return <CategoryCard key={`${data.img}${idx}`} />;
+          return <CategoryCard img={data.img} key={`${data.img}${idx}`} />;
         })}
       </div>
     </section>
