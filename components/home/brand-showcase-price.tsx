@@ -5,7 +5,7 @@ import { GoArrowUpRight } from "react-icons/go";
 import CardOne from "../cards/cardOne";
 import { WooProduct } from "@/types";
 
-const BrandShowCase = ({
+const BrandShowCasePrice = ({
   product,
   banner,
   bannerText,
@@ -20,7 +20,7 @@ const BrandShowCase = ({
 }) => {
   return (
     <div
-      className={`lg:h-[672px] h-auto overflow-hidden gap-3 mt-52 w-full flex ${
+      className={`lg:h-[672px] h-auto overflow-hidden gap-3 mt-32 lg:mt-52 w-full flex ${
         reverseVertically ? "flex-col-reverse" : "flex-col"
       } ${
         reverseHorizontally ? "lg:flex-row-reverse" : "lg:flex-row"
@@ -65,7 +65,7 @@ const BrandShowCase = ({
                 <button key={con} className="w-fit h-fit">
                   <Link
                     href="/"
-                    className="lg:w-[136px] w-[110px] h-[33px] lg:h-[43px] border-[1px] border-[#C4C4C4] flex items-center justify-center px-[32px] py-[12px]"
+                    className="lg:w-[136px] w-[110px] h-[33px] lg:h-[43px] border-[2px] lg:border-[1px] border-[#C4C4C4] flex items-center justify-center px-[32px] py-[12px]"
                   >
                     <span className="text-[12.23px] lg:text-[16px] gap-[12px] text-white text-nowrap leading-[100%] tracking-[0%]">
                       {con}
@@ -81,4 +81,4 @@ const BrandShowCase = ({
   );
 };
 
-export default BrandShowCase;
+export default BrandShowCasePrice;

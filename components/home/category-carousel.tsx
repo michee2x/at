@@ -1,24 +1,27 @@
+"use client";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 import { BsArrowUpRight } from "react-icons/bs";
 import CardOne from "../cards/cardOne";
+import { useProducts } from "@/hooks/useProducts";
+import ProductCard from "../skeletons/product-card";
 
 const CategoryCarousel = () => {
+  const { products, loading, error } = useProducts({
+    category: 22,
+  });
+  if (error) return <p>Error: {error}</p>;
   return (
-    <section className="w-full gap-[64px] flex flex-col items-center">
+    <section className="w-full lg:gap-[64px] flex flex-col items-center">
       <div className="carousel w-full gap-[24px]">
-        {[
-          "/home/category%20images/d3cee6708c8c81e5e29f833e2e6302099c7844fb.png",
-          "/home/category images/7f3d186b0269a780935752f43b5285fcec53c8d3.png",
-          "/home/category%20images/a597d6e843faced8f572d9ea652b5af6360c65c7.png",
-          "/home/category%20images/28645876e728cafd655bf28c501cddc30f419b08.png",
-          "/home/category%20images/d65396930de72559eafd08000dbb3176a0e6fa41.png",
-        ].map((img) => {
-          return (
-            <CardOne fillViewport={false} key={img} img={img} />
-          );
-        })}
+        {loading ? (
+          <ProductCard />
+        ) : (
+          products.map((data) => {
+            return <CardOne fillViewport={false} key={data.id} data={data} />;
+          })
+        )}
       </div>
 
       <button className="w-fit h-fit">

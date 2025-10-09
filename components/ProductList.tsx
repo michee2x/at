@@ -3,17 +3,20 @@ import { useCategory } from "@/contexts/category-context";
 import { useProducts } from "@/hooks/useProducts";
 import { useState } from "react";
 import BrandShowCase from "./home/brand-showcase-price";
+import ProductCard from "./skeletons/product-card";
 
 export default function ProductList({
   category,
   banner,
   bannerText,
   reverseVertically,
+  reverseHorizontally,
 }: {
   category?: number;
   banner: string;
   bannerText: string;
-  reverseVertically:boolean
+  reverseVertically?: boolean;
+  reverseHorizontally?: boolean;
 }) {
   const [selectedCategory, setSelectedCategory] = useState<number>(22);
   const { products, loading, error } = useProducts({
@@ -21,7 +24,7 @@ export default function ProductList({
   });
   const { categories } = useCategory();
 
-  if (loading) return <p>Loading products...</p>;
+  if (loading) return <ProductCard />;
   if (error) return <p>Error: {error}</p>;
 
   console.log("THIS IS THE WHOLE UI  DATA: ", products);
@@ -29,7 +32,7 @@ export default function ProductList({
   return (
     <div className="space-y-8">
       {/* Category filter */}
-      <div className="flex gap-3 overflow-x-auto pb-2">
+      {/* <div className="flex gap-3 overflow-x-auto pb-2">
         {categories.map((cat) => (
           <button
             key={cat.id}
@@ -43,7 +46,7 @@ export default function ProductList({
             {cat.name.replace(/&amp;/g, "&")}
           </button>
         ))}
-      </div>
+      </div> */}
 
       {/* Products grid */}
       {products.length > 0 ? (
@@ -53,6 +56,7 @@ export default function ProductList({
             banner={banner}
             bannerText={bannerText}
             reverseVertically={reverseVertically}
+            reverseHorizontally={reverseHorizontally}
           />
         </div>
       ) : (

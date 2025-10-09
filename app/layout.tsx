@@ -44,7 +44,7 @@ export default function RootLayout({
       >
         <Providers>
           <NavBar />
-          <main className="flex flex-col items-center w-full mt-20 px-4">
+          <main data-theme="light" className="flex flex-col items-center w-full px-4">
             {children}
           </main>
           <Footer />

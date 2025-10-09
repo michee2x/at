@@ -40,7 +40,7 @@ export const CategoryProvider = ({children}: {children: ReactNode}) => {
         }
     
         fetchCategories();
-      }, []);
+      }, [categories.length]);
     
     return (
         <CategoryContext.Provider value={{selectedCategory, setSelectedCategory, categories, setCategories, loading, error}}>

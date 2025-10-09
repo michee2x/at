@@ -3,7 +3,7 @@ import Link from "next/link";
 import React from "react";
 import { GoArrowUpRight } from "react-icons/go";
 
-const BrandShowCasePrice = ({
+const BrandShowCase = ({
   data,
   banner,
   bannerText,
@@ -122,4 +122,4 @@ const BrandShowCasePrice = ({
   );
 };
 
-export default BrandShowCasePrice;
+export default BrandShowCase;

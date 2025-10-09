@@ -1,6 +1,7 @@
 import Image from "next/image";
 import React from "react";
 import { GoArrowUpRight } from "react-icons/go";
+import CategoryCard from "../cards/cardTwo";
 
 const SubCategorySection = () => {
   const images = [
@@ -31,38 +32,22 @@ const SubCategorySection = () => {
     },
   ];
   return (
-    <section className="w-full px-4 mt-40 lg:mt-52 h-auto">
+    <section className="w-full px-4 mt-20 lg:mt-52 h-auto">
       <h1 className="lg:text-[21px] text-[18px] text-center lg:text-left font-display text-[#000000]">
         FEATURED SUB-CATEGORIES
       </h1>
       <h3 className="text-[#6C757D] text-[14px] text-center lg:text-left lg:text-[16px]">
         Shop your favourite products from global brands
       </h3>
-      <div className="carousel w-full mt-10 gap-[24px]">
+      <div className="carousel hidden lg:inline-flex w-full mt-10 gap-[24px]">
         {images.map((data, idx) => {
-          return (
-            <div key={`${data.img}--${idx}`} className="w-[244px] carousel-item flex flex-col h-[285px]">
-              <div className="w-full rounded-[12px] relative bg-[#FAFAFA] h-[244px]">
-                <Image
-                  fill
-                  src={data.img}
-                  alt="sub-category image"
-                  className="object-cover object-center"
-                />
-              </div>
-              <div className="flex-1 flex justify-between">
-                <span className="lg:text-[16px] text-[14px] text-nowrap flex gap-2 lg:gap-[12px] items-center text-[#2B2B2B] leading-[100%] tracking-[0%] font-display">
-                  {data.cat.length > 17
-                    ? `${data.cat.slice(0, 18)}...`
-                    : data.cat}{" "}
-                  <GoArrowUpRight className="text-xl lg:text-2xl" />
-                </span>
-                <span className="w-fit h-full flex items-end text-[#6C757D] text-[10px] lg:text-[12px] leading-[100%] tracking-[0%] font-display">
-                  {data.brand}
-                </span>
-              </div>
-            </div>
-          );
+          return <CategoryCard key={`${data.img}${idx}`} />;
+        })}
+      </div>
+
+      <div className=" w-full grid grid-cols-2 h-auto lg:hidden mt-10 gap-2 lg:gap-[24px]">
+        {images.map((data, idx) => {
+          return <CategoryCard key={`${data.img}${idx}`} />;
         })}
       </div>
     </section>
