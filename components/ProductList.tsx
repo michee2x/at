@@ -18,9 +18,8 @@ export default function ProductList({
   reverseVertically?: boolean;
   reverseHorizontally?: boolean;
 }) {
-  const [selectedCategory, setSelectedCategory] = useState<number>(22);
   const { products, loading, error } = useProducts({
-    category: selectedCategory,
+    category,
   });
   const { categories } = useCategory();
 

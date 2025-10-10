@@ -9,7 +9,7 @@ import ProductCard from "../skeletons/product-card";
 
 const CategoryCarousel = () => {
   const { products, loading, error } = useProducts({
-    category: 22,
+    category: 17,
   });
   if (error) return <p>Error: {error}</p>;
   return (

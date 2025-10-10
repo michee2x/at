@@ -27,10 +27,10 @@ const BrandShowCasePrice = ({
       } justify-between`}
     >
       <div className="w-full lg:flex-1 h-auto flex items-center justify-center p-4">
-        <div className="flex-1 grid grid-cols-2 gap-2.5 lg:gap-5 lg:flex lg:flex-col lg:place-content-between">
-          {[product.slice(0, 3), product.slice(3, 6)].map((arr, idx) => {
+        <div className="flex-1 grid grid-cols-2 gap-2.5 lg:flex lg:flex-col lg:gap-10 lg:place-content-between">
+          {[product.slice(0, 3), product.slice(0, 3)].map((arr, idx) => {
             return (
-              <div key={`${idx}`} className="lg:flex hidden w-full justify-between items-center h-fit">
+              <div key={`${idx}`} className="lg:flex hidden w-full lg:gap-6 justify-between items-center h-fit">
                 {arr.map((data) => {
                   return <CardOne key={data?.id} data={data} />;
                 })}

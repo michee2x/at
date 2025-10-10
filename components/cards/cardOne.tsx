@@ -11,9 +11,9 @@ const CardOne = ({
 }) => {
   return (
     <div
-      className={`carousel-item lg:w-[244px] ${
+      className={`carousel-item lg:w-[240px] ${
         fillViewport ? "w-full" : "w-[240px]"
-      } h-[312px] gap-[4px] flex flex-col`}
+      } h-[280px] lg:h-fit gap-[4px] flex flex-col`}
     >
       <div className="relative overflow-hidden h-[185px] w-full lg:w-[244px] rounded-xl bg-[#FAFAFA]">
         {data?.images[0]?.src && (

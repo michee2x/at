@@ -79,7 +79,7 @@ export default function Home() {
           banner="/home/bottles/59b73de021e333eda75613c6ac0ec5d1877ef0ac.jpg"
           bannerText="BEAUTY PRODUCTS MADE FOR THE AFRICAN WOMAN"
           reverseVertically={true}
-          category={22}
+          category={21}
         />
 
         <div className="lg:h-[1400px] bg-[#FAFAFA] min-h-[700px] my-20 py-12 flex flex-col lg:flex-row items-center gap-14 lg:gap-4 w-full">
