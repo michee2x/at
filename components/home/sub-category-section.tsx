@@ -32,7 +32,7 @@ const SubCategorySection = () => {
     },
   ];
   return (
-    <section className="w-full px-4 mt-20 lg:mt-52 h-auto">
+    <section className="w-full hidden px-4 mt-20 lg:mt-52 h-auto">
       <h1 className="lg:text-[21px] text-[18px] text-center lg:text-left font-display text-[#000000]">
         FEATURED SUB-CATEGORIES
       </h1>

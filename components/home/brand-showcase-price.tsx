@@ -11,12 +11,14 @@ const BrandShowCasePrice = ({
   bannerText,
   reverseHorizontally,
   reverseVertically,
+  newProduct,
 }: {
   product: WooProduct[];
   banner: string;
   bannerText: string;
   reverseHorizontally?: boolean;
   reverseVertically?: boolean;
+  newProduct?: boolean;
 }) => {
   return (
     <div
@@ -26,13 +28,13 @@ const BrandShowCasePrice = ({
         reverseHorizontally ? "lg:flex-row-reverse" : "lg:flex-row"
       } justify-between`}
     >
-      <div className="w-full lg:flex-1 h-auto flex items-center justify-center p-4">
-        <div className="flex-1 grid grid-cols-2 gap-2.5 lg:flex lg:flex-col lg:gap-10 lg:place-content-between">
+      <div className="w-full lg:flex-1 h-auto flex items-center justify-center">
+        <div className="flex-1 grid grid-cols-2 gap-2.5 lg:flex lg:h-full lg:flex-col lg:place-content-between">
           {[product.slice(0, 3), product.slice(0, 3)].map((arr, idx) => {
             return (
               <div key={`${idx}`} className="lg:flex hidden w-full lg:gap-6 justify-between items-center h-fit">
                 {arr.map((data) => {
-                  return <CardOne key={data?.id} data={data} />;
+                  return <CardOne newproduct={newProduct} key={data?.id} data={data} />;
                 })}
               </div>
             );

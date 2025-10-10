@@ -5,17 +5,19 @@ import React from "react";
 const CardOne = ({
   data,
   fillViewport = true,
+  newproduct = false,
 }: {
   data: WooProduct;
   fillViewport?: boolean;
+  newproduct?: boolean;
 }) => {
   return (
     <div
-      className={`carousel-item lg:w-[240px] ${
+      className={`carousel-item lg:w-[230px] ${
         fillViewport ? "w-full" : "w-[240px]"
       } h-[280px] lg:h-fit gap-[4px] flex flex-col`}
     >
-      <div className="relative overflow-hidden h-[185px] w-full lg:w-[244px] rounded-xl bg-[#FAFAFA]">
+      <div className="relative overflow-hidden p-1.5 lg:p-2 h-[185px] w-full lg:w-[230px] rounded-xl bg-[#FAFAFA]">
         {data?.images[0]?.src && (
           <Image
             fill
@@ -25,9 +27,14 @@ const CardOne = ({
             sizes={data?.images[0]?.sizes}
           />
         )}
+        {newproduct && (
+          <span className="lg:w-[3.3rem] w-[3rem] text-[10px] lg:text-[12.32px] h-4 mt-1 ml-1 text-white bg-[#185245] rounded-tr-lg rounded-bl-lg relative lg:h-6 flex items-center justify-center">
+            new
+          </span>
+        )}
       </div>
       <div className="w-full font-poppins flex justify-between text-[#6C757D] text-[12px]">
-        {data?.categories[0]?.name}
+        {data?.categories[0]?.name?.replace("amp;", "")}
         <div className="flex items-center gap-[1px]">
           {[1, 2, 3, 4, 5].map((star) => {
             return (
@@ -46,7 +53,7 @@ const CardOne = ({
           })}
         </div>
       </div>
-      <span className="text-[15px] font-poppins">{data?.name}</span>
+      <span className="text-[15px] font-poppins">{data?.name?.replace("amp;", "")}</span>
       <span className="flex items-center gap-2">
         <div className="w-[14.5px] relative h-[14.5px] lg:w-[20px] lg:h-[20px]">
           <Image

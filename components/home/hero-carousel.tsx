@@ -15,16 +15,18 @@ const HeroCarousel = () => {
                 {
                   src: "/home/hero/27e49ba5c91c1af8960a1ac7dcc2d147692bfa96 (1).jpg",
                   y: 4.5,
+                  order:3
                 },
-                { src: "/home/hero/Frame%201000003698.png", y: 2.5 },
-                { src: "/home/hero/Frame%201000003699.png", y: 0 },
-                { src: "/home/hero/Frame%201000003700.png", y: 0 },
-                { src: "/home/hero/Frame%201000003703.png", y: 2.5 },
+                { src: "/home/hero/Frame%201000003698.png", y: 2.5, order:1 },
+                { src: "/home/hero/Frame%201000003699.png", y: 0, order:2 },
+                { src: "/home/hero/Frame%201000003700.png", y: 0, order:4 },
+                { src: "/home/hero/Frame%201000003703.png", y: 2.5, order:5 },
                 {
                   src: "/home/hero/da264833a58db801ba764ae613cfba43c5dc08f3%20(1).jpg",
                   y: 4.5,
+                  order:6
                 },
-              ].map((img) => {
+              ].map((img, idx) => {
                 return (
                   <>
                     <li
@@ -32,8 +34,11 @@ const HeroCarousel = () => {
                       style={{
                         transformStyle: "preserve-3d",
                         transform: `translate3d(0px, ${img.y * -50}px, 0px)`,
+                        order: idx === 2 ? 1 : "unset"
                       }}
-                      className="relative hidden lg:flex rounded-[24px] overflow-hidden min-w-[300px] min-h-[450px]"
+                      className={`relative hidden ${
+                        idx === 2 ? "order-1" : ""
+                      } lg:flex rounded-[24px] overflow-hidden min-w-[300px] min-h-[450px]`}
                     >
                       <Image
                         style={{ transformStyle: "preserve-3d" }}

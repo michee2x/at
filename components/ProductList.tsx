@@ -11,12 +11,14 @@ export default function ProductList({
   bannerText,
   reverseVertically,
   reverseHorizontally,
+  newProduct,
 }: {
   category?: number;
   banner: string;
   bannerText: string;
   reverseVertically?: boolean;
   reverseHorizontally?: boolean;
+  newProduct?: boolean;
 }) {
   const { products, loading, error } = useProducts({
     category,
@@ -30,24 +32,6 @@ export default function ProductList({
 
   return (
     <div className="space-y-8">
-      {/* Category filter */}
-      {/* <div className="flex gap-3 overflow-x-auto pb-2">
-        {categories.map((cat) => (
-          <button
-            key={cat.id}
-            onClick={() => setSelectedCategory(cat.id)}
-            className={`px-4 py-2 rounded-lg border text-sm font-medium transition ${
-              selectedCategory === cat.id
-                ? "bg-black text-white border-black"
-                : "bg-white text-gray-700 border-gray-300 hover:bg-gray-100"
-            }`}
-          >
-            {cat.name.replace(/&amp;/g, "&")}
-          </button>
-        ))}
-      </div> */}
-
-      {/* Products grid */}
       {products.length > 0 ? (
         <div className="w-full min-h-64">
           <BrandShowCase
@@ -56,6 +40,7 @@ export default function ProductList({
             bannerText={bannerText}
             reverseVertically={reverseVertically}
             reverseHorizontally={reverseHorizontally}
+            newProduct={newProduct}
           />
         </div>
       ) : (
