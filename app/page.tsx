@@ -22,7 +22,7 @@ export default function Home() {
       <Hero />
 
       <section className="w-full  lg:px-[28px] mt-20 lg:mt-52 min-h-screen flex flex-col items-center">
-        <h1 className="text-[20px] lg:text-[42px] font-display text-center w-full lg:w-[1252px] h-[56px] leading-[100%] tracking-[0%] align-middle text-[#000000]">
+        <h1 className="text-[20px] lg:order-1 lg:text-[42px] font-display text-center w-full lg:w-[1252px] h-[56px] leading-[100%] tracking-[0%] align-middle text-[#000000]">
           Discover the best brands & products <br className="lg:hidden" /> from
           Africa
         </h1>

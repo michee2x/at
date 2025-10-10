@@ -12,6 +12,7 @@ export default function ProductList({
   reverseVertically,
   reverseHorizontally,
   newProduct,
+  className
 }: {
   category?: number;
   banner: string;
@@ -19,6 +20,7 @@ export default function ProductList({
   reverseVertically?: boolean;
   reverseHorizontally?: boolean;
   newProduct?: boolean;
+  className?: string;
 }) {
   const { products, loading, error } = useProducts({
     category,
@@ -31,7 +33,7 @@ export default function ProductList({
   console.log("THIS IS THE WHOLE UI  DATA: ", products);
 
   return (
-    <div className="space-y-8">
+    <div className={`space-y-8 ${className}`}>
       {products.length > 0 ? (
         <div className="w-full min-h-64">
           <BrandShowCase
