@@ -6,13 +6,20 @@ const SearchInput = () => {
   return (
     <section className="w-fit h-fit">
       <div className="lg:w-[612px] lg:h-[60px] w-[90vw] h-[44px] relative bg-gradient-to-r from-[#EBCC97] to-[#9747FF] rounded-[36px] p-[1.5px]">
-        <div className="lg:w-[608px] w-[89vw] h-[40px] lg:h-[56px] flex items-center absolute transform -translate-x-1/2 left-1/2 -translate-y-1/2 top-1/2 gap-3 p-[12px] rounded-[36px] bg-white">
-          <span className="flex size-[28px] bg-gradient-to-r from-[#EBCC97] to-[#9747FF] rounded-full"></span>
+        <div className="lg:w-[608px] w-[89vw] h-[40px] lg:h-[56px] flex items-center absolute transform -translate-x-1/2 left-1/2 -translate-y-1/2 top-1/2 gap-3 p-[6px] lg:p-[12px] rounded-[36px] bg-white">
+          <span className="flex size-[28px] items-center justify-center bg-gradient-to-r from-[#EBCC97] to-[#9747FF] rounded-full">
+            <Image
+              alt="atlaze AI search logo"
+              src="/home/vector%20icons/Vector%20(9).png"
+              width={12}
+              height={12}
+            />
+          </span>
 
           <input
             type="search"
             placeholder="Search by keywords or upload/take photo"
-            className="flex-1 align-middle text-[14px] tracking-[0%] leading-[100%] text-[#6C757D]"
+            className="flex-1 border-0 outline-0 align-middle text-[14px] tracking-[0%] leading-[100%] text-[#6C757D]"
           />
 
           <Image

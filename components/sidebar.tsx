@@ -62,9 +62,9 @@ const Sidebar = () => {
   return (
     <>
       <nav
-        className={`lg:w-[22%] w-screen font-display flex bg-transparent z-50 fixed transition-all duration-300 ${
+        className={`lg:w-[22%] w-screen flex-col overflow-y-scroll font-display flex bg-transparent z-50 fixed transition-all duration-300 ${
           showSideBar ? "left-0" : "-left-[100vw]"
-        } h-screen`}
+        } min-h-screen`}
       >
         <div
           className={`w-full  p-4 bg-gray-100 ${
@@ -151,7 +151,7 @@ const Sidebar = () => {
           </div>
         </div>
 
-        <div className="w-full h-auto px-4 py-6 absolute bottom-0 text-[#2B2B2B] hover:text-[#D68A36] flex items-center gap-1">
+        <div className="w-full h-auto px-4 py-6 absolute lg:relative bottom-0 text-[#2B2B2B] hover:text-[#D68A36] flex items-center gap-1">
           <span className="text-[18px] lg:text-[19px]">
             <MdLogout />
           </span>

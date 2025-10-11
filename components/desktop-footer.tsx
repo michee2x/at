@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { FaYoutube, FaLinkedin, FaInstagram, FaTiktok, FaFacebook } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
+import { FaArrowRight } from "react-icons/fa";
 
 export default function Footer() {
   return (
@@ -129,8 +130,11 @@ export default function Footer() {
             placeholder="Enter your email to subscribe to our newsletter!"
             className="w-full border border-gray-300 rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-400"
           />
-          <button className="bg-green-500 text-white rounded-full px-6 py-2 hover:bg-green-600 transition">
+          <button className="bg-[#97D25B] flex items-center gap-1.5 text-[#141414] font-semibold text-[14px] rounded-full px-6 py-2 hover:bg-green-600 transition">
             Subscribe
+            <span className="size-[14px] text-white text-xl items-center justify-center bg-[#141414] flex rounded-full">
+              <FaArrowRight className="w-[5.83px] h-[9.33px] text-[#97D25B]" />
+            </span>
           </button>
         </div>
 
