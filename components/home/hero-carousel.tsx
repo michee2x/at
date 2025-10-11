@@ -24,11 +24,10 @@ const HeroCarousel = () => {
             src: "/home/hero/da264833a58db801ba764ae613cfba43c5dc08f3%20(1).jpg",
             y: 4.5,
           },
-        ].map((img) => {
+        ].map((img, idx) => {
           return (
-            <>
+            <div key={`${img.src}-${idx}`}>
               <li
-                key={img.src}
                 style={{
                   transformStyle: "preserve-3d",
                   transform: `translate3d(0px, ${img.y * -50}px, 0px)`,
@@ -45,7 +44,6 @@ const HeroCarousel = () => {
               </li>
 
               <li
-                key={`${img.src}-mobile`}
                 style={{
                   transformStyle: "preserve-3d",
                 }}
@@ -59,7 +57,7 @@ const HeroCarousel = () => {
                   alt={img.src}
                 />
               </li>
-            </>
+            </div>
           );
         })}
       </ul>
@@ -69,29 +67,25 @@ const HeroCarousel = () => {
         className="list-none grid lg:hidden grid-cols-2 w-full gap-2 lg:w-fit h-fit"
       >
         {[
-          { src: "/home/hero/Frame%201000003698.png", y: 2.5},
-          { src: "/home/hero/Frame%201000003699.png", y: 0},
+          { src: "/home/hero/Frame%201000003698.png", y: 2.5 },
+          { src: "/home/hero/Frame%201000003699.png", y: 0 },
           {
             src: "/home/hero/27e49ba5c91c1af8960a1ac7dcc2d147692bfa96 (1).jpg",
-            y: 4.5
+            y: 4.5,
           },
           {
             src: "/home/hero/da264833a58db801ba764ae613cfba43c5dc08f3%20(1).jpg",
-            y: 4.5
+            y: 4.5,
           },
         ].map((img, idx) => {
           return (
-            <>
+            <div key={`${img.src}-${idx}`}>
               <li
-                key={img.src}
                 style={{
                   transformStyle: "preserve-3d",
                   transform: `translate3d(0px, ${img.y * -50}px, 0px)`,
-                  order: idx === 2 ? 1 : "unset",
                 }}
-                className={`relative hidden ${
-                  idx === 2 ? "order-1" : ""
-                } lg:flex rounded-[24px] overflow-hidden min-w-[300px] min-h-[450px]`}
+                className={`relative hidden lg:flex rounded-[24px] overflow-hidden min-w-[300px] min-h-[450px]`}
               >
                 <Image
                   style={{ transformStyle: "preserve-3d" }}
@@ -103,7 +97,6 @@ const HeroCarousel = () => {
               </li>
 
               <li
-                key={`${img.src}-mobile`}
                 style={{
                   transformStyle: "preserve-3d",
                 }}
@@ -117,12 +110,12 @@ const HeroCarousel = () => {
                   alt={img.src}
                 />
               </li>
-            </>
+            </div>
           );
         })}
       </ul>
     </div>
   );
-}
+};
 
-export default HeroCarousel
+export default HeroCarousel;

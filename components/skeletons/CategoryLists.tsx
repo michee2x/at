@@ -2,17 +2,17 @@
 import { useCategory } from "@/contexts/category-context";
 import { useProducts } from "@/hooks/useProducts";
 import { useState } from "react";
-import BrandShowCase from "./home/brand-showcase-price";
-import ProductCard from "./skeletons/product-card";
+import BrandShowCase from "../home/brand-showcase";
+import ProductCard from "./product-card";
 
-export default function ProductList({
+export default function CategoList({
   category,
   banner,
   bannerText,
   reverseVertically,
   reverseHorizontally,
   newProduct,
-  className
+  className,
 }: {
   category?: number;
   banner: string;
@@ -22,27 +22,20 @@ export default function ProductList({
   newProduct?: boolean;
   className?: string;
 }) {
-  const { products, loading, error } = useProducts({
-    category,
-  });
   const { categories } = useCategory();
 
-  if (loading) return <ProductCard />;
-  if (error) return <p>Error: {error}</p>;
-
-  console.log("THIS IS THE WHOLE UI  DATA: ", products);
+  console.log("THIS IS THE WHOLE UI  DATA: ", categories);
 
   return (
-    <div className={`w-full ${className}`}>
-      {products.length > 0 ? (
+    <div className={`space-y-8 ${className}`}>
+      {categories.length > 0 ? (
         <div className="w-full min-h-64">
           <BrandShowCase
-            product={products}
+            categories={categories}
             banner={banner}
             bannerText={bannerText}
             reverseVertically={reverseVertically}
             reverseHorizontally={reverseHorizontally}
-            newProduct={newProduct}
           />
         </div>
       ) : (

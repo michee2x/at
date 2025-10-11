@@ -36,7 +36,7 @@ const CardOne = ({
       <div className="w-full font-poppins flex justify-between text-[#6C757D] text-[12px]">
         {data?.categories[0]?.name?.replace("amp;", "")}
         <div className="flex items-center gap-[1px]">
-          {[1, 2, 3, 4, 5].map((star) => {
+          {[1, 2, 3, 4].map((star) => {
             return (
               <div
                 key={`${star}`}

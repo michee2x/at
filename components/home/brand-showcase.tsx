@@ -1,16 +1,19 @@
+"use client"
+import { WooCategory } from "@/types";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 import { GoArrowUpRight } from "react-icons/go";
+import { catImages } from "./sub-category-section";
 
 const BrandShowCase = ({
-  data,
+  categories,
   banner,
   bannerText,
   reverseHorizontally,
   reverseVertically,
 }: {
-  data: string[];
+  categories: WooCategory[];
   banner: string;
   bannerText: string;
   reverseHorizontally?: boolean;
@@ -24,13 +27,13 @@ const BrandShowCase = ({
         reverseHorizontally ? "lg:flex-row-reverse" : "lg:flex-row"
       } justify-between`}
     >
-      <div className="w-full h-auto flex items-center justify-center p-4">
-        <div className="flex-1 grid grid-cols-2 gap-2.5 lg:gap-5 lg:flex lg:flex-col lg:place-content-between">
-          {[data.slice(0, 3), data.slice(3, 6)].map((arr, idx) => {
+      <div className="w-full px-3 h-auto lg:flex-1 flex items-center justify-center">
+        <div className="flex-1 grid grid-cols-2 gap-2.5 lg:gap-5 h-full lg:flex lg:flex-col lg:place-content-between">
+          {[categories.slice(0, 3), categories.slice(3, 6)].map((arr, idx) => {
             return (
               <div
                 key={`${idx}`}
-                className="lg:flex hidden w-full justify-between items-center h-fit"
+                className="lg:flex hidden w-full lg:gap-5 items-center h-fit"
               >
                 {arr.map((data, idx) => {
                   return (
@@ -41,14 +44,14 @@ const BrandShowCase = ({
                       <div className="w-full place-content-between relative bg-[#FAFAFA] h-[244px]">
                         <Image
                           fill
-                          src={data}
+                          src={catImages[idx]?.img}
                           alt="category image"
                           className="object-cover object-center"
                         />
                       </div>
                       <div className="flex-1 flex justify-between">
                         <span className="text-[16px] flex gap-[12px] items-center text-[#2B2B2B] leading-[100%] tracking-[0%] font-display">
-                          MZIZI JERSEY <GoArrowUpRight className="text-2xl" />
+                          {data?.name?.replace("amp;","")} <GoArrowUpRight className="text-2xl" />
                         </span>
                         <span className="w-fit h-full flex items-end text-[#6C757D] text-[12px] leading-[100%] tracking-[0%] font-display">
                           MZIZI
@@ -61,7 +64,7 @@ const BrandShowCase = ({
             );
           })}
 
-          {data.map((data, idx) => {
+          {categories?.slice(0,6)?.map((data, idx) => {
             return (
               <div
                 key={`${data}--${idx}`}
@@ -70,14 +73,14 @@ const BrandShowCase = ({
                 <div className="w-full place-content-between relative bg-[#FAFAFA] h-[185px]">
                   <Image
                     fill
-                    src={data}
+                    src={catImages[idx]?.img}
                     alt="category image"
                     className="object-cover object-center"
                   />
                 </div>
                 <div className="flex-1 flex justify-between">
                   <span className="text-[12px] flex gap-[6px] items-center text-[#2B2B2B] leading-[100%] tracking-[0%] font-display">
-                    MZIZI JERSEY <GoArrowUpRight className="text-xl" />
+                    {data.name?.replace("amp;","")} <GoArrowUpRight className="text-xl" />
                   </span>
                   <span className="w-fit h-full flex items-end text-[#6C757D] text-[8.61px] leading-[100%] tracking-[0%] font-display">
                     MZIZI
