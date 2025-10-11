@@ -5,6 +5,7 @@ import NavBar from "@/components/navbar";
 import Footer from "@/components/desktop-footer";
 import Providers from "./Providers";
 import MobileFooter from "@/components/mobile-footer";
+import Sidebar from "@/components/sidebar";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -44,12 +45,16 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} ${redHatDisplay.variable} ${poppins.variable} antialiased`}
       >
         <Providers>
-          <NavBar />
-          <main data-theme="light" className="flex flex-col items-center w-full lg:px-4">
-            {children}
-          </main>
-          <Footer />
-          <MobileFooter />
+          <Sidebar />
+            <main
+              data-theme="light"
+              className="flex flex-col items-center w-full lg:px-4"
+            >
+              <NavBar />
+              {children}
+              <Footer />
+              <MobileFooter />
+            </main>
         </Providers>
       </body>
     </html>

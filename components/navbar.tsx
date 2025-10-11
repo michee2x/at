@@ -1,10 +1,13 @@
+"use client"
+import { useSideBar } from "@/contexts/sidebar-context";
 import Image from "next/image";
 import React from "react";
 import { IoMenuSharp } from "react-icons/io5";
 
 const NavBar = () => {
+  const {setShowSideBar} = useSideBar()
   return (
-    <div className="w-full flex flex-col h-[112px] absolute">
+    <div className="w-full z-30 flex flex-col h-[112px] absolute">
       <div className="h-[40px] flex justify-between items-center px-4 w-full">
         <h1 className="h-full aspect-square font-display text-[18px] tracking-[0%] leading-[100%] text-[#2B2B2B] flex items-center justify-center">
           ATLAZE
@@ -31,7 +34,13 @@ const NavBar = () => {
       <div className="w-full px-4 lg:px-[60px] flex justify-center items-center flex-1">
         <div className="w-full flex justify-between items-center h-fit">
           <div className="flex gap-2.5 items-center">
-            <IoMenuSharp className="text-[30px]" />
+            <span
+              onClick={() => setShowSideBar((prev) => !prev)}
+              className="text-[30px] cursor-pointer"
+            >
+              <IoMenuSharp />
+            </span>
+
             <span className="text-[16px] leading-[100%] tracking-[0%] font-display">
               All Categories
             </span>
@@ -41,7 +50,7 @@ const NavBar = () => {
             <div className="flex gap-2 items-center">
               <Image
                 src="/home/hero/Nigeria.png"
-                className="object-cover"
+                className="object-cover z-0"
                 alt="nigeria logo"
                 width={24}
                 height={24}
