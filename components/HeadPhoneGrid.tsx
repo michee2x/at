@@ -1,9 +1,8 @@
 "use client";
 import { Headphone, headphones } from "@/constants";
 import Image from "next/image";
-import { memo} from "react";
+import { memo } from "react";
 import BlurredDots from "./BlurredDots";
-
 
 const HeadphoneCard = memo(
   ({ item }: { item: Headphone }) => {
@@ -25,7 +24,7 @@ const HeadphoneCard = memo(
           <ul className="text-xs mt-8 list text-gray-300 space-y-1">
             {item.features.map((feature, i) => (
               <li
-                key={i}
+                key={`${i}`}
                 className="flex items-center justify-center gap-2 text-gray-100"
               >
                 <span className="w-1.5 h-1.5 bg-white rounded-full"></span>
@@ -45,7 +44,6 @@ const HeadphoneCard = memo(
   },
   (prevProps, nextProps) => prevProps.item.name === nextProps.item.name
 );
-
 
 export default function HeadphoneGrid() {
   return (
