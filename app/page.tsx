@@ -3,7 +3,6 @@
 import DiverseCategoryCarousel from "@/components/CategoryCarousel";
 import CategoryCarousel from "@/components/home/category-carousel";
 import Hero from "@/components/home/hero";
-import SubCategorySection from "@/components/home/sub-category-section";
 import Image from "next/image";
 import Link from "next/link";
 import ProductList from "@/components/ProductList";
@@ -60,17 +59,6 @@ export default function Home() {
             <CategoryCarousel />
           </div>
         </div>
-
-        {/* <ProductList
-          banner="/home/section%20five/6be3e01dd669b8514f40fdab79d557342ea0f45c.jpg"
-          bannerText="EXPLORE THE BEST OF AFRICAN JEWELLERY"
-          reverseVertically={true}
-          reverseHorizontally={true}
-          category={22}
-          className="lg:order-5"
-        /> */}
-
-        {/* <SubCategorySection /> */}
 
         <CategoryList
           banner="/home/section%20three/6939971f273e65575e37ad7fdf4efc69b5aec528%20(1).png"

@@ -54,14 +54,20 @@ export default function HeadphoneGrid() {
         <div className="w-full flex-nowrap h-auto p-1.5 lg:flex hidden justify-between">
           {[...Array(57)].map((_, idx) => {
             return (
-              <span className="flex rounded-full size-[11.32px] bg-white"></span>
+              <span
+                key={`${idx}`}
+                className="flex rounded-full size-[11.32px] bg-white"
+              ></span>
             );
           })}
         </div>
         <div className="w-full lg:hidden flex-nowrap h-auto p-1.5 flex justify-between">
           {[...Array(20)].map((_, idx) => {
             return (
-              <span className="flex rounded-full size-[11.32px] bg-white"></span>
+              <span
+                key={`${idx}`}
+                className="flex rounded-full size-[11.32px] bg-white"
+              ></span>
             );
           })}
         </div>
@@ -75,7 +81,7 @@ export default function HeadphoneGrid() {
       </h1>
       <div className="grid grid-cols-2 w-full gap-x-3 place-items-center sm:grid-cols-2 lg:grid-cols-6 max-w-7xl">
         {headphones.map((item, index) => (
-          <HeadphoneCard key={index} item={item} />
+          <HeadphoneCard key={`${index}`} item={item} />
         ))}
       </div>
     </div>
