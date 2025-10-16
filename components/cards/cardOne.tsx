@@ -1,6 +1,7 @@
 import { WooProduct } from "@/types";
 import Image from "next/image";
 import React from "react";
+import { GoArrowUpRight } from "react-icons/go";
 
 const CardOne = ({
   data,
@@ -28,32 +29,27 @@ const CardOne = ({
           />
         )}
         {newproduct && (
-          <span className="lg:w-[3.3rem] w-[3rem] text-[10px] lg:text-[12.32px] h-4 mt-1 ml-1 text-white bg-[#185245] rounded-tr-lg rounded-bl-lg relative lg:h-6 flex items-center justify-center">
+          <span className="lg:w-[3.3rem] w-[3rem] text-[10px] lg:text-[12.32px] h-4 mt-1 ml-1 text-white bg-[#185245] rounded-tr-lg rounded-tl-[2px] rounded-br-[2px] rounded-bl-lg relative lg:h-6 flex items-center justify-center">
             new
           </span>
         )}
+        <span className="lg:w-[3.3rem] lg:hidden w-[3rem] text-[10px] lg:text-[12.32px] h-4 mt-1 ml-1 text-white bg-[#185245] rounded-tr-lg rounded-tl-[2px] rounded-br-[2px] rounded-bl-lg relative lg:h-6 flex items-center justify-center">
+          new
+        </span>
       </div>
-      <div className="w-full font-poppins flex justify-between text-[#6C757D] text-[12px]">
-        {data?.categories[0]?.name?.replace("amp;", "")}
-        <div className="flex items-center gap-[1px]">
-          {[1, 2, 3, 4].map((star) => {
-            return (
-              <div
-                key={`${star}`}
-                className="w-[10px] relative h-[10px] lg:w-[13px] lg:h-[13px]"
-              >
-                <Image
-                  src="/home/vector icons/Star 1.png"
-                  className="object-cover"
-                  alt="star logo"
-                  fill
-                />
-              </div>
-            );
-          })}
+      <div className="w-full flex-col font-poppins flex justify-between text-[#6C757D] text-[12px]">
+        <span className="lg:text-[16px] text-[12px] text-nowrap flex gap-2 lg:gap-[12px] items-center text-[#2B2B2B] leading-[100%] tracking-[0%] font-display">
+          {data?.name?.replace("amp;", "")}
+          <GoArrowUpRight className="text-xl lg:text-2xl" />
+        </span>
+        <div className="flex underline text-[12px] text-[#6C757D] font-display items-center gap-[1px]">
+          {data?.categories[0]?.name?.replace("amp;", "")}
         </div>
       </div>
-      <span className="text-[15px] font-poppins">{data?.name?.replace("amp;", "")}</span>
+      <span className="text-[12px] text-black/50 font-poppins">
+        Made to cater for the finest african hair to nurture your roots and
+        scalps. Best for all hair types...
+      </span>
       <span className="flex items-center gap-2">
         <div className="w-[14.5px] relative h-[14.5px] lg:w-[20px] lg:h-[20px]">
           <Image
@@ -63,7 +59,7 @@ const CardOne = ({
             fill
           />
         </div>
-        <span className="text-[12px] lg:text-[14px] text-[#ED473D]">
+        <span className="text-[15px] lg:text-[14px] text-[#6A00EF]">
           {data?.price}
         </span>
       </span>

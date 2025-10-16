@@ -1,5 +1,6 @@
 "use client"
 
+import DiverseCategoryCarousel from "@/components/CategoryCarousel";
 import CategoryCarousel from "@/components/home/category-carousel";
 import Hero from "@/components/home/hero";
 import SubCategorySection from "@/components/home/sub-category-section";
@@ -9,6 +10,8 @@ import ProductList from "@/components/ProductList";
 import { useCategory } from "@/contexts/category-context";
 import CategoryButton from "@/components/skeletons/category-button";
 import CategoryList from "@/components/CategoryList";
+import CategoryGrid from "@/components/CategoryGrid";
+import HeadphoneGrid from "@/components/HeadPhoneGrid";
 
 export default function Home() {
   const { categories } = useCategory();
@@ -16,13 +19,15 @@ export default function Home() {
     <div className="w-screen flex-col min-h-screen relative flex justify-center">
       <Hero />
 
-      <section className="w-full lg:px-[28px] mt-20 lg:mt-52 min-h-screen flex flex-col items-center">
-        <h1 className="text-[20px] lg:order-1 lg:text-[42px] font-display text-center w-full lg:w-[1252px] h-[56px] leading-[100%] tracking-[0%] align-middle text-[#000000]">
+      <section className="w-full lg:px-[28px] mt-20 lg:mt-32 min-h-screen flex flex-col items-center">
+        <DiverseCategoryCarousel />
+        <CategoryGrid />
+        <h1 className="text-[20px] hidden mt-8 lg:order-1 lg:text-[42px] font-display text-center w-full lg:w-[1252px] h-[56px] leading-[100%] tracking-[0%] align-middle text-[#000000]">
           Discover the best brands & products <br className="lg:hidden" /> from
           Africa
         </h1>
 
-        <div className="w-full h-auto lg:order-2">
+        <div className="w-full hidden h-auto lg:order-2">
           <div className="w-full pl-4 h-auto">
             <ul className="list-none w-full gap-[16px] scrollcat lg:justify-center items-center mt-5 flex">
               {categories?.length > 0 ? (
@@ -56,16 +61,16 @@ export default function Home() {
           </div>
         </div>
 
-        <ProductList
+        {/* <ProductList
           banner="/home/section%20five/6be3e01dd669b8514f40fdab79d557342ea0f45c.jpg"
           bannerText="EXPLORE THE BEST OF AFRICAN JEWELLERY"
           reverseVertically={true}
           reverseHorizontally={true}
           category={22}
           className="lg:order-5"
-        />
+        /> */}
 
-        <SubCategorySection />
+        {/* <SubCategorySection /> */}
 
         <CategoryList
           banner="/home/section%20three/6939971f273e65575e37ad7fdf4efc69b5aec528%20(1).png"
@@ -82,9 +87,12 @@ export default function Home() {
           reverseHorizontally={true}
           category={21}
           className="lg:order-6"
+          newProduct={true}
         />
 
-        <div className="lg:h-[1400px] lg:order-7 bg-[#FAFAFA] min-h-[700px] my-20 py-12 flex flex-col lg:flex-row items-center gap-14 lg:gap-4 w-full">
+        <HeadphoneGrid />
+
+        <div className="lg:h-[1100px] lg:order-8 bg-[#FAFAFA] min-h-[700px] my-20 py-12 flex flex-col lg:flex-row items-center gap-14 lg:gap-4 w-full">
           <div className="lg:w-[800px] h-[60vh] w-full relative flex items-center lg:h-[1000px]">
             <div className="lg:w-[400px] -translate-x-1/2 left-[30%] h-[370px] w-[180px] lg:h-[813.37px] absolute z-10">
               <Image

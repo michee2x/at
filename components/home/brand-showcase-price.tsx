@@ -22,7 +22,7 @@ const BrandShowCasePrice = ({
 }) => {
   return (
     <div
-      className={`lg:h-[672px] h-auto overflow-hidden gap-3 mt-32 lg:mt-52 w-full flex ${
+      className={`lg:h-[672px] h-auto overflow-hidden gap-3 mt-24 lg:mt-32 w-full flex ${
         reverseVertically ? "flex-col-reverse" : "flex-col"
       } ${
         reverseHorizontally ? "lg:flex-row-reverse" : "lg:flex-row"
