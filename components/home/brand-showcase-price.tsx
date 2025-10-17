@@ -43,7 +43,7 @@ const BrandShowCasePrice = ({
           {product.map((data) => {
             return (
               <div key={`${data?.id}-mobile`} className="w-full h-auto lg:hidden">
-                <CardOne data={data} />
+                <CardOne data={data} newproduct={newProduct} />
               </div>
             );
           })}
