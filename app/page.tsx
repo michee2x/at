@@ -11,6 +11,7 @@ import CategoryButton from "@/components/skeletons/category-button";
 import CategoryList from "@/components/CategoryList";
 import CategoryGrid from "@/components/CategoryGrid";
 import HeadphoneGrid from "@/components/HeadPhoneGrid";
+import CategoryGroup from "@/components/CategoryGroup";
 
 export default function Home() {
   const { categories } = useCategory();
@@ -60,11 +61,19 @@ export default function Home() {
           </div>
         </div>
 
-        <CategoryList
+        {/* <CategoryList
           banner="/home/section%20three/6939971f273e65575e37ad7fdf4efc69b5aec528%20(1).png"
           bannerText="EXPLORE THE BEST OF AFRICAN FASHION"
           reverseVertically={true}
           category={22}
+          className="lg:order-3"
+        /> */}
+
+        <ProductList
+          banner="/home/section%20three/6939971f273e65575e37ad7fdf4efc69b5aec528%20(1).png"
+          bannerText="EXPLORE THE BEST OF AFRICAN FASHION"
+          reverseVertically={true}
+          category={99}
           className="lg:order-3"
         />
 

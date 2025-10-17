@@ -1,12 +1,17 @@
 "use client";
 import { Headphone, headphones } from "@/constants";
 import HeadphoneCard from "./HeadPhoneCard";
-
+import { useProducts } from "@/hooks/useProducts";
 
 export default function HeadphoneGrid() {
+  const { products, loading, error } = useProducts({
+    category: 51,
+    perPage: 12
+  });
+  console.log("this are the headphones: ", products);
   return (
     <div className=" w-full mt-16 lg:order-7 min-h-screen px-2 flex flex-col items-center py-10">
-      <h1 className="text-white flex flex-col bg-gradient-to-b from-[#F8E08F] to-[#ECC870] h-16 w-full lg:h-24 text-3xl font-bold mb-4">
+      <h1 className="text-white flex flex-col bg-gradient-to-b from-[#F8E08F] to-[#ECC870] h-16 w-full lg:h-[5rem] text-3xl font-bold mb-4">
         <div className="w-full flex-nowrap h-auto p-1.5 lg:flex hidden justify-between">
           {[...Array(57)].map((_, idx) => {
             return (
@@ -35,11 +40,22 @@ export default function HeadphoneGrid() {
           <h1>off | Wishlist now</h1>
         </div>
       </h1>
-      <div className="grid grid-cols-2 w-full gap-x-3 place-items-center sm:grid-cols-2 lg:grid-cols-6 max-w-7xl">
-        {headphones.map((item, index) => (
-          <HeadphoneCard key={`${index}`} item={item} />
-        ))}
-      </div>
+      {loading ? (
+        <div className="grid w-full lg:flex justify-between h-auto grid-cols-2 gap-2 mb-3 animate-pulse">
+          {[...Array(6)].map((_, i) => (
+            <div
+              key={i}
+              className="w-full h-[304.59px] bg-gray-100 rounded-lg"
+            />
+          ))}
+        </div>
+      ) : (
+        <div className="grid grid-cols-2 w-full gap-x-3 place-items-center sm:grid-cols-2 lg:grid-cols-6 max-w-7xl">
+          {[...products, ...products.slice(0, 3)].map((item, index) => (
+            <HeadphoneCard key={`${index}`} item={item} />
+          ))}
+        </div>
+      )}
     </div>
   );
 }

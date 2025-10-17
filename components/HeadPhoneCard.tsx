@@ -2,9 +2,10 @@ import Image from "next/image";
 import { memo } from "react";
 import BlurredDots from "./BlurredDots";
 import { Headphone} from "@/constants";
+import { WooProduct } from "@/types";
 
 const HeadphoneCard = memo(
-  ({ item }: { item: Headphone }) => {
+  ({ item }: { item: WooProduct }) => {
     return (
       <div className="bg-gradient-to-b relative pt-4 from-[#6A00EF] to-[#DBBFFF] flex flex-col place-content-between w-full h-[304.59px] hover:z-50 overflow-hidden text-center text-white hover:scale-105 transition-transform duration-300">
         <div className="flex-1 relative">
@@ -13,21 +14,21 @@ const HeadphoneCard = memo(
           </h1>
           <div className="flex justify-center">
             <Image
-              src={item.image}
+              src={item.images[0]?.src}
               alt={item.name}
-              width={120}
-              height={120}
+              width={130}
+              height={130}
               className="object-contain"
             />
           </div>
-          <ul className="text-xs mt-8 list text-gray-300 space-y-1">
-            {item.features.map((feature, i) => (
+          <ul className="text-xs mt-2 list text-gray-300 lg:space-y-1">
+            {item?.short_description && Array.from(item?.short_description.matchAll(/<li>(.*?)<\/li>/g)).map(match => match[1]).map((feature, i) => (
               <li
                 key={`${i}`}
-                className="flex items-center justify-center gap-2 text-gray-100"
+                className="flex items-center justify-center gap-1 lg:gap-2 text-gray-100"
               >
-                <span className="w-1.5 h-1.5 bg-white rounded-full"></span>
-                <span>{feature}</span>
+                <span className="lg:w-1.5 w-1 lg:h-1.5 h-1 bg-white rounded-full"></span>
+                <span>{feature?.replace("amp;","")}</span>
               </li>
             ))}
           </ul>

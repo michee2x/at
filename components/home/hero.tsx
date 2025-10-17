@@ -32,7 +32,8 @@ const Hero = () => {
 
       <HeroCarousel />
 
-      <div className="absolute bottom-0 w-full h-40 lg:h-52 bg-gradient-to-b from-transparent via-white/30 to-white z-10 left-0"></div>
+      <div className="absolute hidden lg:flex bottom-0 w-full h-64 lg:h-52 bg-gradient-to-b from-transparent via-white/30 to-white z-10 left-0"></div>
+      <div className="absolute lg:hidden bottom-0 w-full h-64 lg:h-52 bg-gradient-to-b from-transparent via-white/50 to-white z-10 left-0"></div>
     </section>
   );
 };

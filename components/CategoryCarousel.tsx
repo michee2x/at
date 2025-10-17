@@ -1,40 +1,122 @@
-// components/CategoryCarousel.tsx
 "use client";
 
 import Image from "next/image";
-import { useRef } from "react";
+import { useRef, useEffect } from "react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa6";
-import {categories} from "../constants/index"
+import { categories } from "../constants/index";
 
 export default function CategoryCarousel() {
-  const scrollRef = useRef<HTMLDivElement>(null);
+  const scrollRef = useRef<HTMLDivElement | null>(null);
+  const directionRef = useRef<"right" | "left">("right");
+  const pausedRef = useRef(false);
 
-  const scroll = (direction: "left" | "right") => {
-    if (!scrollRef.current) return;
-    const scrollAmount = Math.round(scrollRef.current.offsetWidth * 0.6);
-    scrollRef.current.scrollBy({
-      left: direction === "left" ? -scrollAmount : scrollAmount,
+  useEffect(() => {
+    const container = scrollRef.current;
+    if (!container) return;
+
+    const speed = 0.4; // px per frame
+    const pauseTime = 2000; // ms
+    const tolerance = 1;
+    let lastTimestamp = 0;
+
+    const waitForImages = async () => {
+      const imgs = Array.from(container.querySelectorAll("img"));
+      await Promise.all(
+        imgs.map(
+          (img) =>
+            new Promise<void>((resolve) => {
+              if (img.complete) return resolve();
+              img.onload = () => resolve();
+              img.onerror = () => resolve();
+            })
+        )
+      );
+    };
+
+    const startAnimation = () => {
+      const step = (timestamp: number) => {
+        if (!container) return;
+        const maxScroll = Math.max(
+          0,
+          container.scrollWidth - container.clientWidth
+        );
+        const dt = timestamp - lastTimestamp;
+        lastTimestamp = timestamp;
+
+        if (!pausedRef.current) {
+          if (directionRef.current === "right") {
+            container.scrollLeft = Math.min(
+              container.scrollLeft + speed * (dt / 16),
+              maxScroll
+            );
+            if (Math.ceil(container.scrollLeft) >= maxScroll - tolerance) {
+              pausedRef.current = true;
+              container.scrollLeft = maxScroll;
+              setTimeout(() => {
+                directionRef.current = "left";
+                pausedRef.current = false;
+              }, pauseTime);
+            }
+          } else {
+            container.scrollLeft = Math.max(
+              container.scrollLeft - speed * (dt / 16),
+              0
+            );
+            if (Math.floor(container.scrollLeft) <= tolerance) {
+              pausedRef.current = true;
+              container.scrollLeft = 0;
+              setTimeout(() => {
+                directionRef.current = "right";
+                pausedRef.current = false;
+              }, pauseTime);
+            }
+          }
+        }
+
+        requestAnimationFrame(step);
+      };
+
+      requestAnimationFrame((t) => {
+        lastTimestamp = t;
+        step(t);
+      });
+    };
+
+    // Wait until all images load before starting
+    waitForImages().then(() => startAnimation());
+  }, []);
+
+  const manualScroll = (dir: "left" | "right") => {
+    const container = scrollRef.current;
+    if (!container) return;
+    const scrollAmount = Math.round(container.offsetWidth * 0.6);
+    container.scrollBy({
+      left: dir === "left" ? -scrollAmount : scrollAmount,
       behavior: "smooth",
     });
+    // pause auto-scroll temporarily
+    pausedRef.current = true;
+    directionRef.current = dir;
+    setTimeout(() => (pausedRef.current = false), 2000);
   };
 
   return (
-    <div className="w-full pl-2 max-w-7xl mx-auto mt-8">
+    <div className="w-full pl-2 max-w-7xl mx-auto mt-8 overflow-hidden">
       <h2 className="text-center text-lg md:text-xl font-semibold mb-4">
         Explore our diverse categories
       </h2>
 
       <div className="relative flex items-center">
-        {/* Left Chevron */}
+        {/* Left Button */}
         <button
-          onClick={() => scroll("left")}
+          onClick={() => manualScroll("left")}
           aria-label="Scroll left"
           className="absolute left-0 z-10 bg-white shadow-md rounded-full p-2 hover:bg-gray-50"
         >
           <FaChevronLeft className="w-5 h-5 text-gray-700" />
         </button>
 
-        {/* Scrollable area (unique class for scoped scrollbar styles) */}
+        {/* Scroll Container */}
         <div
           ref={scrollRef}
           className="category-scroll flex overflow-x-auto gap-4 px-10 py-2 scroll-smooth"
@@ -51,7 +133,6 @@ export default function CategoryCarousel() {
                   width={80}
                   height={80}
                   className="w-full h-full object-cover"
-                  priority={index < 6} /* small perf hint */
                 />
               </div>
               <p className="text-xs text-gray-700 mt-2">{cat.name} &gt;</p>
@@ -59,9 +140,9 @@ export default function CategoryCarousel() {
           ))}
         </div>
 
-        {/* Right Chevron */}
+        {/* Right Button */}
         <button
-          onClick={() => scroll("right")}
+          onClick={() => manualScroll("right")}
           aria-label="Scroll right"
           className="absolute right-0 z-10 bg-white shadow-md rounded-full p-2 hover:bg-gray-50"
         >
@@ -69,78 +150,22 @@ export default function CategoryCarousel() {
         </button>
       </div>
 
-      {/* Scoped styles using styled-jsx so nothing leaks globally */}
       <style jsx>{`
         .category-scroll {
           scrollbar-width: thin;
           scrollbar-color: #c1c1c1 transparent;
         }
-
-        /* WebKit browsers (Chrome, Edge, Safari) */
         .category-scroll::-webkit-scrollbar {
           height: 6px;
         }
-
-        .category-scroll::-webkit-scrollbar-track {
-          background: transparent;
-        }
-
         .category-scroll::-webkit-scrollbar-thumb {
           background-color: #c1c1c1;
           border-radius: 999px;
-          min-height: 18px;
         }
-
-        /* --- REMOVE SCROLLBAR ARROW BUTTONS --- */
         .category-scroll::-webkit-scrollbar-button {
-          -webkit-appearance: none !important;
-          appearance: none !important;
-          display: none !important;
-          width: 0 !important;
-          height: 0 !important;
-          background: none !important;
-          border: none !important;
-        }
-
-        /* Explicitly override all possible states (Windows-specific) */
-        .category-scroll::-webkit-scrollbar-button:single-button,
-        .category-scroll::-webkit-scrollbar-button:start:decrement,
-        .category-scroll::-webkit-scrollbar-button:end:increment,
-        .category-scroll::-webkit-scrollbar-button:horizontal:decrement,
-        .category-scroll::-webkit-scrollbar-button:horizontal:increment,
-        .category-scroll::-webkit-scrollbar-button:decrement,
-        .category-scroll::-webkit-scrollbar-button:increment {
-          -webkit-appearance: none !important;
-          appearance: none !important;
-          display: none !important;
-          width: 0 !important;
-          height: 0 !important;
-          background: none !important;
-          border: none !important;
-        }
-
-        /* Remove scrollbar corner */
-        .category-scroll::-webkit-scrollbar-corner {
-          background: transparent;
-        }
-
-        /* Slightly slimmer on desktop */
-        @media (min-width: 768px) {
-          .category-scroll::-webkit-scrollbar {
-            height: 4px;
-          }
-          .category-scroll::-webkit-scrollbar-thumb {
-            background-color: #b5b5b5;
-          }
-        }
-
-        @media (min-width: 1280px) {
-          .category-scroll::-webkit-scrollbar-thumb {
-            min-height: 14px;
-          }
+          display: none;
         }
       `}</style>
     </div>
   );
 }
-

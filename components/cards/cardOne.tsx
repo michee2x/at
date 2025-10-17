@@ -16,7 +16,7 @@ const CardOne = ({
     <div
       className={`carousel-item lg:w-[230px] ${
         fillViewport ? "w-full" : "w-[240px]"
-      } h-[280px] lg:h-fit gap-[4px] flex flex-col`}
+      } h-[295px] lg:h-fit gap-[4px] flex flex-col`}
     >
       <div className="relative overflow-hidden p-1.5 lg:p-2 h-[185px] w-full lg:w-[230px] rounded-xl bg-[#FAFAFA]">
         {data?.images[0]?.src && (
@@ -33,9 +33,6 @@ const CardOne = ({
             new
           </span>
         )}
-        <span className="lg:w-[3.3rem] lg:hidden w-[3rem] text-[10px] lg:text-[12.32px] h-4 mt-1 ml-1 text-white bg-[#185245] rounded-tr-lg rounded-tl-[2px] rounded-br-[2px] rounded-bl-lg relative lg:h-6 flex items-center justify-center">
-          new
-        </span>
       </div>
       <div className="w-full flex-col font-poppins flex justify-between text-[#6C757D] text-[12px]">
         <span className="lg:text-[16px] text-[12px] text-nowrap flex gap-2 lg:gap-[12px] items-center text-[#2B2B2B] leading-[100%] tracking-[0%] font-display">
