@@ -3,18 +3,24 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 
+interface CategoryImage {
+  id?: number;
+  src: string;
+  alt?: string;
+}
+
 interface CategoryItem {
   id: number;
   name: string;
   slug?: string;
-  image?: string;
+  image?: string | CategoryImage | null;
   count?: number;
   parent?: number;
 }
 
 interface CategoryGroupProps {
   title: string;
-  parent: number; // now we accept parent for fetching
+  parent: number;
   linkText?: string;
 }
 
@@ -33,7 +39,7 @@ export default function CategoryGroup({
           cache: "no-store",
         });
         const data = await res.json();
-        setItems(data || []);
+        setItems(Array.isArray(data) ? data : []);
       } catch (err) {
         console.error("Failed to fetch subcategories:", err);
       } finally {
@@ -41,8 +47,15 @@ export default function CategoryGroup({
       }
     }
 
-    if(parent) fetchCategories();
+    if (parent) fetchCategories();
   }, [parent]);
+
+  const getImageSrc = (image: CategoryItem["image"]): string => {
+    if (!image) return "/placeholder.png";
+    if (typeof image === "string") return image;
+    if (typeof image === "object" && "src" in image) return image.src;
+    return "/placeholder.png";
+  };
 
   return (
     <div className="rounded-2xl w-full shadow-sm lg:shadow-md p-4 bg-white hover:shadow-md transition">
@@ -50,7 +63,6 @@ export default function CategoryGroup({
         {title}
       </h3>
 
-      {/* Loading state */}
       {loading ? (
         <div className="grid grid-cols-2 gap-2 mb-5 animate-pulse">
           {[...Array(4)].map((_, i) => (
@@ -64,27 +76,21 @@ export default function CategoryGroup({
         <div className="grid grid-cols-2 gap-2 mb-3">
           {items.map((item, idx) => (
             <div
-              key={`${item.id}${idx}`}
+              key={`${item.id}-${idx}`}
               className="flex flex-col items-start space-y-1"
             >
               <div className="relative w-full aspect-square rounded-lg overflow-hidden">
-                {item.image && (
-                  <Image
-                    src={
-                      item?.image &&
-                      typeof item.image === "object" &&
-                      "src" in item.image
-                        ? item.image.src
-                        : "/placeholder.png"
-                    }
-                    alt={item?.name || "Category image"}
-                    fill
-                    className="object-cover w-full"
-                  />
-                )}
+                <Image
+                  src={getImageSrc(item.image)}
+                  alt={item?.name || "Category image"}
+                  fill
+                  className="object-cover w-full"
+                />
               </div>
 
-              <p className="text-xs text-gray-600 leading-tight">{item.name.replace("amp;", "")}</p>
+              <p className="text-xs text-gray-600 leading-tight">
+                {item.name.replace("amp;", "")}
+              </p>
             </div>
           ))}
         </div>
