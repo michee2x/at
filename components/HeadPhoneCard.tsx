@@ -1,7 +1,6 @@
 import Image from "next/image";
 import { memo } from "react";
 import BlurredDots from "./BlurredDots";
-import { Headphone } from "@/constants";
 import { WooProduct } from "@/types";
 
 const HeadphoneCard = memo(
@@ -48,4 +47,6 @@ const HeadphoneCard = memo(
   (prevProps, nextProps) => prevProps.item.name === nextProps.item.name
 );
 
-HeadphoneCard.displayName
+HeadphoneCard.displayName = "HeadphoneCard"; // 👈 Fixes the ESLint warning
+
+export default HeadphoneCard;

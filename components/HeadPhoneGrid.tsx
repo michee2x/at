@@ -1,7 +1,6 @@
 "use client";
-import { Headphone, headphones } from "@/constants";
-import HeadphoneCard from "./HeadPhoneCard";
 import { useProducts } from "@/hooks/useProducts";
+import HeadphoneCard from "./HeadPhoneCard"
 
 export default function HeadphoneGrid() {
   const { products, loading, error } = useProducts({
