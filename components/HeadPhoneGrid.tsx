@@ -50,7 +50,7 @@ export default function HeadphoneGrid() {
           ))}
         </div>
       ) : (
-        <div className="grid grid-cols-2 w-full gap-x-3 place-items-center sm:grid-cols-2 lg:grid-cols-6 max-w-7xl">
+        <div className="grid grid-cols-2 w-full gap-x-1.5 lg:gap-x-3 place-items-center sm:grid-cols-2 lg:grid-cols-6 max-w-7xl">
           {[...products, ...products.slice(0, 3)].map((item, index) => (
             <HeadphoneCard key={`${index}`} item={item} />
           ))}

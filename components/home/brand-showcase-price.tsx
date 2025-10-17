@@ -22,13 +22,13 @@ const BrandShowCasePrice = ({
 }) => {
   return (
     <div
-      className={`lg:h-[672px] h-auto overflow-hidden gap-3 mt-24 lg:mt-32 w-full flex ${
+      className={`lg:h-[672px] px-2 h-auto overflow-hidden gap-3 mt-24 lg:mt-32 w-full flex ${
         reverseVertically ? "flex-col-reverse" : "flex-col"
       } ${
         reverseHorizontally ? "lg:flex-row-reverse" : "lg:flex-row"
       } justify-between`}
     >
-      <div className="w-full px-3 lg:flex-1 h-auto flex items-center justify-center">
+      <div className="w-full lg:px-3 lg:flex-1 h-auto flex items-center justify-center">
         <div className="flex-1 grid grid-cols-2 gap-2.5 lg:flex lg:h-full lg:flex-col lg:place-content-between">
           {[product.slice(0, 3), product.slice(0, 3)].map((arr, idx) => {
             return (
@@ -49,7 +49,7 @@ const BrandShowCasePrice = ({
           })}
         </div>
       </div>
-      <div className="lg:w-[514px] lg:h-full w-full h-[65vh] relative">
+      <div className="lg:w-[514px] rounded-lg overflow-hidden lg:h-full w-full h-[65vh] relative">
         <Image
           fill
           src={banner}

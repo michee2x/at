@@ -101,7 +101,7 @@ export default function CategoryCarousel() {
   };
 
   return (
-    <div className="w-full pl-2 max-w-7xl mx-auto mt-8 overflow-hidden">
+    <div className="w-full pl-2 max-w-7xl mx-auto overflow-hidden">
       <h2 className="text-center text-lg md:text-xl font-semibold mb-4">
         Explore our diverse categories
       </h2>

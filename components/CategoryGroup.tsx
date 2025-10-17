@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import { FaChevronLeft, FaChevronRight } from "react-icons/fa6";
 
 interface CategoryImage {
   id?: number;
@@ -27,7 +28,7 @@ interface CategoryGroupProps {
 export default function CategoryGroup({
   title,
   parent,
-  linkText = "Explore >",
+  linkText = "Explore",
 }: CategoryGroupProps) {
   const [items, setItems] = useState<CategoryItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -58,7 +59,7 @@ export default function CategoryGroup({
   };
 
   return (
-    <div className="rounded-2xl w-full shadow-sm lg:shadow-md p-4 bg-white hover:shadow-md transition">
+    <div className="rounded-2xl w-full shadow-sm lg:shadow-xl p-4 bg-white hover:shadow-2xl transition">
       <h3 className="font-semibold text-[22px] font-poppins md:text-base mb-3">
         {title}
       </h3>
@@ -96,8 +97,9 @@ export default function CategoryGroup({
         </div>
       )}
 
-      <button className="text-xs font-medium text-purple-600 hover:underline">
+      <button className="text-xs flex items-center gap-1 lg:gap-2 font-medium text-[#6A00EF] font-poppins hover:underline">
         {linkText}
+        <FaChevronRight className="lg:text-xl mt-1`" />
       </button>
     </div>
   );

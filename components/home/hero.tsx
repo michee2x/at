@@ -7,7 +7,7 @@ const Hero = () => {
   return (
     <section
       style={{ perspective: "100vh", transformStyle: "preserve-3d" }}
-      className="max-w-screen px-4 relative overflow-hidden pt-[168px] flex flex-col items-center h-screen lg:h-[125vh]"
+      className="max-w-screen px-4 relative overflow-hidden pt-[168px] flex flex-col items-center h-[96vh] lg:h-[125vh]"
     >
       <div className="max-w-[890px] left-0 top-0 flex items-center flex-col h-[235px] gap-[14px] lg:gap-[24px]">
         <div className="flex flex-col justify-center items-center gap-[4px] max-w-[890px] max-h-[137px] ">
@@ -32,10 +32,13 @@ const Hero = () => {
 
       <HeroCarousel />
 
-      <div className="absolute hidden lg:flex bottom-0 w-full h-64 lg:h-52 bg-gradient-to-b from-transparent via-white/30 to-white z-10 left-0"></div>
-      <div className="absolute lg:hidden bottom-0 w-full h-64 lg:h-52 bg-gradient-to-b from-transparent via-white/50 to-white z-10 left-0"></div>
+      <div className="absolute backdrop-blur-[0.7px] hidden lg:flex bottom-0 w-full h-[11.5rem] bg-gradient-to-b from-transparent via-white/60 to-white z-10 left-0"></div>
+      <div className="absolute backdrop-blur-[0.1px] lg:hidden bottom-0 w-full h-64 bg-gradient-to-b from-transparent via-white/50 to-white z-10 left-0"></div>
+      <div className="absolute backdrop-blur-[1.5px] bottom-0 w-full h-[4.5rem] bg-gradient-to-b from-transparent to-white z-10 left-0"></div>
+      <div className="absolute backdrop-blur-[0.5px] bottom-0 w-full h-[5.5rem] bg-gradient-to-b from-transparent to-white z-10 left-0"></div>
     </section>
   );
 };
 
 export default Hero;
+

@@ -8,10 +8,8 @@ import Link from "next/link";
 import ProductList from "@/components/ProductList";
 import { useCategory } from "@/contexts/category-context";
 import CategoryButton from "@/components/skeletons/category-button";
-import CategoryList from "@/components/CategoryList";
 import CategoryGrid from "@/components/CategoryGrid";
 import HeadphoneGrid from "@/components/HeadPhoneGrid";
-import CategoryGroup from "@/components/CategoryGroup";
 
 export default function Home() {
   const { categories } = useCategory();
@@ -22,7 +20,7 @@ export default function Home() {
       <section className="w-full lg:px-[28px] mt-20 lg:mt-32 min-h-screen flex flex-col items-center">
         <DiverseCategoryCarousel />
         <CategoryGrid />
-        <h1 className="text-[20px] hidden mt-8 lg:order-1 lg:text-[42px] font-display text-center w-full lg:w-[1252px] h-[56px] leading-[100%] tracking-[0%] align-middle text-[#000000]">
+        <h1 className="text-[20px] hidden lg:order-1 lg:text-[42px] font-display text-center w-full lg:w-[1252px] h-[56px] leading-[100%] tracking-[0%] align-middle text-[#000000]">
           Discover the best brands & products <br className="lg:hidden" /> from
           Africa
         </h1>

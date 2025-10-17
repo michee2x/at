@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { memo } from "react";
 import BlurredDots from "./BlurredDots";
-import { Headphone} from "@/constants";
+import { Headphone } from "@/constants";
 import { WooProduct } from "@/types";
 
 const HeadphoneCard = memo(
@@ -22,15 +22,18 @@ const HeadphoneCard = memo(
             />
           </div>
           <ul className="text-xs mt-2 list text-gray-300 lg:space-y-1">
-            {item?.short_description && Array.from(item?.short_description.matchAll(/<li>(.*?)<\/li>/g)).map(match => match[1]).map((feature, i) => (
-              <li
-                key={`${i}`}
-                className="flex items-center justify-center gap-1 lg:gap-2 text-gray-100"
-              >
-                <span className="lg:w-1.5 w-1 lg:h-1.5 h-1 bg-white rounded-full"></span>
-                <span>{feature?.replace("amp;","")}</span>
-              </li>
-            ))}
+            {item?.short_description &&
+              Array.from(item?.short_description.matchAll(/<li>(.*?)<\/li>/g))
+                .map((match) => match[1])
+                .map((feature, i) => (
+                  <li
+                    key={`${i}`}
+                    className="flex items-center justify-center gap-0.5 lg:gap-2 text-gray-100"
+                  >
+                    <span className="lg:w-1.5 w-1 lg:h-1.5 h-1 bg-white rounded-full"></span>
+                    <span>{feature?.replace("amp;", "")}</span>
+                  </li>
+                ))}
           </ul>
         </div>
         <div className="h-[36px] relative w-full flex items-center justify-center text-black text-[18.94px] bg-white">
@@ -45,6 +48,4 @@ const HeadphoneCard = memo(
   (prevProps, nextProps) => prevProps.item.name === nextProps.item.name
 );
 
-HeadphoneCard.displayName = "HeadphoneCard"; // 👈 Fixes the ESLint warning
-
-export default HeadphoneCard;
+HeadphoneCard.displayName
