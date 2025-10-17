@@ -16,7 +16,7 @@ export async function GET(request: Request) {
     const search = searchParams.get("search") || "";
     const perPage = searchParams.get("per_page") || "20";
 
-    // ✅ Use const + properly typed params
+    // Typed params
     const params: Record<string, string | number> = {
       per_page: Number(perPage),
     };
@@ -24,7 +24,7 @@ export async function GET(request: Request) {
     if (search) params.search = search;
     if (parent) params.parent = parent;
 
-    // ✅ If slug is provided, get its ID and fetch its children
+    // If slug is provided, find its ID and fetch its children
     if (slug) {
       const { data: categoryData }: { data: Array<{ id: number }> } = await api.get(
         "products/categories",
@@ -42,16 +42,23 @@ export async function GET(request: Request) {
       }
     }
 
-    // ✅ Final category fetch
+    // Fetch categories using WooCommerce API
     const { data }: { data: unknown } = await api.get("products/categories", params);
-
     return NextResponse.json(data);
-  } catch (error) {
-    // ✅ Stronger type-safe error logging
-    if (typeof error === "object" && error && "response" in error) {
-      console.error("WooCommerce API error:", (error as any).response?.data);
+
+  } catch (error: unknown) {
+    // ✅ Strong type guard without using `any`
+    if (
+      typeof error === "object" &&
+      error !== null &&
+      "response" in error &&
+      typeof (error as { response?: { data?: unknown } }).response?.data !== "undefined"
+    ) {
+      console.error("WooCommerce API error:", (error as { response: { data?: unknown } }).response.data);
+    } else if (error instanceof Error) {
+      console.error("Error fetching categories:", error.message);
     } else {
-      console.error("Error fetching categories:", (error as Error).message);
+      console.error("Unknown error fetching categories:", error);
     }
 
     return NextResponse.json(
