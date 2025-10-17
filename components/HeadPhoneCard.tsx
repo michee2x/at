@@ -7,7 +7,7 @@ import { WooProduct } from "@/types";
 const HeadphoneCard = memo(
   ({ item }: { item: WooProduct }) => {
     return (
-      <div className="bg-gradient-to-b relative pt-4 from-[#6A00EF] to-[#DBBFFF] flex flex-col place-content-between w-full h-[304.59px] hover:z-50 overflow-hidden text-center text-white hover:scale-105 transition-transform duration-300">
+      <div className="bg-gradient-to-b relative pt-4 from-[#6A00EF] to-[#DBBFFF] flex flex-col place-content-between w-full h-[280px] lg:h-[304.59px] hover:z-50 overflow-hidden text-center text-white hover:scale-105 transition-transform duration-300">
         <div className="flex-1 relative">
           <h1 className="lg:text-[18px] text-[15px] w-full h-auto items-center">
             {item.name}

@@ -16,9 +16,9 @@ const CardOne = ({
     <div
       className={`carousel-item lg:w-[230px] ${
         fillViewport ? "w-full" : "w-[240px]"
-      } h-[295px] lg:h-fit gap-[4px] flex flex-col`}
+      } h-[300px] lg:h-fit gap-[4px] flex flex-col`}
     >
-      <div className="relative overflow-hidden p-1.5 lg:p-2 h-[185px] w-full lg:w-[230px] rounded-xl bg-[#FAFAFA]">
+      <div className="relative overflow-hidden p-1.5 lg:p-2 h-[200px] w-full lg:w-[230px] rounded-xl bg-[#FAFAFA]">
         {data?.images[0]?.src && (
           <Image
             fill
