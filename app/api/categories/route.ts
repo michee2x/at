@@ -16,23 +16,20 @@ export async function GET(request: Request) {
     const search = searchParams.get("search") || "";
     const perPage = searchParams.get("per_page") || "20";
 
-    let params: Record<string, any> = {
-      per_page: perPage,
+    // ✅ Use const + properly typed params
+    const params: Record<string, string | number> = {
+      per_page: Number(perPage),
     };
 
-    // If search is provided, filter categories by name
     if (search) params.search = search;
+    if (parent) params.parent = parent;
 
-    // If parent ID is given directly, fetch its subcategories
-    if (parent) {
-      params.parent = parent;
-    }
-
-    // If slug is provided, find its ID first, then fetch its children
+    // ✅ If slug is provided, get its ID and fetch its children
     if (slug) {
-      const { data: categoryData } = await api.get("products/categories", {
-        slug,
-      });
+      const { data: categoryData }: { data: Array<{ id: number }> } = await api.get(
+        "products/categories",
+        { slug }
+      );
 
       if (categoryData.length > 0) {
         const parentId = categoryData[0].id;
@@ -45,12 +42,18 @@ export async function GET(request: Request) {
       }
     }
 
-    // Fetch categories using final parameters
-    const { data } = await api.get("products/categories", params);
+    // ✅ Final category fetch
+    const { data }: { data: unknown } = await api.get("products/categories", params);
 
     return NextResponse.json(data);
-  } catch (error: any) {
-    console.error("Error fetching categories:", error.response?.data || error.message);
+  } catch (error) {
+    // ✅ Stronger type-safe error logging
+    if (typeof error === "object" && error && "response" in error) {
+      console.error("WooCommerce API error:", (error as any).response?.data);
+    } else {
+      console.error("Error fetching categories:", (error as Error).message);
+    }
+
     return NextResponse.json(
       { error: "Failed to fetch categories" },
       { status: 500 }
