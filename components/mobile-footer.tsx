@@ -19,11 +19,11 @@ const MobileFooter: React.FC = () => {
           return (
             <p
               key={index}
-              className={`text-[12px] font-sans ${
+              className={`text-[12px] ${
                 index === footerTexts.length - 1 || index === 4
                   ? "h-[3.5rem] flex items-end"
                   : ""
-              } text-[#000000] opacity-50`}
+              } font-display text-black opacity-50`}
             >
               {text}
             </p>

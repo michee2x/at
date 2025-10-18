@@ -4,8 +4,11 @@ import Image from "next/image";
 import { useRef, useEffect } from "react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa6";
 import { categories } from "../constants/index";
+import { useCatWithIimage } from "@/hooks/useCatWithImage";
+import { CiCircleMore } from "react-icons/ci";
 
 export default function CategoryCarousel() {
+  const { catsWithImage } = useCatWithIimage();
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const directionRef = useRef<"right" | "left">("right");
   const pausedRef = useRef(false);
@@ -15,7 +18,7 @@ export default function CategoryCarousel() {
     const container = scrollRef.current;
     if (!container) return;
 
-    const speed = 0.07; // 💡 slower: pixels per ms (~4.2px/sec)
+    const speed = 0.02; // 💡 slower: pixels per ms (~4.2px/sec)
     const pauseTime = 2000; // pause at ends (ms)
     let lastFrame = 0;
     let rafId: number;
@@ -87,7 +90,6 @@ export default function CategoryCarousel() {
     };
   }, []);
 
-
   const manualScroll = (dir: "left" | "right") => {
     const container = scrollRef.current;
     if (!container) return;
@@ -121,23 +123,56 @@ export default function CategoryCarousel() {
           ref={scrollRef}
           className="category-scroll flex overflow-x-auto gap-4 px-10 py-2 touch-pan-x"
         >
-          {[...categories, ...categories].map((cat, index) => (
-            <div
-              key={index}
-              className="flex flex-col items-center min-w-[80px] cursor-pointer group select-none"
-            >
-              <div className="w-16 h-16 rounded-xl overflow-hidden border-2 border-transparent group-hover:border-purple-300 transition">
-                <Image
-                  src={cat.image}
-                  alt={cat.name}
-                  width={80}
-                  height={80}
-                  className="w-full h-full object-cover"
-                />
+          {catsWithImage &&
+            catsWithImage.length >= 1 &&
+            catsWithImage?.map((cat, index) => (
+              <div
+                key={index}
+                className="flex flex-col items-center min-w-[80px] cursor-pointer group select-none"
+              >
+                <div className="w-16 h-16 rounded-xl overflow-hidden border-2 border-transparent group-hover:border-purple-300 transition">
+                  {cat.image?.src && (
+                    <Image
+                      src={cat.image.src}
+                      alt={cat.name}
+                      width={80}
+                      height={80}
+                      className="w-full h-full object-cover"
+                    />
+                  )}
+                </div>
+                <p className="text-xs capitalize font-poppins text-gray-700 mt-2">
+                  {cat.name?.replace("amp;", "")?.slice(0, 8)} &gt;
+                </p>
               </div>
-              <p className="text-xs text-gray-700 mt-2">{cat.name} &gt;</p>
+            ))}
+
+          {catsWithImage.length < 1 && (
+            <div className="flex w-screen overflow-x-hidden h-auto">
+              {[...Array(20)].map((id) => {
+                return (
+                  <div
+                    key={`${id}`}
+                    className="flex flex-col animate-pulse min-w-[80px] cursor-pointer group select-none"
+                  >
+                    <div className="w-16 h-16 bg-gray-200 rounded-xl overflow-hidden border-2 border-transparent group-hover:border-purple-300 transition"></div>
+                    <p className="w-8 h-2 rounded-full ml-1 bg-gray-200 mt-2"></p>
+                  </div>
+                );
+              })}
             </div>
-          ))}
+          )}
+
+          {catsWithImage && catsWithImage.length >= 1 && (
+            <div className="flex flex-col items-center min-w-[80px] cursor-pointer group select-none">
+              <div className="w-16 h-16 bg-gray-400 rounded-xl overflow-hidden border-2 border-transparent group-hover:border-purple-300 transition text-3xl flex items-center justify-center text-white">
+                <CiCircleMore />
+              </div>
+              <p className="text-xs font-poppins text-gray-700 mt-2">
+                {catsWithImage.length > 1 ? "More" : "loading.."} &gt;
+              </p>
+            </div>
+          )}
         </div>
 
         {/* Right Button */}
