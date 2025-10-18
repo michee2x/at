@@ -14,13 +14,13 @@ import HeadphoneGrid from "@/components/HeadPhoneGrid";
 export default function Home() {
   const { categories } = useCategory();
   return (
-    <div className="w-screen flex-col min-h-screen relative flex justify-center">
+    <div className="w-screen items-center flex-col min-h-screen relative flex justify-center">
       <Hero />
 
-      <section className="w-full lg:px-[28px] mt-20 lg:mt-32 min-h-screen flex flex-col items-center">
+      <section className="w-full md:max-w-[95%] lg:max-w-full xl:max-w-[1300px] 2xl:max-w-[1440px]  xl:px-[28px] lg:px-[16px] mt-20 lg:mt-32 min-h-screen flex flex-col items-center">
         <DiverseCategoryCarousel />
         <CategoryGrid />
-        <h1 className="text-[20px] hidden lg:order-1 lg:text-[42px] font-display text-center w-full lg:w-[1252px] h-[56px] leading-[100%] tracking-[0%] align-middle text-[#000000]">
+        <h1 className="text-[20px] hidden lg:order-1 lg:text-[clamp(1.5rem, 2vw + 1rem, 3rem)] font-display text-center w-full lg:w-[1252px] h-[56px] leading-[100%] tracking-[0%] align-middle text-[#000000]">
           Discover the best brands & products <br className="lg:hidden" /> from
           Africa
         </h1>
@@ -81,15 +81,17 @@ export default function Home() {
           reverseVertically={true}
           reverseHorizontally={true}
           category={21}
-          className="lg:order-6"
+          className="lg:order-6 mt-16"
           newProduct={true}
         />
 
-        <HeadphoneGrid />
+        <div className="w-full lg:order-7 h-auto mt-16">
+          <HeadphoneGrid />
+        </div>
 
-        <div className="lg:h-[1100px] lg:order-8 bg-[#FAFAFA] min-h-[700px] my-20 py-12 flex flex-col lg:flex-row items-center gap-14 lg:gap-4 w-full">
-          <div className="lg:w-[800px] h-[60vh] w-full relative flex items-center lg:h-[1000px]">
-            <div className="lg:w-[400px] -translate-x-1/2 left-[30%] h-[370px] w-[180px] lg:h-[813.37px] absolute z-10">
+        <div className="lg:h-[800px] lg:order-8 g-[#FAFAFA] min-h-[700px] my-20 py-12 flex flex-col lg:flex-row items-center gap-14 md:gap-0 w-full">
+          <div className="lg:w-[800px] sm:w-[40%] md:w-[80%] h-[60vh] w-full relative flex items-center lg:h-[1000px] md:h-[700px]">
+            <div className="md:w-[400px] md:scale-[0.7] sm:left-[40%]  -translate-x-1/2 left-[30%] h-[370px] w-[180px] md:h-[813.37px] absolute z-10">
               <Image
                 fill
                 src="/home/phones/iPhone%2014%20&%2015%20Pro%20-%2026.png"
@@ -97,7 +99,7 @@ export default function Home() {
                 className="object-cover object-center"
               />
             </div>
-            <div className="lg:w-[439px] -translate-x-1/2 left-[65%] h-[413px] w-[200px] lg:h-[893px] absolute">
+            <div className="md:w-[439px] md:scale-[0.7] sm:left-[60%] -translate-x-1/2 left-[65%] h-[413px] w-[200px] md:h-[893px] absolute">
               <Image
                 fill
                 src="/home/phones/iPhone%2014%20&%2015%20Pro%20-%2028.png"
@@ -106,17 +108,19 @@ export default function Home() {
               />
             </div>
           </div>
-          <div className="lg:flex-1 px-4 w-full h-auto gap-4 flex justify-center lg:justify-start items-center">
+          <div className="md:flex-1 px-4 w-full h-auto gap-4 flex justify-center lg:justify-start items-center">
             <div className="lg:text-[48px] text-[28px] font-display text-[#000000] flex flex-col">
               <h1 className="text-[#D68A36]">ATLAZE</h1>
               <h1 className="text-[#000000] text-end">APP</h1>
             </div>
 
-            <div className="lg:h-[300px] h-[230px] w-[2.5px] lg:w-[4px] bg-black" />
+            <div className="lg:h-[300px] h-[230px] w-[2.5px] lg:w-[3px] bg-black" />
 
-            <h2 className="font-display w-[323] h-auto text-[14px] lg:text-[21px] lg:leading-[36px] ">
+            <h2 className="font-display w-[323] h-auto text-[14px] md:text-[18px] lg:text-[21px] lg:leading-[36px] ">
               DISCOVER THE{" "}
-              <span className="font-bold text-[#D68A36]">ATLAZE</span>{" "}
+              <span className="font-bold text-[#D68A36]">
+                ATLAZE
+              </span>{" "}
               <span className="font-bold text-[#000000]">APP.</span> <br />{" "}
               <span className="mt-4 flex">
                 AVAILABLE NOW ON THE APP STORE AND GOOGLE PLAY STORE

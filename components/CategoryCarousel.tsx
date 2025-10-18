@@ -9,82 +9,84 @@ export default function CategoryCarousel() {
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const directionRef = useRef<"right" | "left">("right");
   const pausedRef = useRef(false);
+  const userInteracting = useRef(false);
 
   useEffect(() => {
     const container = scrollRef.current;
     if (!container) return;
 
-    const speed = 0.4; // px per frame
-    const pauseTime = 2000; // ms
-    const tolerance = 1;
-    let lastTimestamp = 0;
+    const speed = 0.07; // 💡 slower: pixels per ms (~4.2px/sec)
+    const pauseTime = 2000; // pause at ends (ms)
+    let lastFrame = 0;
+    let rafId: number;
 
-    const waitForImages = async () => {
-      const imgs = Array.from(container.querySelectorAll("img"));
-      await Promise.all(
-        imgs.map(
-          (img) =>
-            new Promise<void>((resolve) => {
-              if (img.complete) return resolve();
-              img.onload = () => resolve();
-              img.onerror = () => resolve();
-            })
-        )
-      );
-    };
+    const getMaxScroll = () =>
+      Math.max(0, container.scrollWidth - container.clientWidth);
 
-    const startAnimation = () => {
-      const step = (timestamp: number) => {
-        if (!container) return;
-        const maxScroll = Math.max(
-          0,
-          container.scrollWidth - container.clientWidth
-        );
-        const dt = timestamp - lastTimestamp;
-        lastTimestamp = timestamp;
+    const step = (t: number) => {
+      if (!container) return;
+      const dt = t - lastFrame;
+      lastFrame = t;
 
-        if (!pausedRef.current) {
-          if (directionRef.current === "right") {
-            container.scrollLeft = Math.min(
-              container.scrollLeft + speed * (dt / 16),
-              maxScroll
-            );
-            if (Math.ceil(container.scrollLeft) >= maxScroll - tolerance) {
-              pausedRef.current = true;
-              container.scrollLeft = maxScroll;
-              setTimeout(() => {
-                directionRef.current = "left";
-                pausedRef.current = false;
-              }, pauseTime);
-            }
-          } else {
-            container.scrollLeft = Math.max(
-              container.scrollLeft - speed * (dt / 16),
-              0
-            );
-            if (Math.floor(container.scrollLeft) <= tolerance) {
-              pausedRef.current = true;
-              container.scrollLeft = 0;
-              setTimeout(() => {
-                directionRef.current = "right";
-                pausedRef.current = false;
-              }, pauseTime);
-            }
+      if (!pausedRef.current && !userInteracting.current) {
+        const max = getMaxScroll();
+        if (directionRef.current === "right") {
+          container.scrollLeft += speed * dt;
+          if (container.scrollLeft >= max - 1) {
+            container.scrollLeft = max;
+            pausedRef.current = true;
+            setTimeout(() => {
+              directionRef.current = "left";
+              pausedRef.current = false;
+            }, pauseTime);
+          }
+        } else {
+          container.scrollLeft -= speed * dt;
+          if (container.scrollLeft <= 1) {
+            container.scrollLeft = 0;
+            pausedRef.current = true;
+            setTimeout(() => {
+              directionRef.current = "right";
+              pausedRef.current = false;
+            }, pauseTime);
           }
         }
+      }
 
-        requestAnimationFrame(step);
-      };
-
-      requestAnimationFrame((t) => {
-        lastTimestamp = t;
-        step(t);
-      });
+      rafId = requestAnimationFrame(step);
     };
 
-    // Wait until all images load before starting
-    waitForImages().then(() => startAnimation());
+    const onUserStart = () => {
+      userInteracting.current = true;
+      pausedRef.current = true;
+    };
+
+    const onUserEnd = () => {
+      userInteracting.current = false;
+      setTimeout(() => {
+        pausedRef.current = false;
+      }, 1000);
+    };
+
+    container.addEventListener("touchstart", onUserStart, { passive: true });
+    container.addEventListener("mousedown", onUserStart);
+    container.addEventListener("touchend", onUserEnd);
+    container.addEventListener("mouseup", onUserEnd);
+
+    requestAnimationFrame((t) => {
+      lastFrame = t;
+      rafId = requestAnimationFrame(step);
+    });
+
+    return () => {
+      cancelAnimationFrame(rafId);
+      container.removeEventListener("touchstart", onUserStart);
+      container.removeEventListener("mousedown", onUserStart);
+      container.removeEventListener("touchend", onUserEnd);
+      container.removeEventListener("mouseup", onUserEnd);
+    };
   }, []);
+
 
   const manualScroll = (dir: "left" | "right") => {
     const container = scrollRef.current;
@@ -94,9 +96,7 @@ export default function CategoryCarousel() {
       left: dir === "left" ? -scrollAmount : scrollAmount,
       behavior: "smooth",
     });
-    // pause auto-scroll temporarily
     pausedRef.current = true;
-    directionRef.current = dir;
     setTimeout(() => (pausedRef.current = false), 2000);
   };
 
@@ -119,12 +119,12 @@ export default function CategoryCarousel() {
         {/* Scroll Container */}
         <div
           ref={scrollRef}
-          className="category-scroll flex overflow-x-auto gap-4 px-10 py-2 scroll-smooth"
+          className="category-scroll flex overflow-x-auto gap-4 px-10 py-2 touch-pan-x"
         >
           {[...categories, ...categories].map((cat, index) => (
             <div
               key={index}
-              className="flex flex-col items-center min-w-[80px] cursor-pointer group"
+              className="flex flex-col items-center min-w-[80px] cursor-pointer group select-none"
             >
               <div className="w-16 h-16 rounded-xl overflow-hidden border-2 border-transparent group-hover:border-purple-300 transition">
                 <Image
@@ -154,6 +154,7 @@ export default function CategoryCarousel() {
         .category-scroll {
           scrollbar-width: thin;
           scrollbar-color: #c1c1c1 transparent;
+          scroll-behavior: smooth;
         }
         .category-scroll::-webkit-scrollbar {
           height: 6px;

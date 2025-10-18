@@ -5,8 +5,8 @@ import { CiCircleInfo } from "react-icons/ci";
 const SearchInput = () => {
   return (
     <section className="w-fit h-fit">
-      <div className="lg:w-[612px] lg:h-[60px] w-[90vw] h-[44px] relative bg-gradient-to-r from-[#EBCC97] to-[#9747FF] rounded-[36px] p-[1.5px]">
-        <div className="lg:w-[608px] w-[89vw] h-[40px] lg:h-[56px] flex items-center absolute transform -translate-x-1/2 left-1/2 -translate-y-1/2 top-1/2 gap-3 p-[6px] lg:p-[12px] rounded-[36px] bg-white">
+      <div className="lg:w-[calc(612/1280*100vw)] sm:w-[calc(562/1280*100vw)] md:w-[calc(512/1280*100vw)] lg:h-[60px] w-[90vw] h-[44px] relative bg-gradient-to-r from-[#EBCC97] to-[#9747FF] rounded-[36px] p-[1.5px]">
+        <div className="sm:w-[calc(558/1280*100vw)] inset-0 lg:w-[calc(608/1280*100vw)] md:w-[calc(508/1280*100vw)] w-[89vw] h-[40px] lg:h-[56px] flex items-center absolute transform -translate-x-1/2 left-1/2 -translate-y-1/2 top-1/2 gap-3 p-[6px] lg:p-[12px] rounded-[36px] bg-white">
           <span className="flex size-[28px] items-center justify-center bg-gradient-to-r from-[#EBCC97] to-[#9747FF] rounded-full">
             <Image
               alt="atlaze AI search logo"

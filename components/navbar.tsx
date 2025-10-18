@@ -9,7 +9,7 @@ const NavBar = () => {
   return (
     <div className="w-full z-30 flex flex-col h-[112px] absolute">
       <div className="h-[40px] flex justify-between items-center px-4 w-full">
-        <h1 className="h-full aspect-square font-display text-[18px] tracking-[0%] leading-[100%] text-[#2B2B2B] flex items-center justify-center">
+        <h1 className="h-full aspect-square font-display text-[calc(18/1280 * 100vw)] tracking-[0%] leading-[100%] text-[#2B2B2B] flex items-center justify-center">
           ATLAZE
         </h1>
 
@@ -18,7 +18,7 @@ const NavBar = () => {
             (text, idx) => {
               return (
                 <li
-                  className={`text-[12px] h-full w-fit px-4 flex items-center justify-center ${
+                  className={`text-[calc(12/1280*100vw)] h-full w-fit px-4 flex items-center justify-center ${
                     idx === 3 ? "" : "border-r-[1.5px]"
                   } text-[#2B2B2B]`}
                   key={text}
@@ -36,12 +36,12 @@ const NavBar = () => {
           <div className="flex gap-2.5 items-center">
             <span
               onClick={() => setShowSideBar((prev) => !prev)}
-              className="text-[30px] cursor-pointer"
+              className="text-[30px] 2xl:text-[40px] cursor-pointer"
             >
               <IoMenuSharp />
             </span>
 
-            <span className="text-[16px] leading-[100%] tracking-[0%] font-display">
+            <span className="text-[(16/1280 * 100vw)] leading-[100%] tracking-[0%] font-display">
               All Categories
             </span>
           </div>

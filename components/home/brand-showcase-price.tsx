@@ -29,12 +29,21 @@ const BrandShowCasePrice = ({
       } justify-between`}
     >
       <div className="w-full lg:px-3 lg:flex-1 h-auto flex items-center justify-center">
-        <div className="flex-1 grid grid-cols-2 gap-2.5 lg:flex lg:h-full lg:flex-col lg:place-content-between">
+        <div className="flex-1 grid grid-cols-2 md:grid-cols-2 xl:grid-cols-3 gap-2.5 xl:flex lg:h-full lg:flex-col lg:place-content-between">
           {[product.slice(0, 3), product.slice(0, 3)].map((arr, idx) => {
             return (
-              <div key={`${idx}`} className="lg:flex hidden w-full lg:gap-6 justify-between items-center h-fit">
+              <div
+                key={`${idx}`}
+                className="xl:flex hidden w-full lg:gap-6 justify-between items-center h-fit"
+              >
                 {arr.map((data) => {
-                  return <CardOne newproduct={newProduct} key={data?.id} data={data} />;
+                  return (
+                    <CardOne
+                      newproduct={newProduct}
+                      key={data?.id}
+                      data={data}
+                    />
+                  );
                 })}
               </div>
             );
@@ -42,21 +51,24 @@ const BrandShowCasePrice = ({
 
           {product.map((data) => {
             return (
-              <div key={`${data?.id}-mobile`} className="w-full h-auto lg:hidden">
+              <div
+                key={`${data?.id}-mobile`}
+                className="w-full h-auto xl:hidden"
+              >
                 <CardOne data={data} newproduct={newProduct} />
               </div>
             );
           })}
         </div>
       </div>
-      <div className="lg:w-[514px] rounded-lg overflow-hidden lg:h-full w-full h-[65vh] relative">
+      <div className="xl:w-[514px] lg:w-[470px] flex items-start rounded-lg overflow-hidden lg:h-full w-full h-[65vh] relative">
         <Image
           fill
           src={banner}
           alt="category image"
-          className="object-cover object-center"
+          className="object-cover md:[object-position:50%_40%] object-start"
         />
-        <div className="absolute  flex flex-col items-center bottom-16 lg:bottom-24 transform -translate-x-1/2 left-1/2 gap-2 h-auto w-full lg:w-[488px]">
+        <div className="absolute  flex flex-col items-center bottom-16 lg:bottom-24 transform -translate-x-1/2 left-1/2 gap-2 h-auto w-full lg:w-[400px] xl:w-[488px]">
           <h1 className="font-display w-[85%] flex items-center justify-center h-auto  text-[18.35px] lg:text-[24px] text-white text-center font-semibold align-middle">
             {bannerText}
           </h1>

@@ -59,48 +59,52 @@ export default function CategoryGroup({
   };
 
   return (
-    <div className="rounded-2xl w-full shadow-sm lg:shadow-xl p-4 bg-white hover:shadow-2xl transition">
+    <div className="rounded-2xl flex flex-col place-content-between w-full shadow-sm lg:shadow-md p-4 bg-whit hover:shadow-lg transition">
       <h3 className="font-semibold text-[22px] font-poppins md:text-base mb-3">
         {title}
       </h3>
 
-      {loading ? (
-        <div className="grid grid-cols-2 gap-2 mb-5 animate-pulse">
-          {[...Array(4)].map((_, i) => (
-            <div
-              key={i}
-              className="w-full aspect-square bg-gray-100 rounded-lg"
-            />
-          ))}
-        </div>
-      ) : (
-        <div className="grid grid-cols-2 gap-2 mb-3">
-          {items.map((item, idx) => (
-            <div
-              key={`${item.id}-${idx}`}
-              className="flex flex-col items-start space-y-1"
-            >
-              <div className="relative w-full aspect-square rounded-lg overflow-hidden">
-                <Image
-                  src={getImageSrc(item.image)}
-                  alt={item?.name || "Category image"}
-                  fill
-                  className="object-cover w-full"
-                />
+      <div className="flex-1 flex flex-col place-content-between">
+        {loading ? (
+          <div className="grid grid-cols-2 gap-2 mb-5 animate-pulse">
+            {[...Array(4)].map((_, i) => (
+              <div
+                key={i}
+                className="w-full aspect-square bg-gray-100 rounded-lg"
+              />
+            ))}
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 gap-2 mb-3">
+            {items.map((item, idx) => (
+              <div
+                key={`${item.id}-${idx}`}
+                className="flex flex-col items-start space-y-1"
+              >
+                <div className="relative w-full aspect-square rounded-lg overflow-hidden">
+                  <Image
+                    src={getImageSrc(item.image)}
+                    alt={item?.name || "Category image"}
+                    fill
+                    className="object-cover w-full"
+                  />
+                </div>
+
+                <p className="text-xs text-gray-600 leading-tight">
+                  {item.name.replace("amp;", "").length > 19
+                    ? `${item.name.replace("amp;", "")?.slice(0, 19)}...`
+                    : item.name.replace("amp;", "")}
+                </p>
               </div>
+            ))}
+          </div>
+        )}
 
-              <p className="text-xs text-gray-600 leading-tight">
-                {item.name.replace("amp;", "")}
-              </p>
-            </div>
-          ))}
-        </div>
-      )}
-
-      <button className="text-xs flex items-center gap-1 lg:gap-2 font-medium text-[#6A00EF] font-poppins hover:underline">
-        {linkText}
-        <FaChevronRight className="lg:text-xl mt-1`" />
-      </button>
+        <button className="text-xs flex items-center gap-1 font-medium text-[#6A00EF] font-poppins hover:underline">
+          {linkText}
+          <FaChevronRight className=" mt-1`" />
+        </button>
+      </div>
     </div>
   );
 }

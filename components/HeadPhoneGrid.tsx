@@ -9,7 +9,7 @@ export default function HeadphoneGrid() {
   });
   console.log("this are the headphones: ", products);
   return (
-    <div className=" w-full mt-16 lg:order-7 min-h-screen px-2 flex flex-col items-center py-10">
+    <div className=" w-full mt-16 lg:min-h-screen px-2 flex flex-col items-center py-10">
       <h1 className="text-white flex flex-col bg-gradient-to-b from-[#F8E08F] to-[#ECC870] h-16 w-full lg:h-[5rem] text-3xl font-bold mb-4">
         <div className="w-full flex-nowrap h-auto p-1.5 lg:flex hidden justify-between">
           {[...Array(57)].map((_, idx) => {
@@ -49,7 +49,7 @@ export default function HeadphoneGrid() {
           ))}
         </div>
       ) : (
-        <div className="grid grid-cols-2 w-full gap-x-1.5 lg:gap-x-3 place-items-center sm:grid-cols-2 lg:grid-cols-6 max-w-7xl">
+        <div className="grid grid-cols-2 md:grid-cols-4 w-full gap-x-1.5 lg:gap-x-3 place-items-center sm:grid-cols-2 lg:grid-cols-6 max-w-7xl">
           {[...products, ...products.slice(0, 3)].map((item, index) => (
             <HeadphoneCard key={`${index}`} item={item} />
           ))}
