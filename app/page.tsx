@@ -18,7 +18,6 @@ export default function Home() {
       <Hero />
 
       <section className="w-full md:max-w-[95%] lg:max-w-full xl:max-w-[1300px] 2xl:max-w-[1440px]  xl:px-[28px] lg:px-[16px] mt-20 lg:mt-32 min-h-screen flex flex-col items-center">
-        <DiverseCategoryCarousel />
         <CategoryGrid />
         <h1 className="text-[20px] hidden lg:order-1 lg:text-[clamp(1.5rem, 2vw + 1rem, 3rem)] font-display text-center w-full lg:w-[1252px] h-[56px] leading-[100%] tracking-[0%] align-middle text-[#000000]">
           Discover the best brands & products <br className="lg:hidden" /> from
@@ -94,7 +93,7 @@ export default function Home() {
             <div className="md:w-[400px] md:scale-[0.7] sm:left-[40%]  -translate-x-1/2 left-[30%] h-[370px] w-[180px] md:h-[813.37px] absolute z-10">
               <Image
                 fill
-                src="/home/phones/iPhone%2014%20&%2015%20Pro%20-%2026.png"
+                src="/at-phone/iPhone%2014%20&%2015%20Pro%20-%2026.png"
                 alt="atlaze mobile shopping image"
                 className="object-cover object-center"
               />
@@ -102,7 +101,7 @@ export default function Home() {
             <div className="md:w-[439px] md:scale-[0.7] sm:left-[60%] -translate-x-1/2 left-[65%] h-[413px] w-[200px] md:h-[893px] absolute">
               <Image
                 fill
-                src="/home/phones/iPhone%2014%20&%2015%20Pro%20-%2028.png"
+                src="/at-phone/iPhone%2014%20&%2015%20Pro%20-%2028.png"
                 alt="atlaze mobile shopping image"
                 className="object-cover object-center"
               />
@@ -118,9 +117,7 @@ export default function Home() {
 
             <h2 className="font-display w-[323] h-auto text-[14px] md:text-[18px] lg:text-[21px] lg:leading-[36px] ">
               DISCOVER THE{" "}
-              <span className="font-bold text-[#D68A36]">
-                ATLAZE
-              </span>{" "}
+              <span className="font-bold text-[#D68A36]">ATLAZE</span>{" "}
               <span className="font-bold text-[#000000]">APP.</span> <br />{" "}
               <span className="mt-4 flex">
                 AVAILABLE NOW ON THE APP STORE AND GOOGLE PLAY STORE
