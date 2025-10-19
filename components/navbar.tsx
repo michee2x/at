@@ -7,7 +7,7 @@ import { IoMenuSharp } from "react-icons/io5";
 const NavBar = () => {
   const {setShowSideBar} = useSideBar()
   return (
-    <div className="w-full z-30 flex flex-col h-[112px] absolute">
+    <div className="w-full z-30 flex flex-col h-[112px]">
       <div className="h-[40px] flex justify-between items-center px-4 w-full">
         <h1 className="h-full aspect-square font-display text-[calc(18/1280 * 100vw)] tracking-[0%] leading-[100%] text-[#2B2B2B] flex items-center justify-center">
           ATLAZE
