@@ -48,7 +48,7 @@ const CardOne = ({
         Made to cater for the finest african hair to nurture your roots and
         scalps. Best for all hair types...
       </span>
-      <span className="flex items-center gap-2">
+      <div className="flex items-center gap-2">
         <div className="w-[14.5px] relative h-[14.5px] lg:w-[20px] lg:h-[20px]">
           <Image
             src="/home/hero/Nigeria.png"
@@ -60,7 +60,7 @@ const CardOne = ({
         <span className="text-[15px] lg:text-[14px] text-[#6A00EF]">
           {data?.price}
         </span>
-      </span>
+      </div>
     </div>
   );
 };
