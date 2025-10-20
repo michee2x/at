@@ -7,6 +7,7 @@ import Link from "next/link";
 import { IoAddOutline } from "react-icons/io5";
 import { categories, Category } from "@/constants";
 import { useFilter } from "@/contexts/filter-context";
+import {HiAdjustmentsHorizontal} from "react-icons/hi2"
 
 
 interface Product {
@@ -39,28 +40,26 @@ export default function CategoryPage() {
         <Link href="/" className="text-purple-600 hover:underline">
           Home
         </Link>{" "}
-        /{" "}
-        <span
-          onClick={() => setShowFilter(true)}
-          className="text-gray-800 font-medium"
-        >
-          Electronics
-        </span>
+        / <span className="text-gray-800 font-medium">Electronics</span>
       </nav>
 
       <div className="lg:px-6 xl:px-10 pb-10">
-        <h1 className="text-2xl font-semibold text-gray-900 mb-6">
-          Electronics
-        </h1>
+        <div className="text-2xl border-gray-300 border-b-[1px] flex items-center pb-2 justify-between px-4 font-semibold text-gray-900 lg:mb-6">
+          <h1>Electronics</h1>
+          <HiAdjustmentsHorizontal
+            onClick={() => setShowFilter(true)}
+            className="text-2xl text-gray-700"
+          />
+        </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-6 gap-6">
           {/* Sidebar Filter */}
           <aside
-            className={`fixed ${
-              showFilter ? "block" : "hidden"
+            className={`fixed lg:relative ${
+              showFilter ? "block" : "hidden lg:block"
             } overflow-y-scroll w-full z-50 bg-white top-0 lg:col-span-1 xl:w-[194px] lg:p-4 h-fit space-y-6`}
           >
-            <div className="w-full border-b-[1.2px] border-gray-400 flex p-4 justify-between items-center">
+            <div className="w-full lg:hidden border-b-[1.2px] border-gray-400 flex p-4 justify-between items-center">
               <span>Filters</span>
               <IoAddOutline
                 onClick={() => setShowFilter(false)}
@@ -110,9 +109,7 @@ export default function CategoryPage() {
           <section className="lg:col-span-5">
             <div
               className="
-                grid lg:gap-x-4 gap-y-6
-                grid-cols-1
-                sm:grid-cols-2
+                grid lg:gap-x-4 gap-2 py-4 px-2 bg-zinc-100 grid-cols-2
                 md:grid-cols-3
                 xl:grid-cols-4
               "
@@ -156,7 +153,7 @@ function FilterSection({
 
 function ProductCard({product}:{product:Category}) {
   return (
-    <div className="border border-[#E9E9E9] font-poppins rounded-xl p-3 flex flex-col">
+    <div className="lg:border bg-white lg:not-odd:border-[#E9E9E9] font-poppins rounded-xl p-3 flex flex-col">
       <div className="relative w-full aspect-square mb-3">
         <Image
           src={product.image}
@@ -168,18 +165,17 @@ function ProductCard({product}:{product:Category}) {
       <h2 className="text-[15px] flex items-center justify-between font-poppins font-medium text-black mb-1">
         {product.name}
         <div className="flex items-center text-yellow-500">
-          {Array.from({ length: 4}).map((_, i) => (
-            <GoStar key={i} />
+          {Array.from({ length: 5 }).map((_, i) => (
+            <GoStar className="text-xs" key={i} />
           ))}
         </div>
       </h2>
-      <p className="text-xs font-poppins text-gray-500 mb-1">
-        Elica 60 cm 1200 m3/hr Filterless Autoclean Kitchen Chimney with 15
-        Years Warranty (WDFL 606 HAC LT...)
+      <p className="lg:text-xs text-[10px] font-poppins text-gray-500 mb-1">
+        Elica 60 cm 1200 m3/hr Filterless Autoclean...
       </p>
 
-      <div className="flex items-center justify-between mt-6">
-        <div>
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between lg:mt-6">
+        <div className="mb-2">
           <span className="flex items-center gap-2">
             <div className="w-[13.5px] relative h-[13.5px] lg:w-[16px] lg:h-[16px]">
               <Image
@@ -193,9 +189,11 @@ function ProductCard({product}:{product:Category}) {
               98,700
             </span>
           </span>
-          <p className="text-[10px] text-black/50">300+ purchased</p>
+          <p className="lg:text-[10px] text-[8px] text-black/50">
+            300+ purchased
+          </p>
         </div>
-        <button className="mt-auto w-[110px] flex items-center justify-center gap-[8px] h-[36px] px-[14px] bg-[#6A00EF] text-white py-[10px] rounded-[24px] hover:bg-purple-700 transition">
+        <button className="mt-auto w-full shadow-black/30 shadow-lg lg:w-[110px] flex items-center justify-center gap-[8px] h-[36px] px-[14px] bg-[#6A00EF] text-white py-[10px] rounded-[24px] hover:bg-purple-700 transition">
           <IoAddOutline className="text-xl text-white" />
           <span className="text-[10px] text-nowrap text-white">
             Add to Cart
