@@ -319,3 +319,17 @@ export const headphones: Headphone[] = [
     features: ["15 Hours Playback", "Lightweight", "Bluetooth 5.0"],
   },
 ];
+
+export const productBrand = [
+  {"id": 112,"name": "AIR MAX"}, 
+  {"id": 104,"name": "AVEDA"},
+  {"id": 107,"name": "COOLA"},
+  {"id": 106,"name": "ELTA MD"},
+  {"id": 105,"name": "FOREO"},
+  {"id": 26, "name": "MZIZI"},
+  {"id": 114,"name": "NOCTA"},
+  {"id": 113,"name": "SNEAKERS"},
+  {"id": 115,"name": "SNKRS"},
+  {"id": 27, "name": "NIKE"}
+
+]

@@ -10,23 +10,22 @@ export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
 
+    // Base WooCommerce products endpoint
     const url = new URL(`${siteUrl}/wp-json/wc/v3/products`);
     url.searchParams.append("consumer_key", consumerKey);
     url.searchParams.append("consumer_secret", consumerSecret);
 
-    // Default per_page
+    // Default items per page
     url.searchParams.append("per_page", searchParams.get("per_page") ?? "10");
 
-    // Convert all query params dynamically
     for (const [key, value] of searchParams.entries()) {
-      if (!value || ["per_page"].includes(key)) continue; // already handled
+      if (!value || key === "per_page") continue;
 
       const k = key.toLowerCase();
       const v = value.toLowerCase();
 
-      // --- Custom logic for specific filters ---
       switch (k) {
-        // Handle price range, e.g. "₦5,000 to ₦10,000"
+        // ✅ Price range filter (e.g., "₦5,000 to ₦10,000")
         case "price": {
           const match = value.match(/(\d[\d,]*)\D+(\d[\d,]*)/);
           if (match) {
@@ -38,15 +37,15 @@ export async function GET(request: Request) {
           break;
         }
 
-        // Brand → attribute filter
+        // ✅ Brand filter (new)
         case "brand":
         case "brands": {
-          url.searchParams.append("attribute", "pa_brand");
-          url.searchParams.append("attribute_term", v);
+          // WooCommerce now supports brand=<id> directly
+          url.searchParams.append("brand", v);
           break;
         }
 
-        // Item condition
+        // ✅ Item condition
         case "condition":
         case "item condition": {
           url.searchParams.append("attribute", "pa_condition");
@@ -54,33 +53,32 @@ export async function GET(request: Request) {
           break;
         }
 
-        // Delivery day
+        // ✅ Delivery Day
         case "delivery":
         case "delivery day": {
           url.searchParams.append("attribute", "pa_delivery");
-          url.searchParams.append(
-            "attribute_term",
-            v.replace(/\s+/g, "-")
-          );
+          url.searchParams.append("attribute_term", v.replace(/\s+/g, "-"));
           break;
         }
 
-        // Pay on delivery
+        // ✅ Pay on Delivery
         case "pay on delivery": {
           url.searchParams.append("attribute", "pa_payment");
           url.searchParams.append("attribute_term", "pay-on-delivery");
           break;
         }
 
-        // Discount / deals
+        // ✅ Deals & Discounts
         case "discount":
         case "deals":
         case "deals & discount": {
-          if (v.includes("discount")) url.searchParams.append("on_sale", "true");
+          if (v.includes("discount") || v.includes("deal")) {
+            url.searchParams.append("on_sale", "true");
+          }
           break;
         }
 
-        // Product type (simple, variable, etc.)
+        // ✅ Product Type
         case "type": {
           if (WC_ALLOWED_TYPES.has(v)) {
             url.searchParams.append("type", v);
@@ -90,7 +88,8 @@ export async function GET(request: Request) {
           break;
         }
 
-        // Known WooCommerce parameters (pass directly)
+        // ✅ Native WooCommerce parameters (pass directly)
+        case "page":
         case "search":
         case "category":
         case "tag":
@@ -105,9 +104,8 @@ export async function GET(request: Request) {
           break;
         }
 
-        // --- Default fallback ---
+        // ✅ Fallback: forward unknown keys safely
         default: {
-          // Dynamically forward *any unknown query param*
           url.searchParams.append(k, value);
           break;
         }
@@ -124,6 +122,7 @@ export async function GET(request: Request) {
     }
 
     const products = await response.json();
+
     return NextResponse.json(products);
   } catch (err) {
     console.error("❌ Error in /api/products:", err);

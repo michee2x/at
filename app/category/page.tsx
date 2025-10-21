@@ -196,7 +196,7 @@ export default function CategoryPage() {
             >
               {loadingMore ? "Loading..." : "Load more"}
             </button>
-            
+
             <div
               ref={loaderRef}
               className="lg:hidden flex justify-center mt-10"

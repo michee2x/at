@@ -26,12 +26,14 @@ export function useFilteredProducts({
       try {
         setLoading(true);
         setError(null);
+        console.log("\n\n\nfilters: ", filters, "\n\n\n")
 
         const params = new URLSearchParams();
 
         // Pagination
         params.append("page", String(page));
         params.append("per_page", String(perPage));
+
 
         // Dynamic filters
         Object.entries(filters).forEach(([key, value]) => {
@@ -59,6 +61,7 @@ export function useFilteredProducts({
         setHasMore(Array.isArray(result) && result.length === perPage);
 
         setData(result);
+        return () => controller.abort();
       } catch (err) {
         if (err instanceof DOMException && err.name === "AbortError") return;
         console.error("❌ Failed to fetch products:", err);
@@ -69,7 +72,6 @@ export function useFilteredProducts({
     };
 
     fetchProducts();
-    return () => controller.abort();
   }, [filters, page, perPage]);
 
   return { data, loading, error, hasMore };
