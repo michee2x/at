@@ -53,7 +53,7 @@ export default function RootLayout({
               <NavBar />
               {children}
               <Footer />
-              <MobileFooter />
+              {/* <MobileFooter /> */}
             </main>
         </Providers>
       </body>

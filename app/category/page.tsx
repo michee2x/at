@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import Link from "next/link";
 import { HiAdjustmentsHorizontal } from "react-icons/hi2";
 import { useFilter } from "@/contexts/filter-context";
@@ -12,16 +12,86 @@ import { FaStar } from "react-icons/fa";
 import { GoPlus } from "react-icons/go";
 import { WooProduct } from "@/types";
 
-
 const skeletonArray = Array.from({ length: 8 });
 type FilterMap = Record<string, string>;
 
 export default function CategoryPage() {
   const [filters, setFilters] = useState<FilterMap>({});
-  const { data: products, loading } = useFilteredProducts(filters);
-  const { setShowFilter } = useFilter();
+  const [page, setPage] = useState(1);
+  const [allProducts, setAllProducts] = useState<WooProduct[]>([]);
+  const [loadingMore, setLoadingMore] = useState(false);
 
-  // ✅ Check if there are active filters
+  // useFilteredProducts now returns { data, loading, hasMore } as we updated earlier
+  const { data: products, loading, hasMore } = useFilteredProducts({
+    filters,
+    page,
+    perPage: 12,
+  });
+
+  const { setShowFilter } = useFilter();
+  const loaderRef = useRef<HTMLDivElement | null>(null);
+
+  // Detect mobile
+  const isMobile = typeof window !== "undefined" && window.innerWidth < 1024;
+
+  // When filters change, reset page and accumulated products
+  useEffect(() => {
+    setPage(1);
+    setAllProducts([]);
+  }, [JSON.stringify(filters)]); // stringify to compare object contents
+
+  // Merge/append products into allProducts whenever `products` changes
+  useEffect(() => {
+    if (loading) return; // wait until fetch complete
+    if (!products) return;
+
+    if (page === 1) {
+      setAllProducts(products);
+    } else {
+      // avoid duplicates (simple id set)
+      setAllProducts((prev) => {
+        const ids = new Set(prev.map((p) => p.id));
+        const newItems = products.filter((p) => !ids.has(p.id));
+        return [...prev, ...newItems];
+      });
+    }
+  }, [products, page, loading]);
+
+  // When a load-more fetch completes, hide loadingMore
+  useEffect(() => {
+    if (!loading && loadingMore) {
+      setLoadingMore(false);
+    }
+  }, [loading, loadingMore]);
+
+  // IntersectionObserver for mobile infinite scroll
+  useEffect(() => {
+    if (!isMobile || !hasMore) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && !loading && !loadingMore) {
+          handleLoadMore();
+        }
+      },
+      {
+        root: null,
+        rootMargin: "200px", // trigger a bit earlier
+        threshold: 0.1,
+      }
+    );
+
+    const el = loaderRef.current;
+    if (el) observer.observe(el);
+
+    return () => {
+      if (el) observer.unobserve(el);
+      observer.disconnect();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isMobile, hasMore, loading, loadingMore]); // intentionally exclude loaderRef.current
+
+  // clear filters helper
   const hasActiveFilters = useMemo(
     () =>
       Object.values(filters).some(
@@ -29,47 +99,43 @@ export default function CategoryPage() {
       ),
     [filters]
   );
-
-  // ✅ Clear all filters
   const clearFilters = () => {
     setFilters({});
+    setPage(1);
+    setAllProducts([]);
+  };
+
+  // Load more (increments page). Do NOT setLoadingMore(false) here.
+  const handleLoadMore = () => {
+    if (loadingMore || !hasMore) return;
+    setLoadingMore(true);
+    setPage((prev) => prev + 1);
   };
 
   return (
     <div className="h-auto w-full md:max-w-[95%] lg:max-w-full xl:max-w-[1300px] 2xl:max-w-[1440px] font-poppins bg-white">
-      {/* Banner */}
+      {/* Banner (unchanged) */}
       <div className="w-full relative h-64 hidden lg:block lg:h-[245px] bg-blue-600">
         <div className="absolute z-10 top-[20%] left-[15%] w-[461px] h-[94px] text-[31px]">
           Efficient and Durable Electronics
         </div>
-        <Image
-          alt="Atlaze category banner"
-          src="/banner/Rectangle%2025.png"
-          fill
-        />
+        <Image alt="Atlaze category banner" src="/banner/Rectangle%2025.png" fill />
         <div className="w-[336px] h-[228px] absolute top-[10%] right-[16%]">
-          <Image
-            fill
-            alt="atlaze electronics category image"
-            src="/banner/Group%203.png"
-          />
+          <Image fill alt="atlaze electronics category image" src="/banner/Group%203.png" />
         </div>
         <div className="w-[328px] left-[15%] items-end bottom-[5%] flex justify-center h-[46px] absolute">
           <div className="w-[107.94px] flex gap-1 items-center h-full">
             <div className="w-[34px] h-[34px] rounded-full bg-[#FF9900]" />
-            <h1 className="w-[68px] h-[40px] font-bold text-black">
-              TOP BRANDS
-            </h1>
+            <h1 className="w-[68px] h-[40px] font-bold text-black">TOP BRANDS</h1>
           </div>
           <hr className="w-[3px] h-[90%] mr-3 bg-black" />
           <div className="w-[107.94px] flex gap-1 items-center h-full">
             <div className="w-[34px] h-[34px] rounded-full bg-[#FF9900]" />
-            <h1 className="w-[68px] h-[40px] font-bold text-black">
-              WIDE SELECTION
-            </h1>
+            <h1 className="w-[68px] h-[40px] font-bold text-black">WIDE SELECTION</h1>
           </div>
         </div>
       </div>
+
       {/* Breadcrumb */}
       <nav className="text-sm text-gray-600 px-6 py-4">
         <Link href="/" className="text-purple-600 hover:underline">
@@ -94,41 +160,48 @@ export default function CategoryPage() {
           {/* Product Grid */}
           <section className="lg:col-span-5">
             <div className="grid lg:gap-x-4 gap-2 p-2 bg-zinc-100 lg:bg-inherit grid-cols-2 md:grid-cols-3 xl:grid-cols-4 min-h-[100px]">
-              {loading ? (
+              {loading && page === 1 ? (
                 skeletonArray.map((_, i) => <ProductSkeleton key={i} />)
-              ) : products.length === 0 ? (
+              ) : allProducts.length === 0 ? (
                 <div className="col-span-full flex h-[60vh] flex-col items-center justify-center text-center pb-16 text-gray-600">
                   <ProductNotFound />
                   <p className="text-lg font-semibold">No products found</p>
-                  <p className="text-sm text-gray-500 mt-1">
-                    Try adjusting your filters or check back later.
-                  </p>
+                  <p className="text-sm text-gray-500 mt-1">Try adjusting your filters or check back later.</p>
                   {hasActiveFilters && (
-                    <button
-                      onClick={clearFilters}
-                      className="mt-4 px-5 py-2 rounded-md bg-purple-600 text-white hover:bg-purple-700 transition"
-                    >
+                    <button onClick={clearFilters} className="mt-4 px-5 py-2 rounded-md bg-purple-600 text-white hover:bg-purple-700 transition">
                       Clear filters
                     </button>
                   )}
                 </div>
               ) : (
                 <>
-                  {/* Optional Clear Filters above products */}
                   {hasActiveFilters && (
                     <div className="col-span-full flex justify-end mb-2">
-                      <button
-                        onClick={clearFilters}
-                        className="text-sm px-4 py-1.5 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-100 transition"
-                      >
+                      <button onClick={clearFilters} className="text-sm px-4 py-1.5 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-100 transition">
                         Clear filters
                       </button>
                     </div>
                   )}
-                  {products.map((p) => (
+                  {allProducts.map((p) => (
                     <ProductCard key={p.id} product={p} />
                   ))}
                 </>
+              )}
+            </div>
+
+            {/* Desktop Load More */}
+            <button
+              onClick={handleLoadMore}
+              className="hidden lg:flex w-[50%] border cursor-pointer hover:text-black hover:border-black/70 h-[44px] border-[#d1d1d1] text-[15px] rounded-[10px] text-[#767676] items-center justify-center mx-auto mt-32"
+              disabled={!hasMore || loadingMore}
+            >
+              {loadingMore ? "Loading..." : "Load more"}
+            </button>
+
+            {/* Mobile Loader (observed by IntersectionObserver) */}
+            <div ref={loaderRef} className="lg:hidden flex justify-center mt-10">
+              {loadingMore && (
+                <span className="loading lg:hidden mx-auto text-[#6A00EF] loading-spinner loading-xl"></span>
               )}
             </div>
           </section>
@@ -138,49 +211,30 @@ export default function CategoryPage() {
   );
 }
 
+// ProductCard & ProductSkeleton unchanged (copy your existing functions)
 function ProductCard({ product }: { product: WooProduct }) {
   return (
-    <div className="border border-gray-200 font-poppins bg-white rounded-xl flex flex-col">
+    <div className="border border-gray-200 pb-2 font-poppins bg-white rounded-xl flex flex-col">
       <div className="relative w-full aspect-square mb-3">
-        <Image
-          src={product.images?.[0]?.src || "/placeholder.png"}
-          alt={product.name}
-          fill
-          className="object-cover rounded-lg"
-        />
+        <Image src={product.images?.[0]?.src || "/placeholder.png"} alt={product.name} fill className="object-cover" />
       </div>
       <div className="px-3 w-full h-auto">
         <h2 className="lg:text-[15px] text-[14px] flex flex-col lg:flex-row justify-between font-medium text-black mb-1">
           {`${product.name.slice(0, 15)}...`}
           <span className="flex items-center">
-            {[...Array(5)].map((_, idx) => {
-              return (
-                <FaStar
-                key={`${idx}`}
-                  className="text-[8px] text-[#FFD700] lg:text-[10px]"
-                  id={`${idx}`}
-                />
-              );
-            })}
+            {[...Array(5)].map((_, idx) => (
+              <FaStar key={idx} className="text-[10px] text-[#FFD700] lg:text-[12px]" />
+            ))}
           </span>
         </h2>
-        <div className="lg:text-[12px] text-[10px] text-black/50">
-          Elica 60 cm 1200 m3/hr Filterless Autocl...
-        </div>
+        <div className="lg:text-[12px] text-[10px] text-black/50">Elica 60 cm 1200 m3/hr Filterless Autocl...</div>
         <div className="flex mt-3 lg:mt-6 flex-col lg:flex-row justify-between lg:items-center">
           <div className="flex flex-col">
             <div className="flex items-center gap-2">
               <div className="w-[14.5px] relative h-[14.5px] lg:w-[20px] lg:h-[20px]">
-                <Image
-                  src="/home/hero/Nigeria.png"
-                  className="object-cover"
-                  alt="nigeria logo"
-                  fill
-                />
+                <Image src="/home/hero/Nigeria.png" className="object-cover" alt="nigeria logo" fill />
               </div>
-              <span className="text-[12px] lg:text-[14px] text-[#6A00EF]">
-                {`${product.price.slice(0, 10)}...`}
-              </span>
+              <span className="text-[12px] lg:text-[14px] text-[#6A00EF]">{`${product.price.slice(0, 10)}...`}</span>
             </div>
             <span className="text-[10px] text-black/50">300+ purchased</span>
           </div>
