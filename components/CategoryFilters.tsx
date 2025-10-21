@@ -64,7 +64,7 @@ export default function CategoryFilters({
       h-[100vh] lg:h-auto lg:col-span-1 xl:w-[220px] lg:p-4 shadow-lg lg:shadow-none pb-4`}
     >
       {/* Mobile Header */}
-      <div className="w-full lg:hidden flex p-4 justify-between items-center">
+      <div className="w-full lg:hidden sticky top-0 bg-white flex p-4 justify-between items-center">
         <span>Filters</span>
         <IoAddOutline
           onClick={closeSidebar}

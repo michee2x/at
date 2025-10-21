@@ -48,12 +48,12 @@ export default function RootLayout({
           <Sidebar />
             <main
               data-theme="light"
-              className="flex flex-col items-center w-full lg:px-4"
+              className="w-full h-auto relative lg:px-4"
             >
               <NavBar />
               {children}
               <Footer />
-              {/* <MobileFooter /> */}
+              <MobileFooter />
             </main>
         </Providers>
       </body>

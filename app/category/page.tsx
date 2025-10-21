@@ -136,7 +136,7 @@ export default function CategoryPage() {
       </nav>
 
       <div className="lg:px-6 2xl:px-10">
-        <div className="text-2xl border-gray-300 lg:border-0 border-b flex items-center pb-2 justify-between lg:p-0 px-4 font-semibold text-gray-900 lg:mb-6">
+        <div className="text-2xl sticky py-3 lg:relative top-0 bg-white z-20 border-gray-300 lg:border-0 border-b flex items-center pb-2 justify-between lg:p-0 px-4 font-semibold text-gray-900 lg:mb-6">
           <h1>Electronics</h1>
           <HiAdjustmentsHorizontal
             onClick={() => setShowFilter(true)}
