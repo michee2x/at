@@ -196,13 +196,12 @@ export default function CategoryPage() {
             >
               {loadingMore ? "Loading..." : "Load more"}
             </button>
-
-            {/* Mobile Infinite Loader */}
+            
             <div
               ref={loaderRef}
               className="lg:hidden flex justify-center mt-10"
             >
-              {loadingMore && (
+              {hasMore && (
                 <span className="loading text-[#6A00EF] loading-spinner loading-xl"></span>
               )}
             </div>
