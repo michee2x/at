@@ -10,7 +10,7 @@ type FilterContextType = {
 const FilterContext = createContext<FilterContextType | undefined>(undefined);  
 
 export const FilterProvider = ({children}: {children: ReactNode}) => {
-    const [showFilter, setShowFilter] = useState<boolean>(true);
+    const [showFilter, setShowFilter] = useState<boolean>(false);
     
     return (
         <FilterContext.Provider value={{showFilter, setShowFilter}}>
