@@ -30,7 +30,7 @@ export type ProductHit = {
 
 const ALGOLIA_APP_ID = process.env.NEXT_PUBLIC_ALGOLIA_APP_ID!;
 const ALGOLIA_SEARCH_KEY = process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_KEY!;
-const INDEX_NAME = process.env.NEXT_PUBLIC_ALGOLIA_INDEX_NAME!;
+const INDEX_NAME = "AT";
 
 if(!ALGOLIA_APP_ID || !ALGOLIA_SEARCH_KEY || !INDEX_NAME) {
   console.log("ERROR GETTING VAIRANLES")
