@@ -1,8 +1,11 @@
+"use client"
+import { useFilter } from "@/contexts/filter-context";
 import Image from "next/image";
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { CiCircleInfo } from "react-icons/ci";
 
 const SearchInput = () => {
+  const {setShowAlgoliaSearch} = useFilter()
   return (
     <section className="w-fit h-fit">
       <div className="lg:w-[calc(612/1280*100vw)] sm:w-[calc(562/1280*100vw)] md:w-[calc(512/1280*100vw)] lg:h-[60px] w-[90vw] h-[44px] relative bg-gradient-to-r from-[#EBCC97] to-[#9747FF] rounded-[36px] p-[1.5px]">
@@ -16,11 +19,9 @@ const SearchInput = () => {
             />
           </span>
 
-          <input
-            type="search"
-            placeholder="Search by keywords or upload/take photo"
-            className="flex-1 border-0 outline-0 align-middle text-[14px] tracking-[0%] leading-[100%] text-[#6C757D]"
-          />
+          <div onClick={() => setShowAlgoliaSearch(true)} className="flex-1 border-0 outline-0 align-middle text-[14px] tracking-[0%] leading-[100%] text-[#6C757D]">
+            Search by keywords or upload...
+        </div>
 
           <Image
             alt="atlaze AI search logo"

@@ -5,15 +5,18 @@ import {createContext, useContext, useState, ReactNode, SetStateAction, Dispatch
 type FilterContextType = {
   showFilter: boolean;
   setShowFilter: Dispatch<SetStateAction<boolean>>;
+  showAlgoliaSearch: boolean;
+  setShowAlgoliaSearch: Dispatch<SetStateAction<boolean>>;
 };
 
 const FilterContext = createContext<FilterContextType | undefined>(undefined);  
 
 export const FilterProvider = ({children}: {children: ReactNode}) => {
     const [showFilter, setShowFilter] = useState<boolean>(false);
+    const [showAlgoliaSearch, setShowAlgoliaSearch] = useState(false);
     
     return (
-        <FilterContext.Provider value={{showFilter, setShowFilter}}>
+        <FilterContext.Provider value={{showFilter, setShowFilter,showAlgoliaSearch, setShowAlgoliaSearch}}>
             {children}
         </FilterContext.Provider>
     )

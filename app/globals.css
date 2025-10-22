@@ -33,6 +33,11 @@ body {
   }
 }
 
+.aa-Input {
+  border: none !important;
+}
+
+
 /* .scrollcat {
   display: inline-flex;
   overflow-x: scroll;

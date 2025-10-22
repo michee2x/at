@@ -13,6 +13,7 @@ import HeadphoneGrid from "@/components/HeadPhoneGrid";
 
 export default function Home() {
   const { categories } = useCategory();
+
   return (
     <div className="w-screen items-center flex-col min-h-screen relative flex justify-center">
       <Hero />

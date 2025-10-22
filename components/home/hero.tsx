@@ -7,7 +7,7 @@ const Hero = () => {
   return (
     <section
       style={{ perspective: "100vh", transformStyle: "preserve-3d" }}
-      className="max-w-screen w-full h-[720px] bg-gradient-to-b from-transparent via-gray-100 to-gray-300 px-4 relative overflow-hidden sm:h-[calc(1300/1600*100vw)] pt-[168px] flex flex-col items-center md:h-[calc(1300/1600*100vw)] lg:h-[calc(1180/1600*100vw)] xl:h-[calc(1100/1600*100vw)] 2xl:h-[calc(1000/1600*100vw)]"
+      className="max-w-screen w-full h-[720px] bg-gradient-to-b from-transparent via-gray-100 to-gray-300 px-4 relative overflow-hidden sm:h-[calc(1300/1600*100vw)] pt-[108px] flex flex-col items-center md:h-[calc(1300/1600*100vw)] lg:h-[calc(1180/1600*100vw)] xl:h-[calc(1100/1600*100vw)] 2xl:h-[calc(1000/1600*100vw)]"
     >
       <div className="left-0 max-w-screen top-0 flex items-center flex-col h-[235px] gap-[14px] lg:gap-[24px]">
         <div className="flex flex-col justify-center items-center gap-[4px]  max-h-[137px] ">

@@ -6,6 +6,7 @@ import Footer from "@/components/desktop-footer";
 import Providers from "./Providers";
 import MobileFooter from "@/components/mobile-footer";
 import Sidebar from "@/components/sidebar";
+import SearchFilter from "@/components/SearchFilter";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -51,6 +52,7 @@ export default function RootLayout({
               className="w-full h-auto relative lg:px-4"
             >
               <NavBar />
+              <SearchFilter />
               {children}
               <Footer />
               <MobileFooter />
