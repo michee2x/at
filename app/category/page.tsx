@@ -92,7 +92,7 @@ export default function CategoryPage() {
   };
 
   return (
-    <div className="h-auto w-full md:max-w-[95%] lg:max-w-full xl:max-w-[1300px] 2xl:max-w-[1440px] font-poppins bg-white">
+    <div className="h-auto w-full mx-auto md:max-w-[95%] lg:max-w-full xl:max-w-[1300px] 2xl:max-w-[1440px] font-poppins bg-white">
       {/* Banner */}
       <div className="w-full relative h-64 hidden lg:block lg:h-[245px] bg-blue-600">
         <div className="absolute z-10 top-[20%] left-[15%] w-[461px] h-[94px] text-[31px]">

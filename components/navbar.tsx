@@ -52,7 +52,7 @@ const NavBar = () => {
               </span>
             </div>
 
-            <div className="w-auto hidden lg:block pt-2 absolute top-0 -translate-x-1/2 left-1/2 bg-red-400 min-h-32">
+            <div className="w-auto hidden lg:block pt-2 absolute top-0 -translate-x-1/2 left-1/2 min-h-32">
               <AlgoliaSearch />
             </div>
 

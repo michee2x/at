@@ -28,9 +28,9 @@ export type ProductHit = {
   date_created?: string;
 };
 
-const ALGOLIA_APP_ID = process.env.NEXT_PUBLIC_ALGOLIA_APP_ID ?? "";
-const ALGOLIA_SEARCH_KEY = process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_KEY ?? "";
-const INDEX_NAME = process.env.NEXT_PUBLIC_ALGOLIA_INDEX_NAME ?? "products";
+const ALGOLIA_APP_ID = process.env.NEXT_PUBLIC_ALGOLIA_APP_ID!;
+const ALGOLIA_SEARCH_KEY = process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_KEY!;
+const INDEX_NAME = process.env.NEXT_PUBLIC_ALGOLIA_INDEX_NAME!;
 
 const client = algoliasearch(ALGOLIA_APP_ID, ALGOLIA_SEARCH_KEY);
 
@@ -132,7 +132,7 @@ export default function AlgoliaSearch(): React.JSX.Element {
     >
       <div className="w-full px-3 gap-2 h-auto flex">
         <div onClick={() => setShowAlgoliaSearch(false)} className="w-3 lg:hidden flex mt-3 justify-center h-full">
-          <FaChevronLeft className="text-xl" />
+          <FaChevronLeft className="text-xl cursor-pointer" />
         </div>
         <section className="w-fit h-fit">
           <div className="lg:w-[calc(612/1280*100vw)] sm:w-[calc(554/1280*100vw)] md:w-[calc(512/1280*100vw)] lg:h-[52px] w-[90vw] h-[44px] relative bg-gradient-to-r from-[#EBCC97] to-[#9747FF] rounded-[36px] p-[1.5px]">
