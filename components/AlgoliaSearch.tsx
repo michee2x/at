@@ -28,8 +28,8 @@ export type ProductHit = {
   date_created?: string;
 };
 
-const ALGOLIA_APP_ID = process.env.NEXT_PUBLIC_ALGOLIA_APP_ID!;
-const ALGOLIA_SEARCH_KEY = process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_KEY!;
+const ALGOLIA_APP_ID = "1WU6Y3KMFF";
+const ALGOLIA_SEARCH_KEY = "ebad495f2f8da0df244b976921f8c8b1";
 const INDEX_NAME = "AT";
 
 if(!ALGOLIA_APP_ID || !ALGOLIA_SEARCH_KEY || !INDEX_NAME) {
