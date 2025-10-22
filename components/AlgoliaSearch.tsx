@@ -32,7 +32,11 @@ const ALGOLIA_APP_ID = process.env.NEXT_PUBLIC_ALGOLIA_APP_ID!;
 const ALGOLIA_SEARCH_KEY = process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_KEY!;
 const INDEX_NAME = process.env.NEXT_PUBLIC_ALGOLIA_INDEX_NAME!;
 
-const client = algoliasearch(ALGOLIA_APP_ID, ALGOLIA_SEARCH_KEY);
+if(!ALGOLIA_APP_ID || !ALGOLIA_SEARCH_KEY || !INDEX_NAME) {
+  console.log("ERROR GETTING VAIRANLES")
+}
+
+const client = algoliasearch("1WU6Y3KMFF", "ebad495f2f8da0df244b976921f8c8b1");
 
 async function searchAlgolia(q: string): Promise<ProductHit[]> {
   if (!q.trim()) return [];
