@@ -11,6 +11,7 @@ import Image from "next/image";
 import { CiCircleInfo } from "react-icons/ci";
 import { FaChevronLeft } from "react-icons/fa6";
 import { useFilter } from "@/contexts/filter-context";
+import { useSearch } from "@/contexts/search-context";
 
 
 export type ProductHit = {
@@ -52,10 +53,10 @@ async function searchAlgolia(q: string): Promise<ProductHit[]> {
 }
 
 export default function AlgoliaSearch(): React.JSX.Element {
+  const {search, setSearch} = useSearch()
   const {setShowAlgoliaSearch} = useFilter()
   const panelRef = useRef<HTMLDivElement | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
-  const [query, setQuery] = useState<string>("");
   const [hits, setHits] = useState<ProductHit[]>([]);
   const [open, setOpen] = useState<boolean>(false);
 
@@ -73,10 +74,10 @@ export default function AlgoliaSearch(): React.JSX.Element {
   // debounce search
   useEffect(() => {
     const timer = setTimeout(() => {
-      void handleSearch(query);
+      void handleSearch(search);
     }, 150);
     return () => clearTimeout(timer);
-  }, [query, handleSearch]);
+  }, [search, handleSearch]);
 
   // Initialize Algolia autocomplete dropdown
   useEffect(() => {
@@ -122,7 +123,7 @@ export default function AlgoliaSearch(): React.JSX.Element {
         ];
       },
       onStateChange({ state }: { state: AutocompleteState<ProductHit> }) {
-        setQuery(state.query ?? "");
+        setSearch(state.query ?? "");
         setOpen(Boolean(state.isOpen));
       },
     });
@@ -153,8 +154,8 @@ export default function AlgoliaSearch(): React.JSX.Element {
               <input
                 ref={inputRef}
                 type="search"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
                 placeholder="Search for sneakers, brands, fabrics, etc..."
                 className="flex-1 px-2 border-0 outline-0 align-middle text-[14px] tracking-[0%] leading-[100%] text-[#6C757D] text-sm lg:text-base lg:px-3 py-2 bg-transparent outline-none border-none focus:outline-none focus:border-none"
               />
@@ -179,7 +180,7 @@ export default function AlgoliaSearch(): React.JSX.Element {
       {open && hits.length > 0 && (
         <div
           ref={panelRef}
-          className="mt-4 w-full lg:w-[90vw] max-w-[620px] mx-auto bg-white rounded-xl lg:shadow-lg overflow-hidden border border-gray-100"
+          className="mt-4 hidden w-full max-h-[30rem] lg:w-[90vw] max-w-[620px] mx-auto bg-white rounded-xl lg:shadow-lg overflow-hidden border border-gray-100"
         >
           {hits.map((hit) => (
             <a
@@ -216,7 +217,7 @@ export default function AlgoliaSearch(): React.JSX.Element {
         </div>
       )}
       {open && hits.length === 0 && (
-        <div className="mt-4 text-center text-gray-400 text-sm">
+        <div className="mt-4 hidden text-center text-gray-400 text-sm">
           No results — try another search
         </div>
       )}

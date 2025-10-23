@@ -5,14 +5,28 @@ import React, { useState } from "react";
 import { CiCircleInfo } from "react-icons/ci";
 import { IoMenuSharp } from "react-icons/io5";
 import AlgoliaSearch, { ProductHit } from "./AlgoliaSearch";
+import { usePathname } from "next/navigation";
 
 
 const NavBar = () => {
+  const pathname = usePathname();
   const {setShowSideBar} = useSideBar()
   const [open, setOpen] = useState<boolean>(false);
   const [hits, setHits] = useState<ProductHit[]>([]);
+
+  const pages = [
+    "search",
+  ] as const;
+
+  const status = Object.fromEntries(
+    pages.map((page) => [page, pathname?.includes(page)])
+  );
+
+  // Usage:
+  const { search } = status;
+
   return (
-    <div className="w-full h-auto flex flex-col">
+    <div className={`w-full h-auto flex flex-col`}>
       <div className="w-full z-30 flex flex-col h-[112px]">
         <div className="h-[40px] flex justify-between items-center px-4 w-full">
           <h1 className="h-full aspect-square font-display text-[calc(18/1280 * 100vw)] tracking-[0%] leading-[100%] text-[#2B2B2B] flex items-center justify-center">
