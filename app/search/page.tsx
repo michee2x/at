@@ -27,7 +27,7 @@ export default function SearchPage({ searchParams }: SearchPageProps) {
   }, [query])
 
   return (
-    <main className="flex px-3 flex-col font-poppins md:flex-row min-h-screen">
+    <main className="flex w-full px-3 mx-auto md:max-w-[95%] lg:max-w-full xl:max-w-[1300px] 2xl:max-w-[1440px] flex-col font-poppins md:flex-row min-h-screen">
       {/* Sidebar */}
       <CategoryFilters filters={filters} setFilters={setFilters} />
 
@@ -44,17 +44,17 @@ export default function SearchPage({ searchParams }: SearchPageProps) {
 
         {/* Loading Skeleton */}
         {loading && (
-          <div className="space-y-6 mt-10 animate-pulse">
+          <div className="space-y-6 grid grid-cols-2 lg:grid-cols-1 mt-10 animate-pulse">
             {Array.from({ length: 6 }).map((_, i) => (
               <div
                 key={i}
-                className="flex flex-col sm:flex-row border-b border-gray-200 pb-4"
+                className="flex flex-col sm:flex-row"
               >
-                <div className="w-full sm:w-1/4 flex items-center justify-center mb-3 sm:mb-0">
+                <div className="w-full sm:w-1/4 flex items-center mb-3 sm:mb-0">
                   <div className="h-40 w-40 bg-gray-200 rounded-lg" />
                 </div>
 
-                <div className="flex-1 sm:pl-4 space-y-3">
+                <div className="flex-1 space-y-3">
                   <div className="h-5 bg-gray-200 rounded w-3/4" />
                   <div className="flex space-x-2">
                     {Array.from({ length: 5 }).map((_, j) => (
@@ -85,17 +85,17 @@ export default function SearchPage({ searchParams }: SearchPageProps) {
 
         {/* Product List */}
         {!loading && products.length > 0 && (
-          <div className="lg:space-y-6 flex flex-col h-auto w-full mt-10">
+          <div className="lg:space-y-6 grid grid-cols-2 lg:flex flex-col h-auto w-full mt-10">
             {products.map((p) => (
               <div
                 key={p.objectID}
-                className="flex border-t-2 gap-3 w-full h-auto  lg:flex-col sm:flex-row border-gray-200 py-4"
+                className="flex border-t-2 gap-3 w-full flex-col lg:flex-row h-auto border-gray-200 py-4"
               >
-                <div className="w-auto sm:w-1/4 flex items-center justify-center mb-3 sm:mb-0">
+                <div className="h-40 w-40 lg:h-auto overflow-hidden bg-gray-50 rounded-[5px] sm:w-1/4 flex items-center justify-center mb-3 sm:mb-0">
                   <img
                     src={p.image}
                     alt={p.name}
-                    className="h-40 object-contain"
+                    className="w-full h-full object-contain"
                   />
                 </div>
 
@@ -118,7 +118,7 @@ export default function SearchPage({ searchParams }: SearchPageProps) {
                         }
                       />
                     ))}
-                    <span className="text-sm text-gray-600 ml-2">
+                    <span className="text-[10px] lg:text-sm text-gray-600 ml-2">
                       {Math.floor(Math.random() * 500)} ratings
                     </span>
                   </div>
