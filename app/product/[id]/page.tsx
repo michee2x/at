@@ -3,6 +3,8 @@ import React, { Suspense } from "react";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
+import ProductImageZoomWrapper from "./ProductImageZoomWrapper";
+
 
 /**
  * Assumptions & notes:
@@ -106,13 +108,13 @@ export default async function ProductPage({ params }: { params: { id: string } }
       <nav aria-label="breadcrumb">
         <ol className="flex flex-wrap gap-x-2 text-sm">
           <li>
-            <a href="/" className="text-blue-600 hover:underline">
+            <a href="/" className="text-blue-600 cursor-pointer hover:underline">
               Home
             </a>
           </li>
           <li>/</li>
           <li>
-            <a href="/category" className="text-blue-600 hover:underline">
+            <a href="/category" className="text-blue-600 cursor-pointer hover:underline">
               Category
             </a>
           </li>
@@ -215,14 +217,11 @@ function ImageGallery({ product }: { product: WooProduct }) {
   // Make sure to add the domain(s) to next.config.js images.domains
   return (
     <div className="space-y-4">
-      <div className=" bg-red-400 w-full relative h-96 flex items-center justify-center">
+      <div className="w-full bg-gray-100 relative h-96 flex items-center justify-center">
         {first.src ? (
-          <Image
+          <ProductImageZoomWrapper
             src={first.src}
             alt={first.alt ?? `${product.name} image`}
-            fill
-            className="object-contain rounded-md"
-            priority
           />
         ) : (
           <div className="h-48 bg-gray-100 rounded-md flex items-center justify-center">
