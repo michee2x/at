@@ -215,13 +215,12 @@ function ImageGallery({ product }: { product: WooProduct }) {
   // Make sure to add the domain(s) to next.config.js images.domains
   return (
     <div className="space-y-4">
-      <div className=" bg-red-400 w-full h-96 flex items-center justify-center">
+      <div className=" bg-red-400 w-full relative h-96 flex items-center justify-center">
         {first.src ? (
           <Image
             src={first.src}
             alt={first.alt ?? `${product.name} image`}
-            width={600}
-            height={400}
+            fill
             className="object-contain rounded-md"
             priority
           />
@@ -257,7 +256,7 @@ function ImageGallery({ product }: { product: WooProduct }) {
             priority
           />
         ) : (
-          <div className="h-48 bg-gray-100 rounded-md flex items-center justify-center">
+          <div className="h-64 bg-gray-100 rounded-md flex items-center justify-center">
             No image
           </div>
         )}
