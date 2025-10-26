@@ -4,6 +4,7 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import ProductImageZoomWrapper from "./ProductImageZoomWrapper";
+import Link from "next/link";
 
 
 /**
@@ -108,15 +109,15 @@ export default async function ProductPage({ params }: { params: { id: string } }
       <nav aria-label="breadcrumb">
         <ol className="flex flex-wrap gap-x-2 text-sm">
           <li>
-            <a href="/" className="text-blue-600 cursor-pointer hover:underline">
+            <Link href="/" className="text-blue-600 cursor-pointer hover:underline">
               Home
-            </a>
+            </Link>
           </li>
           <li>/</li>
           <li>
-            <a href="/category" className="text-blue-600 cursor-pointer hover:underline">
+            <Link href="/category" className="text-blue-600 cursor-pointer hover:underline">
               Category
-            </a>
+            </Link>
           </li>
           <li>/</li>
           <li aria-current="page" className="text-gray-500">
