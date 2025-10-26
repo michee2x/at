@@ -222,7 +222,7 @@ function ImageGallery({ product }: { product: WooProduct }) {
             alt={first.alt ?? `${product.name} image`}
             width={600}
             height={400}
-            className="object-cover rounded-md"
+            className="object-contain rounded-md"
             priority
           />
         ) : (
@@ -251,8 +251,8 @@ function ImageGallery({ product }: { product: WooProduct }) {
           <Image
             src={second.src}
             alt={second.alt ?? `${product.name} image`}
-            width={600}
-            height={400}
+            width={1200}
+            height={800}
             className="object-cover rounded-md"
             priority
           />
