@@ -7,6 +7,7 @@ import ProductImageZoomWrapper from "./ProductImageZoomWrapper";
 import Link from "next/link";
 import { FiHeart } from "react-icons/fi";
 import { GoArrowUpRight } from "react-icons/go";
+import { WooProduct } from "@/types";
 
 
 /**
@@ -22,19 +23,6 @@ import { GoArrowUpRight } from "react-icons/go";
 /* -------------------------
    Types (lightweight)
    ------------------------- */
-export type WooProductImage = {id?:string, src?: string; alt?: string };
-type WooProduct = {
-  id: number;
-  name?: string;
-  short_description?: string | null;
-  description?: string | null;
-  price?: string | number;
-  sku?: string;
-  images?: WooProductImage[];
-  related_ids?: number[];
-  // add more fields as needed...
-};
-
 /* -------------------------
    Helper: fetch product by id
    - uses query params for WooCommerce auth (simpler & avoids Basic header issues)
@@ -362,9 +350,9 @@ async function ProductSuggestion({ relatedIds }: { relatedIds?: number[] }) {
       </h2>
 
       <ul className="w-full grid grid-cols-2 gap-6 lg:flex lg:justify-between h-auto">
-        {suggestions.map((item: any) => (
+        {suggestions.map((item: WooProduct) => (
           <li
-            key={item.id}
+            key={`${item.id}`}
             className="lg:w-[244px] rounded-md w-[95%] min-h-[170px] lg:h-[285px] flex flex-col lg:max-h-[320.25px]"
             itemScope
             itemType="http://schema.org/Product"

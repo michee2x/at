@@ -2,6 +2,8 @@
 
 import React, { useRef, useState, useEffect } from "react";
 import { AnimatePresence, motion } from "motion/react";
+import { createPortal } from "react-dom";
+import Image from "next/image";
 
 interface LensProps {
   children: React.ReactNode;
@@ -14,7 +16,7 @@ interface LensProps {
 export const Lens: React.FC<LensProps> = ({
   children,
   imageUrl,
-  zoomFactor = 1.3,
+  zoomFactor = 1.6,
   lensSize = 800,
   gap = 20,
 }) => {
@@ -22,6 +24,9 @@ export const Lens: React.FC<LensProps> = ({
   const [isHovering, setIsHovering] = useState(false);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [imageSize, setImageSize] = useState({ width: 0, height: 0 });
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => setMounted(true), []);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
@@ -47,9 +52,46 @@ export const Lens: React.FC<LensProps> = ({
   const posX = clamp(mousePosition.x, 0, imageSize.width);
   const posY = clamp(mousePosition.y, 0, imageSize.height);
 
-  const backgroundPosition = `${(posX / imageSize.width) * 100}% ${
-    (posY / imageSize.height) * 100
-  }%`;
+  const percentX = posX / imageSize.width;
+  const percentY = posY / imageSize.height;
+
+  const translateX = -(percentX * (zoomFactor - 1) * 100);
+  const translateY = -(percentY * (zoomFactor - 1) * 100);
+
+  const zoomBox = (
+    <AnimatePresence>
+      {isHovering && (
+        <motion.div
+          key="zoom-box"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.2 }}
+          className="fixed inset-0 flex items-center justify-end pointer-events-none"
+          style={{
+            zIndex: 999999, // above everything
+          }}
+        >
+          <div className="relative w-1/2 h-screen bg-white overflow-hidden shadow-2xl border border-gray-300 pointer-events-auto">
+            <Image
+              src={imageUrl}
+              alt="zoomed"
+              fill
+              priority
+              draggable={false}
+              className="object-contain will-change-transform transition-transform duration-75 ease-linear"
+              style={{
+                transform: `scale(${zoomFactor}) translate(${
+                  translateX / zoomFactor
+                }%, ${translateY / zoomFactor}%)`,
+                transformOrigin: "top left",
+              }}
+            />
+          </div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
 
   return (
     <>
@@ -63,26 +105,8 @@ export const Lens: React.FC<LensProps> = ({
         {children}
       </div>
 
-      <AnimatePresence>
-        {isHovering && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="fixed w-1/2 h-screen right-0 top-1/2 -translate-y-1/2 border border-gray-300 bg-white overflow-hidden shadow-xl z-[999]"
-          >
-            <div
-              className="absolute inset-0 bg-no-repeat bg-center"
-              style={{
-                backgroundImage: `url(${imageUrl})`,
-                backgroundSize: `${zoomFactor * 100}%`,
-                backgroundPosition,
-              }}
-            />
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {/* Render zoom box in portal to avoid stacking issues */}
+      {mounted && createPortal(zoomBox, document.body)}
     </>
   );
 };

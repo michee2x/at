@@ -3,7 +3,7 @@
 import { useState } from "react";
 import dynamic from "next/dynamic";
 import Image from "next/image";
-import { WooProductImage } from "./page";
+import { WooProductImage } from "@/types";
 
 // Dynamically load zoom component (client-only)
 const ProductImageZoom = dynamic(
