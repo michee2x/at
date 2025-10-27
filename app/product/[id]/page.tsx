@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import ProductImageZoomWrapper from "./ProductImageZoomWrapper";
 import Link from "next/link";
+import { FiHeart } from "react-icons/fi";
 
 
 /**
@@ -20,7 +21,7 @@ import Link from "next/link";
 /* -------------------------
    Types (lightweight)
    ------------------------- */
-type WooProductImage = { src?: string; alt?: string };
+export type WooProductImage = {id?:string, src?: string; alt?: string };
 type WooProduct = {
   id: number;
   name?: string;
@@ -66,7 +67,7 @@ export async function generateMetadata({
   try {
     const product = await fetchProduct(params.id);
 
-    const title = product.name ? `${product.name} | Atlaze` : "Product | Atlaze";
+    const title = product.name ? `${product.name}` : "Product | Atlaze";
     const description = product.short_description || product.description || "Product on Atlaze";
     const image = product.images?.[0]?.src ?? null;
 
@@ -104,18 +105,24 @@ export default async function ProductPage({ params }: { params: { id: string } }
   const image = product!.images?.[0]?.src ?? null;
 
   return (
-    <main className="container mx-auto px-4 py-8">
+    <main className="container font-poppins mx-auto px-4 py-8">
       {/* Breadcrumb — keep semantic & crawlable links */}
       <nav aria-label="breadcrumb">
         <ol className="flex flex-wrap gap-x-2 text-sm">
           <li>
-            <Link href="/" className="text-blue-600 cursor-pointer hover:underline">
+            <Link
+              href="/"
+              className="text-blue-600 cursor-pointer hover:underline"
+            >
               Home
             </Link>
           </li>
           <li>/</li>
           <li>
-            <Link href="/category" className="text-blue-600 cursor-pointer hover:underline">
+            <Link
+              href="/category"
+              className="text-blue-600 cursor-pointer hover:underline"
+            >
               Category
             </Link>
           </li>
@@ -127,7 +134,7 @@ export default async function ProductPage({ params }: { params: { id: string } }
       </nav>
 
       <article
-        className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-8"
+        className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-16"
         itemScope
         itemType="http://schema.org/Product"
       >
@@ -146,12 +153,20 @@ export default async function ProductPage({ params }: { params: { id: string } }
             <SizeChart />
           </Suspense>
 
-          <button
-            className="mt-4 w-full bg-[#6A00EF] text-white py-3 rounded-md hover:bg-[#4c1292]"
-            aria-label="Add to cart"
-          >
-            Add to Cart
-          </button>
+          <div className="mt-6 flex flex-col lg:flex-row lg:space-x-4">
+            <button
+              className="mt-4 w-full bg-black rounded-full text-white py-3 hover:bg-[#4c1292]"
+              aria-label="Add to cart"
+            >
+              Add to Cart
+            </button>
+            <button
+              className="mt-4 flex gap-3 items-center justify-center w-full border border-black text-black rounded-full py-3 hover:border-[#4c1292]"
+              aria-label="Add to cart"
+            >
+              Favorite <FiHeart className="text-[20px]" />
+            </button>
+          </div>
 
           <Suspense fallback={<DescriptionSkeleton />}>
             <ProductDescription product={product!} />
@@ -217,46 +232,16 @@ function ImageGallery({ product }: { product: WooProduct }) {
   // If external image domains are blocked by next.config.js, images will break.
   // Make sure to add the domain(s) to next.config.js images.domains
   return (
-    <div className="space-y-4">
-      <div className="w-full bg-gray-100 relative h-96 flex items-center justify-center">
+    <div className="space-y-4 sticky top-0">
+      <div className="w-full relative min-h-[70vh] flex items-center justify-center">
         {first.src ? (
           <ProductImageZoomWrapper
             src={first.src}
             alt={first.alt ?? `${product.name} image`}
+            gallery={images.slice(0, 6)}
           />
         ) : (
           <div className="h-48 bg-gray-100 rounded-md flex items-center justify-center">
-            No image
-          </div>
-        )}
-      </div>
-
-      <div className="grid gap-4 grid-cols-2">
-        {third.src ? (
-          <Image
-            src={third.src}
-            alt={third.alt ?? `${product.name} image`}
-            width={1200}
-            height={800}
-            className="object-cover rounded-md"
-            priority
-          />
-        ) : (
-          <div className="h-64 bg-gray-100 rounded-md flex items-center justify-center">
-            No image
-          </div>
-        )}
-        {second.src ? (
-          <Image
-            src={second.src}
-            alt={second.alt ?? `${product.name} image`}
-            width={1200}
-            height={800}
-            className="object-cover rounded-md"
-            priority
-          />
-        ) : (
-          <div className="h-64 bg-gray-100 rounded-md flex items-center justify-center">
             No image
           </div>
         )}

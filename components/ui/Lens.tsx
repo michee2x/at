@@ -1,40 +1,26 @@
 "use client";
 
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { AnimatePresence, motion } from "motion/react";
 
 interface LensProps {
   children: React.ReactNode;
   zoomFactor?: number;
   lensSize?: number;
-  position?: {
-    x: number;
-    y: number;
-  };
-  isStatic?: boolean;
-  isFocusing?: () => void;
-  hovering?: boolean;
-  setHovering?: (hovering: boolean) => void;
+  gap?: number; // optional gap between image and zoom box
 }
 
 export const Lens: React.FC<LensProps> = ({
   children,
-  zoomFactor = 1.5,
-  lensSize = 170,
-  isStatic = false,
-  position = { x: 200, y: 150 },
-  hovering,
-  setHovering,
+  zoomFactor = 6,
+  lensSize = 800,
+  gap = 20,
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
-
-  const [localIsHovering, setLocalIsHovering] = useState(false);
-
-  const isHovering = hovering !== undefined ? hovering : localIsHovering;
-  const setIsHovering = setHovering || setLocalIsHovering;
-
-  // const [isHovering, setIsHovering] = useState(false);
-  const [mousePosition, setMousePosition] = useState({ x: 100, y: 100 });
+  const [isHovering, setIsHovering] = useState(false);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [zoomBoxPosition, setZoomBoxPosition] = useState({ left: 0, top: 0 });
+  const [imageSize, setImageSize] = useState({ width: 0, height: 0 });
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
@@ -43,84 +29,82 @@ export const Lens: React.FC<LensProps> = ({
     setMousePosition({ x, y });
   };
 
-  return (
-    <div
-      ref={containerRef}
-      className="relative w-full h-full overflow-hidden rounded-lg z-20"
-      onMouseEnter={() => {
-        setIsHovering(true);
-      }}
-      onMouseLeave={() => setIsHovering(false)}
-      onMouseMove={handleMouseMove}
-    >
-      {children}
+  // get bounding box and image size
+  useEffect(() => {
+    if (containerRef.current) {
+      const rect = containerRef.current.getBoundingClientRect();
+      const img = containerRef.current.querySelector("img") as HTMLImageElement;
+      if (img) {
+        setImageSize({ width: img.width, height: img.height });
+      }
+      setZoomBoxPosition({
+        left: rect.right + gap,
+        top: rect.top,
+      });
+    }
+  }, [gap]);
 
-      {isStatic ? (
-        <div>
+  // prevent background from over-shifting at edges
+  const clamp = (value: number, min: number, max: number) =>
+    Math.max(min, Math.min(value, max));
+
+  const backgroundPosX = (() => {
+    const maxX = imageSize.width;
+    const x = clamp(mousePosition.x, 0, maxX);
+    const percentX = (x / maxX) * 100;
+    return `${percentX}%`;
+  })();
+
+  const backgroundPosY = (() => {
+    const maxY = imageSize.height;
+    const y = clamp(mousePosition.y, 0, maxY);
+    const percentY = (y / maxY) * 100;
+    return `${percentY}%`;
+  })();
+
+  return (
+    <>
+      {/* Main Image */}
+      <div
+        ref={containerRef}
+        className="relative w-full h-full overflow-hidden rounded-lg border"
+        onMouseEnter={() => setIsHovering(true)}
+        onMouseLeave={() => setIsHovering(false)}
+        onMouseMove={handleMouseMove}
+      >
+        {children}
+      </div>
+
+      {/* Zoomed Box */}
+      <AnimatePresence>
+        {isHovering && (
           <motion.div
-            initial={{ opacity: 0, scale: 0.58 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.8 }}
-            transition={{ duration: 0.3, ease: "easeOut" }}
-            className="absolute inset-0 overflow-hidden"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="fixed w-1/2 z-50 h-screen right-0 -translate-y-1/2 top-1/2 border overflow-hidden shadow-xl bg-white"
             style={{
-              maskImage: `radial-gradient(circle ${lensSize / 2}px at ${
-                position.x
-              }px ${position.y}px, black 100%, transparent 100%)`,
-              WebkitMaskImage: `radial-gradient(circle ${lensSize / 2}px at ${
-                position.x
-              }px ${position.y}px, black 100%, transparent 100%)`,
-              transformOrigin: `${position.x}px ${position.y}px`,
+              zIndex: 999,
             }}
           >
             <div
-              className="absolute inset-0"
+              className="absolute inset-0 bg-no-repeat"
               style={{
-                transform: `scale(${zoomFactor})`,
-                transformOrigin: `${position.x}px ${position.y}px`,
+                backgroundImage: `url(${
+                  (
+                    containerRef.current?.querySelector(
+                      "img"
+                    ) as HTMLImageElement
+                  )?.src
+                })`,
+                backgroundSize: `${zoomFactor * 100}%`,
+                backgroundPosition: `${backgroundPosX} ${backgroundPosY}`,
               }}
-            >
-              {children}
-            </div>
+            ></div>
           </motion.div>
-        </div>
-      ) : (
-        <AnimatePresence>
-          {isHovering && (
-            <div>
-              <motion.div
-                initial={{ opacity: 0, scale: 0.58 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.8 }}
-                transition={{ duration: 0.3, ease: "easeOut" }}
-                className="absolute inset-0 overflow-hidden"
-                style={{
-                  maskImage: `radial-gradient(circle ${lensSize / 2}px at ${
-                    mousePosition.x
-                  }px ${mousePosition.y}px, black 100%, transparent 100%)`,
-                  WebkitMaskImage: `radial-gradient(circle ${
-                    lensSize / 2
-                  }px at ${mousePosition.x}px ${
-                    mousePosition.y
-                  }px, black 100%, transparent 100%)`,
-                  transformOrigin: `${mousePosition.x}px ${mousePosition.y}px`,
-                  zIndex: 50,
-                }}
-              >
-                <div
-                  className="absolute inset-0"
-                  style={{
-                    transform: `scale(${zoomFactor})`,
-                    transformOrigin: `${mousePosition.x}px ${mousePosition.y}px`,
-                  }}
-                >
-                  {children}
-                </div>
-              </motion.div>
-            </div>
-          )}
-        </AnimatePresence>
-      )}
-    </div>
+        )}
+      </AnimatePresence>
+    </>
   );
 };

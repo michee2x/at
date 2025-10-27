@@ -26,8 +26,8 @@ const NavBar = () => {
   const { search } = status;
 
   return (
-    <div className={`w-full h-auto flex flex-col`}>
-      <div className="w-full z-30 flex flex-col h-[112px]">
+    <div className={`w-full z-50 h-auto flex flex-col`}>
+      <div className="w-full z-20 flex flex-col h-[112px]">
         <div className="h-[40px] flex justify-between items-center px-4 w-full">
           <h1 className="h-full aspect-square font-display text-[calc(18/1280 * 100vw)] tracking-[0%] leading-[100%] text-[#2B2B2B] flex items-center justify-center">
             ATLAZE
