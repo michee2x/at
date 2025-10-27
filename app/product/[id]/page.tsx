@@ -210,7 +210,7 @@ function ProductHeader({ product }: { product: WooProduct }) {
       </h1>
       <p className="text-[15px] font-poppins text-[#7E7E7E]" aria-hidden>
         {/* Keep semantic category info if available; fallback */}
-        {product?.categories[0]?.name}
+        {product?.categories[0]?.name?.replace("&amp;", "")?.toLowerCase()}
       </p>
       <p className="flex flex-row flex-nowrap items-start text-[14px] lg:gap-0.5">
         {product.rating_count}

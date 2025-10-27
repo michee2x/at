@@ -140,11 +140,19 @@ export default function CategoryPage({searchParams}: {searchParams: {[key: strin
         <span className="text-gray-800 font-medium">
           {categoryId ? (
             <span
-              className={`${loading ? "inline-block min-w-16 h-4 animate-pulse" : ""
+              className={`${
+                loading ? "inline-block min-w-16 h-4 animate-pulse" : ""
               }`}
             >
-              {loading && <span className="inline-block w-full text-center rounded-full h-full bg-gray-200">...</span>}
-              {!loading && allProducts[0]?.categories[0]?.name?.toLowerCase()}
+              {loading && (
+                <span className="inline-block w-full text-center rounded-full h-full bg-gray-200">
+                  ...
+                </span>
+              )}
+              {!loading &&
+                allProducts[0]?.categories[0]?.name
+                  ?.replace("&amp;", "")
+                  ?.toLowerCase()}
             </span>
           ) : (
             "All category"

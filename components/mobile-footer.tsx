@@ -25,17 +25,17 @@ const MobileFooter: React.FC = () => {
   // Usage:
   const { category } = status;
   return (
-    <footer className={`w-full ${category ? "hidden" : "flex"} border-t-[1px] border-gray-200 relative h-[702px] lg:hidden flex-col gap-[4rem] justify-end pb-10 items-center`}>
+    <footer className={`w-full font-poppins ${category ? "hidden" : "flex"} border-t-[1px] border-gray-200 relative h-[702px] lg:hidden flex-col gap-[4rem] justify-end pb-10 items-center`}>
       <div className="w-fit h-auto bg-bue-500 -translate-x-1/2 left-[55%] top-[10%] absolute flex flex-col gap-[1.5rem] p-4">
         {footerTexts.map((text, index) => {
           return (
             <p
               key={index}
-              className={`text-[12px] ${
+              className={`text-[13px] ${
                 index === footerTexts.length - 1 || index === 4
                   ? "h-[3.5rem] flex items-end"
                   : ""
-              } font-display text-black opacity-50`}
+              } font-display text-black opacity-90`}
             >
               {text}
             </p>
