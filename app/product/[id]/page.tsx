@@ -6,6 +6,7 @@ import type { Metadata } from "next";
 import ProductImageZoomWrapper from "./ProductImageZoomWrapper";
 import Link from "next/link";
 import { FiHeart } from "react-icons/fi";
+import { GoArrowUpRight } from "react-icons/go";
 
 
 /**
@@ -30,6 +31,7 @@ type WooProduct = {
   price?: string | number;
   sku?: string;
   images?: WooProductImage[];
+  related_ids?: number[];
   // add more fields as needed...
 };
 
@@ -174,6 +176,10 @@ export default async function ProductPage({ params }: { params: { id: string } }
         </section>
       </article>
 
+      <Suspense fallback={<ProductSuggestionSkeleton />}>
+        <ProductSuggestion relatedIds={product?.related_ids || []} />
+      </Suspense>
+
       {/* JSON-LD structured data for SEO */}
       <script
         type="application/ld+json"
@@ -311,9 +317,131 @@ function ProductDescription({ product }: { product: WooProduct }) {
   );
 }
 
+// -------------------------
+// Product Suggestions (server component)
+// -------------------------
+async function ProductSuggestion({ relatedIds }: { relatedIds?: number[] }) {
+  if (!relatedIds || relatedIds.length === 0) return null;
+
+  const base = process.env.WC_API_BASE ?? "https://atlaze.com/wp-json/wc/v3";
+  const key = process.env.WC_CONSUMER_KEY!;
+  const secret = process.env.WC_CONSUMER_SECRET!;
+
+  // Fetch all related products in parallel
+  const productPromises = relatedIds.map(async (id) => {
+    const res = await fetch(
+      `${base}/products/${id}?consumer_key=${key}&consumer_secret=${secret}`,
+      { next: { revalidate: 3600 } }
+    );
+
+    if (!res.ok) return null;
+
+    const data = await res.json();
+    console.log("Fetched related product:", data);
+    return data;
+  });
+
+  // Wait for all requests to finish
+  const results = await Promise.all(productPromises);
+
+  // Remove nulls and duplicates by product ID
+  const suggestions = Array.from(
+    new Map(results.filter(Boolean).map((p) => [p.id, p])).values()
+  );
+
+  if (suggestions.length === 0) return null;
+
+
+  return (
+    <section
+      aria-labelledby="suggestion-title"
+      className="w-full h-auto font-display mt-10"
+    >
+      <h2 id="suggestion-title" className="text-gray-900 py-3">
+        YOU MAY ALSO LIKE
+      </h2>
+
+      <ul className="w-full grid grid-cols-2 gap-6 lg:flex lg:justify-between h-auto">
+        {suggestions.map((item: any) => (
+          <li
+            key={item.id}
+            className="lg:w-[244px] rounded-md w-[95%] min-h-[170px] lg:h-[285px] flex flex-col lg:max-h-[320.25px]"
+            itemScope
+            itemType="http://schema.org/Product"
+          >
+            <Link
+              href={`/product/${item.id}`}
+              className="block bg-[#FAFAFA] relative overflow-hidden w-full h-[175px] lg:w-full lg:min-h-[242.61px]"
+              itemProp="url"
+            >
+              <Image
+                fill
+                className="object-contain"
+                src={item.images?.[0]?.src ?? "/placeholder.png"}
+                alt={item.name ?? "Product image"}
+                priority
+                itemProp="image"
+              />
+              <div
+                className="absolute top-0 w-full p-1 text-[10px] flex items-center justify-between"
+                aria-hidden
+              >
+                <FiHeart className="text-xl" />
+                <span className="w-6 h-6 rounded-full text-white text-xl flex items-center justify-center bg-black">
+                  +
+                </span>
+              </div>
+            </Link>
+
+            <div className="w-full mt-1 flex flex-col h-auto">
+              <div className="flex items-center gap-[2.36px]">
+                <span
+                  className="text-[#2B2B2B] text-nowrap text-[10px] lg:text-[16px] font-[Red Hat Display]"
+                  itemProp="name"
+                >
+                  {item.name?.slice(0, 14) ?? "Product"}
+                </span>
+                <GoArrowUpRight className="lg:text-[20px] text-[14px]" />
+              </div>
+              <span
+                className="text-[#6C757D] text-end text-[10px] lg:text-[12px]"
+                itemProp="brand"
+              >
+                {item?.brands?.[0]?.name ??
+                  item?.slug?.split("-")[0]?.toUpperCase() ??
+                  ""}
+              </span>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+}
+
+
+
+
+
 /* -------------------------
    Skeletons (client-safe simple placeholders)
    ------------------------- */
+function ProductSuggestionSkeleton() {
+  return (
+    <section className="mt-10 animate-pulse">
+      <div className="h-6 w-1/3 bg-gray-200 rounded mb-4"></div>
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+        {Array.from({ length: 4 }).map((_, i) => (
+          <div
+            key={i}
+            className="bg-gray-100 rounded-md aspect-square"
+          ></div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 
 function HeaderSkeleton() {
   return (
@@ -356,3 +484,4 @@ function DescriptionSkeleton() {
     </div>
   );
 }
+

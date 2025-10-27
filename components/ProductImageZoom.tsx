@@ -1,24 +1,26 @@
 "use client";
 
 import React from "react";
-import Image from "next/image";
 import { Lens } from "@/components/ui/Lens"; // adjust to your actual path
+import Image from "next/image";
 
-interface ProductImageZoomProps {
+export default function ProductImageZoom({
+  src,
+  alt,
+}: {
   src: string;
   alt: string;
-}
-
-export default function ProductImageZoom({ src, alt }: ProductImageZoomProps) {
+}) {
   return (
-    <div className="relative h-full w-full max-w-md mx-auto">
-      <Lens zoomFactor={1.8} lensSize={200}>
-        <img
-          src={src}
-          alt={alt}
-          className="rounded-lg object-contain w-full h-full"
-        />
-      </Lens>
-    </div>
+    <Lens imageUrl={src}>
+      <Image
+        src={src}
+        alt={alt}
+        fill
+        className="object-contain"
+        priority
+        draggable={false}
+      />
+    </Lens>
   );
 }

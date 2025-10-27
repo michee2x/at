@@ -5,21 +5,22 @@ import { AnimatePresence, motion } from "motion/react";
 
 interface LensProps {
   children: React.ReactNode;
+  imageUrl: string;
   zoomFactor?: number;
   lensSize?: number;
-  gap?: number; // optional gap between image and zoom box
+  gap?: number;
 }
 
 export const Lens: React.FC<LensProps> = ({
   children,
-  zoomFactor = 6,
+  imageUrl,
+  zoomFactor = 1.3,
   lensSize = 800,
   gap = 20,
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [isHovering, setIsHovering] = useState(false);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  const [zoomBoxPosition, setZoomBoxPosition] = useState({ left: 0, top: 0 });
   const [imageSize, setImageSize] = useState({ width: 0, height: 0 });
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -29,45 +30,32 @@ export const Lens: React.FC<LensProps> = ({
     setMousePosition({ x, y });
   };
 
-  // get bounding box and image size
   useEffect(() => {
-    if (containerRef.current) {
-      const rect = containerRef.current.getBoundingClientRect();
-      const img = containerRef.current.querySelector("img") as HTMLImageElement;
-      if (img) {
+    const img = containerRef.current?.querySelector("img") as HTMLImageElement;
+    if (img) {
+      const updateSize = () =>
         setImageSize({ width: img.width, height: img.height });
-      }
-      setZoomBoxPosition({
-        left: rect.right + gap,
-        top: rect.top,
-      });
+      updateSize();
+      img.addEventListener("load", updateSize);
+      return () => img.removeEventListener("load", updateSize);
     }
-  }, [gap]);
+  }, []);
 
-  // prevent background from over-shifting at edges
   const clamp = (value: number, min: number, max: number) =>
     Math.max(min, Math.min(value, max));
 
-  const backgroundPosX = (() => {
-    const maxX = imageSize.width;
-    const x = clamp(mousePosition.x, 0, maxX);
-    const percentX = (x / maxX) * 100;
-    return `${percentX}%`;
-  })();
+  const posX = clamp(mousePosition.x, 0, imageSize.width);
+  const posY = clamp(mousePosition.y, 0, imageSize.height);
 
-  const backgroundPosY = (() => {
-    const maxY = imageSize.height;
-    const y = clamp(mousePosition.y, 0, maxY);
-    const percentY = (y / maxY) * 100;
-    return `${percentY}%`;
-  })();
+  const backgroundPosition = `${(posX / imageSize.width) * 100}% ${
+    (posY / imageSize.height) * 100
+  }%`;
 
   return (
     <>
-      {/* Main Image */}
       <div
         ref={containerRef}
-        className="relative w-full h-full overflow-hidden rounded-lg border"
+        className="relative w-full h-full overflow-hidden rounded-lg"
         onMouseEnter={() => setIsHovering(true)}
         onMouseLeave={() => setIsHovering(false)}
         onMouseMove={handleMouseMove}
@@ -75,7 +63,6 @@ export const Lens: React.FC<LensProps> = ({
         {children}
       </div>
 
-      {/* Zoomed Box */}
       <AnimatePresence>
         {isHovering && (
           <motion.div
@@ -83,25 +70,16 @@ export const Lens: React.FC<LensProps> = ({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="fixed w-1/2 z-50 h-screen right-0 -translate-y-1/2 top-1/2 border overflow-hidden shadow-xl bg-white"
-            style={{
-              zIndex: 999,
-            }}
+            className="fixed w-1/2 h-screen right-0 top-1/2 -translate-y-1/2 border border-gray-300 bg-white overflow-hidden shadow-xl z-[999]"
           >
             <div
-              className="absolute inset-0 bg-no-repeat"
+              className="absolute inset-0 bg-no-repeat bg-center"
               style={{
-                backgroundImage: `url(${
-                  (
-                    containerRef.current?.querySelector(
-                      "img"
-                    ) as HTMLImageElement
-                  )?.src
-                })`,
+                backgroundImage: `url(${imageUrl})`,
                 backgroundSize: `${zoomFactor * 100}%`,
-                backgroundPosition: `${backgroundPosX} ${backgroundPosY}`,
+                backgroundPosition,
               }}
-            ></div>
+            />
           </motion.div>
         )}
       </AnimatePresence>
