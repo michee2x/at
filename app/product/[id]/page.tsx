@@ -113,7 +113,9 @@ export default async function ProductPage({ params }: { params: { id: string } }
               href={`/category?cat=${product?.categories[0]?.id}`}
               className="text-blue-600 cursor-pointer hover:underline"
             >
-              {product?.categories[0]?.name?.toLowerCase()}
+              {product?.categories[0]?.name
+                ?.replace("&amp;", "")
+                ?.toLowerCase()}
             </Link>
           </li>
           <li>/</li>
