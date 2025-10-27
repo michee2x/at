@@ -145,7 +145,7 @@ export default async function ProductPage({ params }: { params: { id: string } }
 
           <div className="mt-6 flex flex-col lg:flex-row lg:space-x-4">
             <button
-              className="mt-4 w-full bg-black rounded-full text-white py-3 hover:bg-[#4c1292]"
+              className="mt-4 w-full bg-[#660fcf] rounded-full text-white py-3 hover:bg-[#5300b8]"
               aria-label="Add to cart"
             >
               Add to Cart
@@ -212,7 +212,7 @@ function ProductHeader({ product }: { product: WooProduct }) {
         {/* Keep semantic category info if available; fallback */}
         {product?.categories[0]?.name}
       </p>
-      <p className="flex flex-row flex-nowrap items-center text-[14px] gap-0.5">
+      <p className="flex flex-row flex-nowrap items-start text-[14px] lg:gap-0.5">
         {product.rating_count}
         <Ratings rating={product.rating_count} />
       </p>
@@ -235,8 +235,8 @@ function ImageGallery({ product }: { product: WooProduct }) {
   // If external image domains are blocked by next.config.js, images will break.
   // Make sure to add the domain(s) to next.config.js images.domains
   return (
-    <div className="space-y-4 sticky top-0">
-      <div className="w-full relative min-h-[70vh] flex items-center justify-center">
+    <div className="space-y-4">
+      <div className="w-full relative min-h-[50vh] lg:min-h-[70vh] flex items-center justify-center">
         {first.src ? (
           <ProductImageZoomWrapper
             src={first.src}
@@ -244,7 +244,7 @@ function ImageGallery({ product }: { product: WooProduct }) {
             gallery={images.slice(0, 6)}
           />
         ) : (
-          <div className="h-48 bg-gray-100 rounded-md flex items-center justify-center">
+          <div className="h-48 w-full bg-gray-100 rounded-md flex items-center justify-center">
             No image
           </div>
         )}
@@ -358,7 +358,7 @@ async function ProductSuggestion({ relatedIds }: { relatedIds?: number[] }) {
         YOU MAY ALSO LIKE
       </h2>
 
-      <ul className="w-full grid grid-cols-2 gap-6 lg:flex lg:justify-between h-auto">
+      <ul className="w-full grid grid-cols-2 lg:flex lg:gap-x-6 h-auto">
         {suggestions.map((item: WooProduct) => (
           <li
             key={`${item.id}`}
@@ -426,7 +426,7 @@ export function Ratings({ rating = 0 }: { rating?: number }) {
   const totalHalves = Math.round(safeRating * 2); // e.g. 4.5 → 9
 
   return (
-    <div className="rating rating-sm rating-half">
+    <div className="rating rating-xs lg:rating-sm rating-half">
       <input type="radio" name={`rating-${rating}`} className="rating-hidden" />
 
       {Array.from({ length: 10 }).map((_, i) => {
@@ -438,7 +438,7 @@ export function Ratings({ rating = 0 }: { rating?: number }) {
             key={i}
             type="radio"
             name={`rating-${rating}`}
-            className={`mask mask-star-2 ${
+            className={`mask mt-[1px] mask-star-2 ${
               i % 2 === 0 ? "mask-half-1" : "mask-half-2"
             } bg-[#6A00EF]`}
             aria-label={`${value} star`}

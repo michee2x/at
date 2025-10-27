@@ -6,6 +6,7 @@ import { CiCircleInfo } from "react-icons/ci";
 import { IoMenuSharp } from "react-icons/io5";
 import AlgoliaSearch, { ProductHit } from "./AlgoliaSearch";
 import { usePathname } from "next/navigation";
+import Link from "next/link";
 
 
 const NavBar = () => {
@@ -61,9 +62,9 @@ const NavBar = () => {
                 <IoMenuSharp />
               </span>
 
-              <span className="text-[(16/1280 * 100vw)] leading-[100%] tracking-[0%] font-display">
+              <Link href={"/category"} className="text-[(16/1280 * 100vw)] hover:underline leading-[100%] tracking-[0%] font-display">
                 All Categories
-              </span>
+              </Link>
             </div>
 
             <div className="w-auto hidden lg:block pt-2 absolute top-0 -translate-x-1/2 left-1/2 min-h-32">

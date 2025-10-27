@@ -26,19 +26,19 @@ export default function ProductImageZoomWrapper({
   const [mainImage, setMainImage] = useState(src);
 
   return (
-    <div className="w-full flex items-center justify-center gap-6">
+    <div className="w-full h-auto flex flex-col lg:flex-row items-center justify-center gap-6">
       {/* Main Image */}
-      <div className="h-[70vh] bg-[#FAFAFA] rounded-lg border border-[#dbdbdb] aspect-square">
+      <div className="lg:h-[70vh] h-[50vh] flex justify-center w-full bg-[#FAFAFA] cursor-zoom-in rounded-lg border border-[#dbdbdb] aspect-square">
         <ProductImageZoom src={mainImage} alt={alt} />
       </div>
 
       {/* Thumbnails */}
-      <div className="w-1/3 flex flex-col pl-6 gap-2 h-full overflow-y-auto">
+      <div className="lg:w-1/3 carousel rounded-box w-full flex lg:flex-col pl-6 gap-2 lg:h-full h-auto overflow-y-auto">
         {gallery.length > 1 &&
           gallery.map((item, idx) => (
             <div
               key={`${idx}`}
-              className="relative bg-gray-100 rounded-xl w-[70px] h-[70px] cursor-pointer"
+              className="relative carousel-item bg-gray-100 rounded-xl w-[70px] h-[70px] cursor-pointer"
               onMouseEnter={() => setMainImage(item.src ?? "/placeholder.png")}
             >
               <Image
