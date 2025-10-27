@@ -95,7 +95,7 @@ export default async function ProductPage({ params }: { params: { id: string } }
   const image = product!.images?.[0]?.src ?? null;
 
   return (
-    <main className="container font-poppins mx-auto px-4 py-8">
+    <main className="container w-full mx-auto md:max-w-[95%] lg:max-w-full xl:max-w-[1300px] 2xl:max-w-[1440px] font-poppins px-4 py-8">
       {/* Breadcrumb — keep semantic & crawlable links */}
       <nav aria-label="breadcrumb">
         <ol className="flex flex-wrap gap-x-2 text-sm">
@@ -395,7 +395,7 @@ async function ProductSuggestion({ relatedIds }: { relatedIds?: number[] }) {
             <div className="w-full mt-1 flex flex-col h-auto">
               <div className="flex items-center gap-[2.36px]">
                 <span
-                  className="text-[#2B2B2B] text-nowrap text-[10px] lg:text-[16px] font-[Red Hat Display]"
+                  className="text-[#2B2B2B] text-nowrap text-[12px] lg:text-[16px] font-[Red Hat Display]"
                   itemProp="name"
                 >
                   {item.name?.slice(0, 14) ?? "Product"}
