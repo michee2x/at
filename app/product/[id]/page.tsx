@@ -110,15 +110,15 @@ export default async function ProductPage({ params }: { params: { id: string } }
           <li>/</li>
           <li>
             <Link
-              href="/category"
+              href={`/category?cat=${product?.categories[0]?.id}`}
               className="text-blue-600 cursor-pointer hover:underline"
             >
-              Category
+              {product?.categories[0]?.name?.toLowerCase()}
             </Link>
           </li>
           <li>/</li>
           <li aria-current="page" className="text-gray-500">
-            {product!.name ?? "Product"}
+            Product Details
           </li>
         </ol>
       </nav>
@@ -204,16 +204,25 @@ export default async function ProductPage({ params }: { params: { id: string } }
 
 function ProductHeader({ product }: { product: WooProduct }) {
   return (
-    <header>
+    <header className="font-poppins">
       <h1 className="text-3xl font-bold" itemProp="name">
         {product.name}
       </h1>
-      <p className="text-lg text-gray-600" aria-hidden>
+      <p className="text-[15px] font-poppins text-[#7E7E7E]" aria-hidden>
         {/* Keep semantic category info if available; fallback */}
-        Men&apos;s Shoe
+        {product?.categories[0]?.name}
       </p>
-      <p className="text-2xl font-semibold mt-2" itemProp="offers" itemScope itemType="http://schema.org/Offer">
-        ${product.price}
+      <p className="flex flex-row flex-nowrap items-center text-[14px] gap-0.5">
+        {product.rating_count}
+        <Ratings rating={product.rating_count} />
+      </p>
+      <p
+        className="text-[15px] mt-6 text-[#111111] font-semibold"
+        itemProp="offers"
+        itemScope
+        itemType="http://schema.org/Offer"
+      >
+        NGN{product.price}
       </p>
     </header>
   );
@@ -408,6 +417,39 @@ async function ProductSuggestion({ relatedIds }: { relatedIds?: number[] }) {
 }
 
 
+export function Ratings({ rating = 0 }: { rating?: number }) {
+  // Clamp the rating to a safe range (0–5)
+  const safeRating = Math.max(0, Math.min(5, rating));
+
+  // DaisyUI has 10 inputs (5 stars × 2 halves)
+  // Each half star = 0.5
+  const totalHalves = Math.round(safeRating * 2); // e.g. 4.5 → 9
+
+  return (
+    <div className="rating rating-sm rating-half">
+      <input type="radio" name={`rating-${rating}`} className="rating-hidden" />
+
+      {Array.from({ length: 10 }).map((_, i) => {
+        const value = (i + 1) / 2; // half-star values: 0.5, 1, 1.5, 2, ...
+        const isChecked = value === safeRating;
+
+        return (
+          <input
+            key={i}
+            type="radio"
+            name={`rating-${rating}`}
+            className={`mask mask-star-2 ${
+              i % 2 === 0 ? "mask-half-1" : "mask-half-2"
+            } bg-[#6A00EF]`}
+            aria-label={`${value} star`}
+            defaultChecked={isChecked || totalHalves === i + 1}
+            readOnly
+          />
+        );
+      })}
+    </div>
+  );
+}
 
 
 

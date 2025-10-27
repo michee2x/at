@@ -7,12 +7,14 @@ interface UseFilteredProductsOptions {
   filters?: FilterMap;
   page?: number;
   perPage?: number;
+  categoryId?: string
 }
 
 export function useFilteredProducts({
   filters = {},
   page = 1,
   perPage = 12,
+  categoryId = ""
 }: UseFilteredProductsOptions) {
   const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
@@ -33,6 +35,7 @@ export function useFilteredProducts({
         // Pagination
         params.append("page", String(page));
         params.append("per_page", String(perPage));
+        params.append("category", categoryId)
 
 
         // Dynamic filters

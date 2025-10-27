@@ -16,11 +16,13 @@ import { WooProduct } from "@/types";
 const skeletonArray = Array.from({ length: 8 });
 type FilterMap = Record<string, string>;
 
-export default function CategoryPage() {
+export default function CategoryPage({searchParams}: {searchParams: {[key: string]: string}}) {
+  const categoryId = searchParams.cat;
   const [filters, setFilters] = useState<FilterMap>({});
   const [page, setPage] = useState(1);
   const [allProducts, setAllProducts] = useState<WooProduct[]>([]);
   const [loadingMore, setLoadingMore] = useState(false);
+  const [categoryName, setCategoryName] = useState("");
 
   const {
     data: products,
@@ -30,6 +32,7 @@ export default function CategoryPage() {
     filters,
     page,
     perPage: 12,
+    categoryId,
   });
 
   const { setShowFilter } = useFilter();
@@ -42,6 +45,7 @@ export default function CategoryPage() {
   });
 
   const isMobile = typeof window !== "undefined" && window.innerWidth < 1024;
+
 
   // Reset products when filters change
   useEffect(() => {
@@ -132,7 +136,20 @@ export default function CategoryPage() {
         <Link href="/" className="text-purple-600 hover:underline">
           Home
         </Link>{" "}
-        / <span className="text-gray-800 font-medium">Electronics</span>
+        /{" "}
+        <span className="text-gray-800 font-medium">
+          {categoryId ? (
+            <span
+              className={`${loading ? "inline-block min-w-16 h-4 animate-pulse" : ""
+              }`}
+            >
+              {loading && <span className="inline-block w-full text-center rounded-full h-full bg-gray-200">...</span>}
+              {!loading && allProducts[0]?.categories[0]?.name?.toLowerCase()}
+            </span>
+          ) : (
+            "All category"
+          )}
+        </span>
       </nav>
 
       <div className="lg:px-6 2xl:px-10">
