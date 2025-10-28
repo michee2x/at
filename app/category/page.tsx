@@ -140,19 +140,11 @@ export default function CategoryPage({searchParams}: {searchParams: {[key: strin
         <span className="text-gray-800 font-medium">
           {categoryId ? (
             <span
-              className={`${
-                loading ? "inline-block min-w-16 h-4 animate-pulse" : ""
+              className={`${loading ? "inline-block min-w-16 h-4 animate-pulse" : ""
               }`}
             >
-              {loading && (
-                <span className="inline-block w-full text-center rounded-full h-full bg-gray-200">
-                  ...
-                </span>
-              )}
-              {!loading &&
-                allProducts[0]?.categories[0]?.name
-                  ?.replace("&amp;", "")
-                  ?.toLowerCase()}
+              {loading && <span className="inline-block w-full text-center rounded-full h-full bg-gray-200">...</span>}
+              {!loading && allProducts[0]?.categories[0]?.name?.replace("&amp;", "")?.toLowerCase()}
             </span>
           ) : (
             "All category"
@@ -239,9 +231,14 @@ export default function CategoryPage({searchParams}: {searchParams: {[key: strin
 
 /* ---------------------------- Subcomponents ---------------------------- */
 
-function ProductCard({ product }: { product: WooProduct }) {
+export function ProductCard({ product }: { product: WooProduct }) {
   return (
-    <Link href={`/product/${product?.id}`} className="border border-gray-200 pb-2 font-poppins bg-white rounded-xl flex flex-col">
+    <Link
+      href={`/product/${product?.id}`}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="border border-gray-200 pb-2 font-poppins bg-white rounded-xl flex flex-col"
+    >
       <div className="relative w-full aspect-square mb-3">
         <Image
           src={product.images?.[0]?.src || "/placeholder.png"}

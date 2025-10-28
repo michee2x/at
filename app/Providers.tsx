@@ -18,3 +18,5 @@ const Providers = ({children}: {children:ReactNode}) => {
 }
 
 export default Providers
+
+//http://localhost:3000/category/lec?cat=352&title=Jewelry%20%26%20Accessories&opt_level=1&page=1&sort=popular
