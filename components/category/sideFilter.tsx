@@ -1,42 +1,47 @@
-"use client"
-import React, { useMemo, useState } from 'react'
+"use client";
+
+import { Params } from "@/types";
+import React, { useMemo, useState } from "react";
+
+type Brand = { id: number; name: string };
+type Store = { id: number; name: string };
+
+interface FiltersProps {
+  params: Params;
+  onChange: (patch: Params) => void;
+  availableAttributes: { name: string; options: string[] }[];
+  brands?: { id: number; name: string }[];
+  stores?: { id: number; name: string }[];
+}
+
+// ✅ Strongly typed debounce
+function debounce<T extends (...args: any[]) => void>(fn: T, wait = 300) {
+  let timeoutId: ReturnType<typeof setTimeout>;
+  return (...args: Parameters<T>): void => {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => fn(...args), wait);
+  };
+}
 
 function Filters({
   params,
   onChange,
-  availableAttributes,
+  availableAttributes, // unused but kept for future
   brands = [],
   stores = [],
-}: {
-  params: Record<string, string | number | undefined>;
-  onChange: (patch: Record<string, any>) => void;
-  availableAttributes: { name: string; options: string[] }[];
-  brands?: { id: number; name: string }[];
-  stores?: { id: number; name: string }[];
-}) {
-  const [local, setLocal] = useState<Record<string, any>>({ ...params });
-
-  const debounce = (fn: Function, wait = 300) => {
-    let t: any;
-    return (...args: any[]) => {
-      clearTimeout(t);
-      t = setTimeout(() => fn(...args), wait);
-    };
-  };
+}: FiltersProps) {
+  const [local, setLocal] = useState<Params>({ ...params });
 
   const debounced = useMemo(
-    () =>
-      debounce((patch: Record<string, any>) => {
-        onChange(patch);
-      }, 350),
+    () => debounce((patch: Params) => onChange(patch), 350),
     [onChange]
   );
 
-  function setAndApply(key: string, val: any) {
+  const setAndApply = (key: string, val: string | number | undefined) => {
     const next = { ...local, [key]: val };
     setLocal(next);
     debounced(next);
-  }
+  };
 
   return (
     <aside className="w-full md:w-64 rounded-lg p-4 sticky top-4 h-screen overflow-auto bg-white shadow-sm">
@@ -138,5 +143,4 @@ function Filters({
   );
 }
 
-
-export default Filters
+export default Filters;

@@ -1,12 +1,10 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
-import qs from "query-string";
+import React, { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ProductCard } from "../page";
-import { WooProduct } from "@/types";
-import { useQuery } from "@tanstack/react-query";
+import { Params, WooProduct } from "@/types";
 import { useProducts } from "@/hooks/wc/useProducts";
 import Filters from "@/components/category/sideFilter";
 import { AtlazeBrands } from "@/constants";
@@ -76,7 +74,10 @@ export function Breadcrumb() {
             {idx === paths.length - 1 ? (
               <span className="text-gray-800 font-medium">{p.name}</span>
             ) : (
-              <Link href={p.href} className="hover:text-blue-600 text-[#9747FF]">
+              <Link
+                href={p.href}
+                className="hover:text-blue-600 text-[#9747FF]"
+              >
                 {p.name}
               </Link>
             )}
@@ -87,6 +88,14 @@ export function Breadcrumb() {
   );
 }
 
+// -----------------------------
+// Types
+// -----------------------------
+interface CategoryMeta {
+  title?: string;
+  description?: string;
+  attributes?: { name: string; options: string[] }[];
+}
 
 // -----------------------------
 // Category Page
@@ -95,10 +104,10 @@ export default function CategoryPageClient({
   initialParams = {},
   categoryMeta = {},
 }: {
-  initialParams?: Record<string, string | number | undefined>;
-  categoryMeta?: any;
+  initialParams?: Params;
+  categoryMeta?: CategoryMeta;
 }) {
-  const [params, setParams] = useState<Record<string, any>>(initialParams);
+  const [params, setParams] = useState<Params>(initialParams);
   const [page, setPage] = useState<number>(Number(initialParams.page) || 1);
   const [perPage, setPerPage] = useState<number>(
     Number(initialParams.per_page) || 24
@@ -110,10 +119,13 @@ export default function CategoryPageClient({
     per_page: perPage,
   });
 
-  const products = Array.isArray(data) ? data : data?.products ?? [];
+  const products: WooProduct[] = Array.isArray(data)
+    ? data
+    : (data?.products as WooProduct[]) ?? [];
 
-
-  function handleFilterChange(patch: Record<string, any>) {
+  function handleFilterChange(
+    patch: Params & { _reset?: boolean; _apply?: boolean }
+  ) {
     if (patch._reset) {
       setParams({});
       return;
@@ -181,7 +193,7 @@ export default function CategoryPageClient({
             </div>
           ) : products.length > 0 ? (
             <section className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-              {products.map((p: WooProduct) => (
+              {products.map((p) => (
                 <ProductCard key={p.id} product={p} />
               ))}
             </section>
@@ -214,40 +226,40 @@ export default function CategoryPageClient({
   );
 }
 
-
-function Banner(){
+// -----------------------------
+// Banner
+// -----------------------------
+function Banner() {
   return (
-  <div className="w-full relative h-64 hidden lg:block lg:h-[245px] bg-blue-600">
-          <div className="absolute z-10 top-[20%] left-[15%] w-[461px] h-[94px] text-[31px]">
-            Efficient and Durable Electronics
-          </div>
-          <Image
-            alt="Atlaze category banner"
-            src="/banner/Rectangle%2025.png"
-            fill
-          />
-          <div className="w-[336px] h-[228px] absolute top-[10%] right-[16%]">
-            <Image
-              fill
-              alt="atlaze electronics category image"
-              src="/banner/Group%203.png"
-            />
-          </div>
-          <div className="w-[328px] left-[15%] items-end bottom-[5%] flex justify-center h-[46px] absolute">
-            <div className="w-[107.94px] flex gap-1 items-center h-full">
-              <div className="w-[34px] h-[34px] rounded-full bg-[#FF9900]" />
-              <h1 className="w-[68px] h-[40px] font-bold text-black">
-                TOP BRANDS
-              </h1>
-            </div>
-            <hr className="w-[3px] h-[90%] mr-3 bg-black" />
-            <div className="w-[107.94px] flex gap-1 items-center h-full">
-              <div className="w-[34px] h-[34px] rounded-full bg-[#FF9900]" />
-              <h1 className="w-[68px] h-[40px] font-bold text-black">
-                WIDE SELECTION
-              </h1>
-            </div>
-          </div>
+    <div className="w-full relative h-64 hidden lg:block lg:h-[245px] bg-blue-600">
+      <div className="absolute z-10 top-[20%] left-[15%] w-[461px] h-[94px] text-[31px]">
+        Efficient and Durable Electronics
+      </div>
+      <Image
+        alt="Atlaze category banner"
+        src="/banner/Rectangle%2025.png"
+        fill
+      />
+      <div className="w-[336px] h-[228px] absolute top-[10%] right-[16%]">
+        <Image
+          fill
+          alt="atlaze electronics category image"
+          src="/banner/Group%203.png"
+        />
+      </div>
+      <div className="w-[328px] left-[15%] items-end bottom-[5%] flex justify-center h-[46px] absolute">
+        <div className="w-[107.94px] flex gap-1 items-center h-full">
+          <div className="w-[34px] h-[34px] rounded-full bg-[#FF9900]" />
+          <h1 className="w-[68px] h-[40px] font-bold text-black">TOP BRANDS</h1>
         </div>
+        <hr className="w-[3px] h-[90%] mr-3 bg-black" />
+        <div className="w-[107.94px] flex gap-1 items-center h-full">
+          <div className="w-[34px] h-[34px] rounded-full bg-[#FF9900]" />
+          <h1 className="w-[68px] h-[40px] font-bold text-black">
+            WIDE SELECTION
+          </h1>
+        </div>
+      </div>
+    </div>
   );
 }

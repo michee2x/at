@@ -1,9 +1,33 @@
 import { NextResponse } from "next/server";
 
-/**
- * 🧩 Shared helper to map params → REST API format
- */
-function buildQueryParams(params: Record<string, any>): Record<string, string> {
+// -----------------------------
+// 🧩 Types
+// -----------------------------
+interface QueryParams {
+  cat?: string | number;
+  page?: string | number;
+  per_page?: string | number;
+  min_price?: string | number;
+  max_price?: string | number;
+  in_stock?: string | boolean;
+  q?: string;
+  brand_id?: string | number;
+  sort?: string;
+  store?: string;
+  domain?: string;
+  [key: string]: string | number | boolean | undefined; // allow attr_* and custom keys
+}
+
+interface WCProductResponse<T = unknown> {
+  products: T[];
+  total: number;
+  totalPages: number;
+}
+
+// -----------------------------
+// 🧩 Shared helper to map params → REST API format
+// -----------------------------
+function buildQueryParams(params: QueryParams): Record<string, string> {
   const query: Record<string, string> = {};
 
   if (params.cat) query["category"] = String(params.cat);
@@ -14,7 +38,7 @@ function buildQueryParams(params: Record<string, any>): Record<string, string> {
   if (params.max_price) query["max_price"] = String(params.max_price);
 
   if (params.in_stock !== undefined)
-    query["stock_status"] = params.in_stock === "true" ? "instock" : "outofstock";
+    query["stock_status"] = params.in_stock === "true" || params.in_stock === true ? "instock" : "outofstock";
 
   if (params.q) query["search"] = String(params.q);
   if (params.brand_id) query["brand"] = String(params.brand_id);
@@ -53,10 +77,10 @@ function buildQueryParams(params: Record<string, any>): Record<string, string> {
   return query;
 }
 
-/**
- * 🏪 Fetch WooCommerce products
- */
-async function fetchWCProducts(params: Record<string, any>) {
+// -----------------------------
+// 🏪 Fetch WooCommerce products
+// -----------------------------
+async function fetchWCProducts<T = unknown>(params: QueryParams): Promise<WCProductResponse<T>> {
   const base = process.env.WC_BASE_URL!;
   const key = process.env.WC_CONSUMER_KEY!;
   const secret = process.env.WC_CONSUMER_SECRET!;
@@ -74,7 +98,7 @@ async function fetchWCProducts(params: Record<string, any>) {
   });
 
   if (!res.ok) throw new Error(`WooCommerce fetch failed (${res.status})`);
-  const data = await res.json();
+  const data = (await res.json()) as T[];
 
   return {
     products: data,
@@ -83,10 +107,10 @@ async function fetchWCProducts(params: Record<string, any>) {
   };
 }
 
-/**
- * 👨‍🍳 Fetch Dokan vendor products
- */
-async function fetchDokanProducts(params: Record<string, any>) {
+// -----------------------------
+// 👨‍🍳 Fetch Dokan vendor products
+// -----------------------------
+async function fetchDokanProducts<T = unknown>(params: QueryParams): Promise<WCProductResponse<T>> {
   const base = process.env.WC_BASE_URL!;
   const store = params.store;
   if (!store) throw new Error("Missing store ID for Dokan fetch");
@@ -102,9 +126,8 @@ async function fetchDokanProducts(params: Record<string, any>) {
   });
 
   if (!res.ok) throw new Error(`Dokan fetch failed (${res.status})`);
-  const data = await res.json();
+  const data = (await res.json()) as T[];
 
-  // Dokan may not return total headers, so we fake them
   return {
     products: data,
     total: Array.isArray(data) ? data.length : 0,
@@ -112,13 +135,13 @@ async function fetchDokanProducts(params: Record<string, any>) {
   };
 }
 
-/**
- * 🌐 App Router GET handler
- */
+// -----------------------------
+// 🌐 App Router GET handler
+// -----------------------------
 export async function GET(req: Request) {
   try {
     const { searchParams } = new URL(req.url);
-    const params = Object.fromEntries(searchParams.entries());
+    const params = Object.fromEntries(searchParams.entries()) as QueryParams;
     const { store, domain } = params;
 
     const useDokan = domain === "dokan" || (store && store !== "none");
@@ -133,10 +156,11 @@ export async function GET(req: Request) {
         "Cache-Control": "s-maxage=60, stale-while-revalidate=300",
       },
     });
-  } catch (err: any) {
-    console.error("API Error:", err);
+  } catch (err) {
+    const error = err instanceof Error ? err : new Error("Unknown error");
+    console.error("API Error:", error);
     return NextResponse.json(
-      { error: err.message || "Server error" },
+      { error: error.message || "Server error" },
       { status: 500 }
     );
   }

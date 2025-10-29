@@ -68,6 +68,9 @@ export interface WooProductLinks {
   }>;
 }
 
+export type ParamValue = string | number | boolean | undefined;
+export type Params = Record<string, ParamValue>;
+
 export interface WooProduct {
   id: number;
   name: string;
