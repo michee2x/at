@@ -49,7 +49,7 @@ export default function RootLayout({
           <Sidebar />
             <main
               data-theme="light"
-              className="w-full h-auto relative lg:px-4"
+              className="w-full h-auto relative"
             >
               <NavBar />
               <SearchFilter />

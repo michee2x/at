@@ -233,12 +233,7 @@ export default function CategoryPage({searchParams}: {searchParams: {[key: strin
 
 export function ProductCard({ product }: { product: WooProduct }) {
   return (
-    <Link
-      href={`/product/${product?.id}`}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="border border-gray-200 pb-2 font-poppins bg-white rounded-xl flex flex-col"
-    >
+    <Link href={`/product/${product?.id}`} className="border border-gray-200 pb-2 font-poppins bg-white rounded-xl flex flex-col">
       <div className="relative w-full aspect-square mb-3">
         <Image
           src={product.images?.[0]?.src || "/placeholder.png"}

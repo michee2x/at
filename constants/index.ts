@@ -333,3 +333,11 @@ export const productBrand = [
   {"id": 27, "name": "NIKE"}
 
 ]
+
+export const AtlazeBrands = [{name: "Niko's Jewelry", id: 3},
+  {name: "TechWorld", id: 5},
+  {name: "HomeComforts", id: 8},
+  {name: "FashionHub", id: 12},
+  {name: "OutdoorGear", id: 15},
+  {name: "FitnessPro", id: 18},
+  {name: "BeautyEssentials", id: 20},]

@@ -16,6 +16,7 @@
     "@algolia/autocomplete-plugin-algolia-insights": "^1.19.4",
     "@algolia/autocomplete-theme-classic": "^1.19.4",
     "@lottiefiles/dotlottie-react": "^0.17.5",
+    "@tanstack/react-query": "^5.90.5",
     "@woocommerce/woocommerce-rest-api": "^1.0.2",
     "algoliasearch": "^5.40.1",
     "clsx": "^2.1.1",
@@ -27,6 +28,8 @@
     "react-dom": "19.1.0",
     "react-icons": "^5.5.0",
     "react-intersection-observer": "^9.16.0",
+    "react-virtualized-auto-sizer": "^1.0.26",
+    "react-window": "1.8.9",
     "tailwind-merge": "^3.3.1"
   },
   "devDependencies": {
@@ -38,6 +41,7 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@types/react-window": "^2.0.0",
     "daisyui": "^5.1.27",
     "eslint": "^9",
     "eslint-config-next": "15.5.4",

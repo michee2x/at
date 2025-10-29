@@ -4,9 +4,13 @@ import { CategoryProvider } from '@/contexts/category-context'
 import { SidebarProvider } from '@/contexts/sidebar-context';
 import {FilterProvider} from "@/contexts/filter-context"
 import { SearchProvider } from '@/contexts/search-context';
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { useState } from "react";
 
 const Providers = ({children}: {children:ReactNode}) => {
+  const [client] = useState(() => new QueryClient());
   return (
+    <QueryClientProvider client={client}>
     <SidebarProvider>
       <FilterProvider>
         <SearchProvider>
@@ -14,6 +18,7 @@ const Providers = ({children}: {children:ReactNode}) => {
         </SearchProvider>
       </FilterProvider>
     </SidebarProvider>
+    </QueryClientProvider>
   );
 }
 
