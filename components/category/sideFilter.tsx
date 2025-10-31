@@ -22,8 +22,8 @@ interface FiltersProps {
   stores?: Store[];
 }
 
-// ✅ Debounce utility
-function debounce<T extends (...args: any[]) => void>(fn: T, wait = 300) {
+// ✅ Debounce utility (no `any`)
+function debounce<T extends (...args: Parameters<T>) => void>(fn: T, wait = 300) {
   let timeoutId: ReturnType<typeof setTimeout>;
   return (...args: Parameters<T>): void => {
     clearTimeout(timeoutId);
