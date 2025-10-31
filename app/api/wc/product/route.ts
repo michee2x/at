@@ -117,6 +117,7 @@ async function fetchDokanProducts<T = unknown>(params: QueryParams): Promise<WCP
 
   const query = buildQueryParams(params);
   const url = new URL(`/wp-json/dokan/v1/stores/${store}/products`, base);
+console.log("WC_BASE_URL:", base);
 
   Object.entries(query).forEach(([k, v]) => url.searchParams.set(k, v));
 
