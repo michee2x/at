@@ -1,18 +1,18 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef } from "react";
 
 interface UseAlgoliaSearchResult<T> {
   products: T[];
   loading: boolean;
   error: Error | null;
-  hasSearched: boolean; // NEW: tracks if we've attempted a search
+  hasSearched: boolean; // tracks if we've attempted a search
 }
 
-function useAlgoliaSearch<T = any>(query: string): UseAlgoliaSearchResult<T> {
+function useAlgoliaSearch<T = unknown>(query: string): UseAlgoliaSearchResult<T> {
   const [products, setProducts] = useState<T[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
   const [hasSearched, setHasSearched] = useState(false);
-  const hasSearchedRef = useRef(false); // To avoid stale closure issues
+  const hasSearchedRef = useRef(false); // avoid stale closures
 
   useEffect(() => {
     let cancelled = false;
@@ -40,7 +40,7 @@ function useAlgoliaSearch<T = any>(query: string): UseAlgoliaSearchResult<T> {
         const res = await fetch(`/api/search?q=${encodeURIComponent(trimmedQuery)}`);
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
-        const data = await res.json();
+        const data: { hits: T[] } = await res.json();
         if (!cancelled) {
           setProducts(data.hits || []);
           setError(null);
@@ -49,7 +49,7 @@ function useAlgoliaSearch<T = any>(query: string): UseAlgoliaSearchResult<T> {
         }
       } catch (err) {
         if (!cancelled) {
-          setError(err instanceof Error ? err : new Error('An error occurred'));
+          setError(err instanceof Error ? err : new Error("An error occurred"));
           setProducts([]);
           setHasSearched(true);
           hasSearchedRef.current = true;

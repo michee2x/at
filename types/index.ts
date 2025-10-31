@@ -1,3 +1,4 @@
+// WooCategory type
 export interface WooCategory {
   id: number;
   name: string;
@@ -30,14 +31,14 @@ export interface WooCategory {
   };
 }
 
-
-
+// Product Category
 export interface WooProductCategory {
   id: number;
   name: string;
   slug: string;
 }
 
+// Product Image
 export interface WooProductImage {
   id: number;
   date_created: string;
@@ -52,12 +53,14 @@ export interface WooProductImage {
   thumbnail?: string;
 }
 
+// Dimensions
 export interface WooProductDimensions {
   length: string;
   width: string;
   height: string;
 }
 
+// Links
 export interface WooProductLinks {
   self: Array<{
     href: string;
@@ -68,9 +71,50 @@ export interface WooProductLinks {
   }>;
 }
 
+// Params
 export type ParamValue = string | number | boolean | undefined;
 export type Params = Record<string, ParamValue>;
 
+// Downloadable Item
+export interface WooDownload {
+  id: string;
+  name: string;
+  file: string;
+}
+
+// Attribute
+export interface WooProductAttribute {
+  id: number;
+  name: string;
+  position: number;
+  visible: boolean;
+  variation: boolean;
+  options: string[];
+}
+
+// Default Attribute
+export interface WooProductDefaultAttribute {
+  id: number;
+  name: string;
+  option: string;
+}
+
+// Meta Data
+export interface WooMetaData {
+  id: number;
+  key: string;
+  value: string | number | boolean | null;
+}
+
+// Brand or Tag (generic taxonomy)
+export interface WooTerm {
+  id: number;
+  name: string;
+  slug: string;
+  description?: string;
+}
+
+// Main Product
 export interface WooProduct {
   id: number;
   name: string;
@@ -99,7 +143,7 @@ export interface WooProduct {
   total_sales: number;
   virtual: boolean;
   downloadable: boolean;
-  downloads: any[];
+  downloads: WooDownload[];
   download_limit: number;
   download_expiry: number;
   external_url: string;
@@ -127,21 +171,20 @@ export interface WooProduct {
   parent_id: number;
   purchase_note: string;
   categories: WooProductCategory[];
-  brands: any[];
-  tags: any[];
+  brands: WooTerm[];
+  tags: WooTerm[];
   images: WooProductImage[];
-  attributes: any[];
-  default_attributes: any[];
-  variations: any[];
-  grouped_products: any[];
+  attributes: WooProductAttribute[];
+  default_attributes: WooProductDefaultAttribute[];
+  variations: number[];
+  grouped_products: number[];
   menu_order: number;
   price_html: string;
   related_ids: number[];
-  meta_data: any[];
+  meta_data: WooMetaData[];
   stock_status: string;
   has_options: boolean;
   post_password: string;
   global_unique_id: string;
   _links: WooProductLinks;
 }
-

@@ -9,7 +9,7 @@ const WC_ALLOWED_TYPES = new Set(["simple", "grouped", "external", "variable"]);
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
-
+3
     // Base WooCommerce products endpoint
     const url = new URL(`${siteUrl}/wp-json/wc/v3/products`);
     url.searchParams.append("consumer_key", consumerKey);

@@ -9,25 +9,26 @@ const nextConfig: NextConfig = {
         port: "",
         pathname: "/**",
       },
+      {
+        protocol: "https",
+        hostname: "images.unsplash.com",
+        port: "",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "i5.walmartimages.com",
+        port: "",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "i2.walmartimages.com",
+        port: "",
+        pathname: "/**",
+      },
     ],
   },
 };
 
 export default nextConfig;
-
-
-
-/**
- * 
- * <Image
-        src="/home/sub-category-images/9de1d476284efe9d2ad81e59cc9f3e0a1f996df2.png"
-        alt="Sub Category"
-        fill
-        sizes="(max-width: 768px) 100vw, 
-               (max-width: 1200px) 50vw, 
-               33vw"
-        className="object-cover rounded-lg"
-        priority
-      />
-    </div>
- */

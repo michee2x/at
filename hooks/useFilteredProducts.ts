@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import { WooProduct } from "@/types"; // 👈 optional but recommended if this hook fetches products
 
 type FilterMap = Record<string, string | number | undefined>;
 
@@ -7,16 +8,17 @@ interface UseFilteredProductsOptions {
   filters?: FilterMap;
   page?: number;
   perPage?: number;
-  categoryId?: string
+  categoryId?: string;
 }
 
 export function useFilteredProducts({
   filters = {},
   page = 1,
   perPage = 12,
-  categoryId = ""
+  categoryId = "",
 }: UseFilteredProductsOptions) {
-  const [data, setData] = useState<any[]>([]);
+  // ✅ Use WooProduct[] (or a generic type) instead of any[]
+  const [data, setData] = useState<WooProduct[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [hasMore, setHasMore] = useState(true);
@@ -28,15 +30,13 @@ export function useFilteredProducts({
       try {
         setLoading(true);
         setError(null);
-        console.log("\n\n\nfilters: ", filters, "\n\n\n")
 
         const params = new URLSearchParams();
 
         // Pagination
         params.append("page", String(page));
         params.append("per_page", String(perPage));
-        params.append("category", categoryId)
-
+        params.append("category", categoryId);
 
         // Dynamic filters
         Object.entries(filters).forEach(([key, value]) => {
@@ -58,24 +58,24 @@ export function useFilteredProducts({
           throw new Error(`Error fetching products: ${res.status} - ${text}`);
         }
 
-        const result = await res.json();
+        const result: WooProduct[] = await res.json();
 
         // ✅ If fewer results than per_page → no more pages
         setHasMore(Array.isArray(result) && result.length === perPage);
-
         setData(result);
-        return () => controller.abort();
       } catch (err) {
         if (err instanceof DOMException && err.name === "AbortError") return;
         console.error("❌ Failed to fetch products:", err);
-        setError(err instanceof Error ? err.message : "Unknown error");
+        setError(err instanceof Error ? err.message : "An unexpected error occurred");
       } finally {
         setLoading(false);
       }
     };
 
     fetchProducts();
-  }, [filters, page, perPage]);
+
+    return () => controller.abort();
+  }, [filters, page, perPage, categoryId]);
 
   return { data, loading, error, hasMore };
 }

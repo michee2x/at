@@ -2,7 +2,6 @@
 import { WooProduct } from '@/types';
 import { useEffect, useState } from 'react';
 
-
 interface UseProductsOptions {
   /** Category ID (numeric). Use the numeric ID, e.g. 22 */
   category?: number;
@@ -36,7 +35,7 @@ export function useProducts({
         const params = new URLSearchParams();
         params.append('per_page', perPage.toString());
         if (category !== undefined && category !== null) {
-          params.append('category', String(category)); // category ID
+          params.append('category', String(category));
         }
         if (search) params.append('search', search);
         if (page && page > 1) params.append('page', String(page));
@@ -52,9 +51,14 @@ export function useProducts({
         const data: WooProduct[] = await res.json();
         if (!mounted) return;
         setProducts(data);
-      } catch (err: any) {
+      } catch (err) {
         if (!mounted) return;
-        setError(err.message || 'Unknown error');
+
+        if (err instanceof Error) {
+          setError(err.message);
+        } else {
+          setError('An unexpected error occurred');
+        }
       } finally {
         if (!mounted) return;
         setLoading(false);

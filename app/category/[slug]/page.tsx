@@ -1,14 +1,20 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ProductCard } from "../page";
 import { Params, WooProduct } from "@/types";
 import { useProducts } from "@/hooks/wc/useProducts";
 import Filters from "@/components/category/sideFilter";
-import { AtlazeBrands } from "@/constants";
+import { AtlazeBrands, productBrand } from "@/constants";
 import Image from "next/image";
+import { HiAdjustmentsHorizontal } from "react-icons/hi2";
+import { useFilter } from "@/contexts/filter-context";
+import ProductNotFound from "@/components/lottie/ProductNotFound";
+import BannerCarousel from "@/components/Carousel/BannerCarousel";
+import Carousel from "@/components/category/carousel";
+import { useInView } from "react-intersection-observer";
 
 // -----------------------------
 // Loader
@@ -107,11 +113,23 @@ export default function CategoryPageClient({
   initialParams?: Params;
   categoryMeta?: CategoryMeta;
 }) {
+  const { setShowFilter } = useFilter();
+  const { ref: loaderRef, inView } = useInView({
+    threshold: 0.1,
+    rootMargin: "200px",
+    triggerOnce: false,
+  });
   const [params, setParams] = useState<Params>(initialParams);
   const [page, setPage] = useState<number>(Number(initialParams.page) || 1);
   const [perPage, setPerPage] = useState<number>(
     Number(initialParams.per_page) || 24
   );
+  const [productData, setProductData] = useState<WooProduct[]>([]);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [allProducts, setAllProducts] = useState<WooProduct[]>([]);
+
+
+
 
   const { data, isLoading, isFetching } = useProducts({
     ...params,
@@ -122,6 +140,38 @@ export default function CategoryPageClient({
   const products: WooProduct[] = Array.isArray(data)
     ? data
     : (data?.products as WooProduct[]) ?? [];
+  const isMobile = typeof window !== "undefined" && window.innerWidth < 1024;
+  const hasMore = products.length === perPage;
+
+  // Merge/append products
+  useEffect(() => {
+    if (isLoading || !products) return;
+
+    setAllProducts((prev) => {
+      if (page === 1) return products;
+      const ids = new Set(prev.map((p) => p.id));
+      const newItems = products.filter((p) => !ids.has(p.id));
+      return [...prev, ...newItems];
+    });
+
+    // stop showing spinner after new data arrives
+    setLoadingMore(false);
+  }, [products, isLoading, page]);
+
+
+  useEffect(() => {
+    if (!isMobile) return;
+    if (inView && hasMore && !isLoading && !loadingMore) {
+      setLoadingMore(true);
+      setPage((prev) => prev + 1);
+    }
+  }, [inView, isMobile, hasMore, isLoading, loadingMore]);
+
+    // Reset products when filters change
+    useEffect(() => {
+      setPage(1);
+      setAllProducts([]);
+    }, [JSON.stringify(params)]);
 
   function handleFilterChange(
     patch: Params & { _reset?: boolean; _apply?: boolean }
@@ -141,9 +191,10 @@ export default function CategoryPageClient({
   }
 
   return (
-    <div className="container w-full mx-auto px-4 lg:px-0 py-8">
-      <div className="flex flex-col gap-8">
-        <Banner />
+    <div className="container bg-gray-50 w-full mx-auto lg:px- pb-8">
+      <div className="flex w-full px-4 flex-col gap-8">
+        <Carousel />
+        {/* <Banner /> */}
         <Breadcrumb />
       </div>
       <div className="flex gap-6 md:gap-10">
@@ -152,19 +203,27 @@ export default function CategoryPageClient({
           onChange={handleFilterChange}
           availableAttributes={categoryMeta?.attributes || []}
           stores={AtlazeBrands}
+          brands={productBrand}
         />
 
-        <main className="flex-1">
-          <header className="mb-6">
+        <main className="lg:flex-1 w-screen px-2 min-h-screen">
+          <header
+            id="header"
+            className="text-xl lg:text-2xl sticky py-3 lg:relative top-0 bg-white z-20 border-gray-300 lg:border-0 border-b flex items-center pb-2 justify-between lg:p-0 px-4 font-semibold text-gray-900 lg:mb-6"
+          >
             <h1 className="text-3xl font-bold">
               {categoryMeta?.title ?? "Category"}
             </h1>
             {categoryMeta?.description && (
               <p className="text-gray-600 mt-2">{categoryMeta.description}</p>
             )}
+            <HiAdjustmentsHorizontal
+              onClick={() => setShowFilter(true)}
+              className="text-2xl lg:hidden text-gray-700"
+            />
           </header>
 
-          <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center justify-between my-4">
             <div className="text-sm text-gray-500">
               {!isLoading && !isFetching && `${products.length} items`}
             </div>
@@ -184,40 +243,56 @@ export default function CategoryPageClient({
             </div>
           </div>
 
-          {isLoading ? (
-            <div className="w-full p-6 bg-white rounded-lg mb-4">
-              <Loader />
-              <div className="text-center text-sm text-gray-500">
-                Fetching latest products…
+          <div className="min-h-screen w-full">
+            {isLoading ? (
+              <div className="w-full p-6 bg-white rounded-lg mb-4">
+                <Loader />
               </div>
-            </div>
-          ) : products.length > 0 ? (
-            <section className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-              {products.map((p) => (
-                <ProductCard key={p.id} product={p} />
-              ))}
-            </section>
-          ) : !isFetching ? (
-            <div className="col-span-full p-6 text-center text-gray-600">
-              No products found.
-            </div>
-          ) : null}
+            ) : allProducts.length > 0 ? (
+              <section className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2">
+                {allProducts.map((p) => (
+                  <ProductCard key={p.id} product={p} />
+                ))}
+              </section>
+            ) : !isFetching ? (
+              <div className="col-span-full flex h-[60vh] flex-col items-center justify-center text-center pb-16 text-gray-600">
+                <ProductNotFound />
+                <p className="text-lg font-semibold">No products found</p>
+                <p className="text-sm text-gray-500 mt-1">
+                  Try adjusting your filters or check back later.
+                </p>
+                {params && (
+                  <button
+                    onClick={() => setParams({})}
+                    className="mt-4 px-5 py-2 rounded-md bg-purple-600 text-white hover:bg-purple-700 transition"
+                  >
+                    Clear filters
+                  </button>
+                )}
+              </div>
+            ) : null}
+          </div>
 
           <footer className="mt-6 flex items-center justify-between">
-            <div className="text-sm text-gray-500">Page {page}</div>
-            <div className="flex gap-2">
-              <button
-                onClick={() => gotoPage(Math.max(1, page - 1))}
-                className="px-3 py-2 border rounded"
-              >
-                Prev
-              </button>
-              <button
-                onClick={() => gotoPage(page + 1)}
-                className="px-3 py-2 border rounded"
-              >
-                Next
-              </button>
+            <div className="text-sm hidden lg:flex text-gray-500">
+              Page {page}
+            </div>
+            <button
+              onClick={() => gotoPage(page + 1)}
+              disabled={!hasMore}
+              className="px-6 hidden lg:flex py-2 cursor-pointer border rounded disabled:border-gray-300 disabled:text-gray-400"
+            >
+              {perPage * page > allProducts.length
+                ? "Loading...."
+                : "load more"}
+            </button>
+            <div
+              ref={loaderRef}
+              className="lg:hidden flex justify-center mt-10"
+            >
+              {hasMore && (
+                <span className="loading text-[#6A00EF] loading-spinner loading-xl"></span>
+              )}
             </div>
           </footer>
         </main>
@@ -226,40 +301,3 @@ export default function CategoryPageClient({
   );
 }
 
-// -----------------------------
-// Banner
-// -----------------------------
-function Banner() {
-  return (
-    <div className="w-full relative h-64 hidden lg:block lg:h-[245px] bg-blue-600">
-      <div className="absolute z-10 top-[20%] left-[15%] w-[461px] h-[94px] text-[31px]">
-        Efficient and Durable Electronics
-      </div>
-      <Image
-        alt="Atlaze category banner"
-        src="/banner/Rectangle%2025.png"
-        fill
-      />
-      <div className="w-[336px] h-[228px] absolute top-[10%] right-[16%]">
-        <Image
-          fill
-          alt="atlaze electronics category image"
-          src="/banner/Group%203.png"
-        />
-      </div>
-      <div className="w-[328px] left-[15%] items-end bottom-[5%] flex justify-center h-[46px] absolute">
-        <div className="w-[107.94px] flex gap-1 items-center h-full">
-          <div className="w-[34px] h-[34px] rounded-full bg-[#FF9900]" />
-          <h1 className="w-[68px] h-[40px] font-bold text-black">TOP BRANDS</h1>
-        </div>
-        <hr className="w-[3px] h-[90%] mr-3 bg-black" />
-        <div className="w-[107.94px] flex gap-1 items-center h-full">
-          <div className="w-[34px] h-[34px] rounded-full bg-[#FF9900]" />
-          <h1 className="w-[68px] h-[40px] font-bold text-black">
-            WIDE SELECTION
-          </h1>
-        </div>
-      </div>
-    </div>
-  );
-}

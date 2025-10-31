@@ -22,7 +22,6 @@ export default function CategoryPage({searchParams}: {searchParams: {[key: strin
   const [page, setPage] = useState(1);
   const [allProducts, setAllProducts] = useState<WooProduct[]>([]);
   const [loadingMore, setLoadingMore] = useState(false);
-  const [categoryName, setCategoryName] = useState("");
 
   const {
     data: products,
@@ -97,70 +96,8 @@ export default function CategoryPage({searchParams}: {searchParams: {[key: strin
 
   return (
     <div className="h-auto w-full mx-auto md:max-w-[95%] lg:max-w-full xl:max-w-[1300px] 2xl:max-w-[1440px] font-poppins bg-white">
-      {/* Banner */}
-      <div className="w-full relative h-64 hidden lg:block lg:h-[245px] bg-blue-600">
-        <div className="absolute z-10 top-[20%] left-[15%] w-[461px] h-[94px] text-[31px]">
-          Efficient and Durable Electronics
-        </div>
-        <Image
-          alt="Atlaze category banner"
-          src="/banner/Rectangle%2025.png"
-          fill
-        />
-        <div className="w-[336px] h-[228px] absolute top-[10%] right-[16%]">
-          <Image
-            fill
-            alt="atlaze electronics category image"
-            src="/banner/Group%203.png"
-          />
-        </div>
-        <div className="w-[328px] left-[15%] items-end bottom-[5%] flex justify-center h-[46px] absolute">
-          <div className="w-[107.94px] flex gap-1 items-center h-full">
-            <div className="w-[34px] h-[34px] rounded-full bg-[#FF9900]" />
-            <h1 className="w-[68px] h-[40px] font-bold text-black">
-              TOP BRANDS
-            </h1>
-          </div>
-          <hr className="w-[3px] h-[90%] mr-3 bg-black" />
-          <div className="w-[107.94px] flex gap-1 items-center h-full">
-            <div className="w-[34px] h-[34px] rounded-full bg-[#FF9900]" />
-            <h1 className="w-[68px] h-[40px] font-bold text-black">
-              WIDE SELECTION
-            </h1>
-          </div>
-        </div>
-      </div>
-
-      {/* Breadcrumb */}
-      <nav className="text-sm text-gray-600 px-6 py-4">
-        <Link href="/" className="text-purple-600 hover:underline">
-          Home
-        </Link>{" "}
-        /{" "}
-        <span className="text-gray-800 font-medium">
-          {categoryId ? (
-            <span
-              className={`${loading ? "inline-block min-w-16 h-4 animate-pulse" : ""
-              }`}
-            >
-              {loading && <span className="inline-block w-full text-center rounded-full h-full bg-gray-200">...</span>}
-              {!loading && allProducts[0]?.categories[0]?.name?.replace("&amp;", "")?.toLowerCase()}
-            </span>
-          ) : (
-            "All category"
-          )}
-        </span>
-      </nav>
 
       <div className="lg:px-6 2xl:px-10">
-        <div className="text-2xl sticky py-3 lg:relative top-0 bg-white z-20 border-gray-300 lg:border-0 border-b flex items-center pb-2 justify-between lg:p-0 px-4 font-semibold text-gray-900 lg:mb-6">
-          <h1>Electronics</h1>
-          <HiAdjustmentsHorizontal
-            onClick={() => setShowFilter(true)}
-            className="text-2xl lg:hidden text-gray-700"
-          />
-        </div>
-
         <div className="grid grid-cols-1 lg:grid-cols-6 gap-6">
           {/* Sidebar */}
           <CategoryFilters filters={filters} setFilters={setFilters} />
@@ -233,13 +170,16 @@ export default function CategoryPage({searchParams}: {searchParams: {[key: strin
 
 export function ProductCard({ product }: { product: WooProduct }) {
   return (
-    <Link href={`/product/${product?.id}`} className="border border-gray-200 pb-2 font-poppins bg-white rounded-xl flex flex-col">
+    <Link
+      href={`/product/${product?.id}`}
+      className="border border-gray-200 pb-2 font-poppins bg-white rounded-xl flex flex-col"
+    >
       <div className="relative w-full aspect-square mb-3">
         <Image
           src={product.images?.[0]?.src || "/placeholder.png"}
           alt={product.name}
           fill
-          className="object-cover"
+          className="object-cover index-10"
         />
       </div>
       <div className="px-3 w-full h-auto">
