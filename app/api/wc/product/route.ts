@@ -81,7 +81,7 @@ function buildQueryParams(params: QueryParams): Record<string, string> {
 // 🏪 Fetch WooCommerce products
 // -----------------------------
 async function fetchWCProducts<T = unknown>(params: QueryParams): Promise<WCProductResponse<T>> {
-  const base = process.env.WC_BASE_URL!;
+  const base = process.env.WC_BASE_URL! || "https://at-20.vercel.app";
   const key = process.env.WC_CONSUMER_KEY!;
   const secret = process.env.WC_CONSUMER_SECRET!;
 
