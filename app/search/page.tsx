@@ -84,7 +84,7 @@ export default function SearchPage({ searchParams }: SearchPageProps) {
         )}
 
         {/* Product List */}
-        {!loading && products.length > 0 && (
+        {/* {!loading && products.length > 0 && (
           <div className="lg:space-y-6 grid grid-cols-2 lg:flex flex-col h-auto w-full mt-10">
             {products.map((p) => (
               <div
@@ -136,7 +136,7 @@ export default function SearchPage({ searchParams }: SearchPageProps) {
               </div>
             ))}
           </div>
-        )}
+        )} */}
       </section>
     </main>
   );
