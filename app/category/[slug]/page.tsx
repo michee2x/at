@@ -249,8 +249,11 @@ export default function CategoryPageClient({
               ) : allProducts.length > 0 ? (
                 <section className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2">
                   {allProducts.map((p) => (
-                    <DrawerTrigger onClick={() => setClickedProduct(p)}>
-                      <ProductCard key={p.id} product={p} />
+                    <DrawerTrigger
+                      key={p.id}
+                      onClick={() => setClickedProduct(p)}
+                    >
+                      <ProductCard product={p} />
                     </DrawerTrigger>
                   ))}
                 </section>
@@ -281,8 +284,8 @@ export default function CategoryPageClient({
                 onClick={() => gotoPage(page + 1)}
                 disabled={!hasMore}
                 className={`px-6 hidden ${
-                  perPage * page > allProducts.length
-                 ? "border-0" : ""} mt-16 lg:flex py-2 w-[60vw] items-center justify-center mx-auto cursor-pointer border rounded disabled:border-gray-300 disabled:text-gray-400`}
+                  perPage * page > allProducts.length ? "border-0" : ""
+                } mt-16 lg:flex py-2 w-[60vw] items-center justify-center mx-auto cursor-pointer border rounded disabled:border-gray-300 disabled:text-gray-400`}
               >
                 {perPage * page > allProducts.length ? (
                   <span className="loading text-[#6A00EF] loading-spinner loading-xl"></span>
