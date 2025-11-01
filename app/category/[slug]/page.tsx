@@ -262,7 +262,7 @@ export default function CategoryPageClient({
                 </div>
               ) : allProducts.length > 0 ? (
                 <section className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2">
-                  {allProducts.map((p) => (
+                  {allProducts.slice(3).map((p) => (
                     <DrawerTrigger
                       key={p.id}
                       onClick={() => setClickedProduct(p)}
@@ -338,13 +338,14 @@ export default function CategoryPageClient({
                 <header className="font-poppins mt-10 lg:mt-0">
                   <div className="flex flex-col justify-between gap-4">
                     <div className="flex flex-col gap-1 lg:gap-2">
-                      <h1
-                        className="text-[26px] flex flex-wrap items-center gap-2 lg:text-3xl font-bold"
+                      <Link
+                      href={`/product/${clickedProduct.id}`}
+                        className="text-[26px] hover:underline hover:cursor-pointer flex flex-wrap items-center gap-2 lg:text-3xl font-bold"
                         itemProp="name"
                       >
                         {clickedProduct.name}
                         <GoArrowUpRight className="inline-block" />
-                      </h1>
+                      </Link>
                       <p
                         className="text-[15px] hover:cursor-pointer hover:underline font-poppins text-[#7E7E7E]"
                         aria-hidden
@@ -395,7 +396,7 @@ export default function CategoryPageClient({
                             Follow
                           </button>
                         </div>
-                        <button className="btn btn-circle bg-inherit text-black border-gray-300">
+                        <button className="btn shadow-sm rounded-full btn-circle bg-inherit text-black border-gray-300">
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
                             fill="none"
@@ -411,7 +412,7 @@ export default function CategoryPageClient({
                             />
                           </svg>
                         </button>
-                        <button className="btn btn-circle bg-inherit text-black border-gray-300">
+                        <button className="btn shadow-sm rounded-full btn-circle bg-inherit text-black border-gray-300">
                           <HiOutlineBookmark className="size-[1.2em] font-semibold" />
                         </button>
                       </div>
