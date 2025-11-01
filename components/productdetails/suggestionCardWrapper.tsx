@@ -3,7 +3,6 @@
 import React from "react";
 import dynamic from "next/dynamic";
 import { WooProduct } from "@/types";
-import Loading from "@/app/loading";
 import { ProductSuggestionSkeleton } from "@/app/product/[id]/page";
 
 const SuggestionCard = dynamic(
