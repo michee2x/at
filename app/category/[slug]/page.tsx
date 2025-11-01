@@ -37,12 +37,13 @@ import {
 import { HoverCardInfo } from "@/components/category/hovercard";
 import { ProductDescription } from "@/components/category/productDesc";
 import { ProductSkeleton } from "@/components/category/skeleton/product-skeleton";
+import { GoArrowUpRight } from "react-icons/go";
 // -----------------------------
 // Loader
 // -----------------------------
 export function Loader({ size = 48 }: { size?: number }) {
   return (
-    <div className="grid lg:gap-x-4 gap-2 p-2 bg-zinc-200 lg:bg-inherit grid-cols-2 md:grid-cols-3 xl:grid-cols-4 min-h-[100px]">
+    <div className="grid w-full lg:gap-x-4 gap-2 lg:p-2 bg-zinc-200 lg:bg-inherit grid-cols-2 md:grid-cols-3 xl:grid-cols-4 min-h-[100px]">
       {Array.from({ length: 8 }).map((_, i) => (
         <ProductSkeleton key={i} />
       ))}
@@ -156,13 +157,25 @@ export default function CategoryPageClient({
     setLoadingMore(false);
   }, [products, isLoading, page]);
 
-  useEffect(() => {
-    if (!isMobile) return;
-    if (inView && hasMore && !isLoading && !loadingMore) {
-      setLoadingMore(true);
-      setPage((prev) => prev + 1);
-    }
-  }, [inView, isMobile, hasMore, isLoading, loadingMore]);
+ useEffect(() => {
+   if (
+     !isMobile ||
+     !inView ||
+     loadingMore ||
+     isLoading ||
+     isFetching ||
+     !hasMore
+   )
+     return;
+
+   const timer = setTimeout(() => {
+     setLoadingMore(true);
+     setPage((prev) => prev + 1);
+   }, 300);
+
+   return () => clearTimeout(timer);
+ }, [inView, isMobile, hasMore, isLoading, isFetching, loadingMore]);
+
 
   // Reset products when filters change
   useEffect(() => {
@@ -243,7 +256,7 @@ export default function CategoryPageClient({
 
             <div className="min-h-screen w-full">
               {isLoading ? (
-                <div className="w-full p-6 bg-white rounded-lg mb-4">
+                <div className="w-full lg:p-6 bg-white rounded-lg mb-4">
                   <Loader />
                 </div>
               ) : allProducts.length > 0 ? (
@@ -305,8 +318,8 @@ export default function CategoryPageClient({
           </main>
         </div>
 
-        <DrawerContent className="h-[100vh]">
-          <div className="flex-1 gap-10 flex px-16">
+        <DrawerContent className="h-[90vh]">
+          <div className="flex-1 overflow-auto pt-4 pb-10 h-full lg:gap-10 flex flex-col lg:flex-row px-6 lg:px-16">
             <div className="flex-1">
               {clickedProduct && (
                 <ProductImageZoomWrapper
@@ -320,31 +333,44 @@ export default function CategoryPageClient({
               )}
             </div>
             {clickedProduct && (
-              <div className="flex-1 p-6">
+              <div className="flex-1 lg:p-6">
                 <header className="font-poppins">
-                  <div className="flex justify-between items-center">
-                    <h1 className="text-3xl font-bold" itemProp="name">
-                      {clickedProduct.name}
-                    </h1>
+                  <div className="flex flex-col justify-between gap-4">
+                    <div className="flex flex-col gap-1 lg:gap-2">
+                      <h1
+                        className="text-[26px] flex items-center gap-2 lg:text-3xl font-bold"
+                        itemProp="name"
+                      >
+                        {clickedProduct.name}
+                        <GoArrowUpRight />
+                      </h1>
+                      <p
+                        className="text-[15px] hover:cursor-pointer hover:underline font-poppins text-[#7E7E7E]"
+                        aria-hidden
+                      >
+                        {/* Keep semantic category info if available; fallback */}
+                        {clickedProduct?.categories[0]?.name
+                          ?.replace("&amp;", "")
+                          ?.toLowerCase()}
+                      </p>
+                    </div>
                     <p
-                      className="text-[15px] text-[#111111] font-semibold"
+                      className="lg:text-[20px] text-[18px] flex items-center justify-between text-[#111111] font-semibold"
                       itemProp="offers"
                       itemScope
                       itemType="http://schema.org/Offer"
                     >
-                      NGN{clickedProduct.price}
+                      <p className="flex gap-1">
+                        <span className="font-medium text-[14px]">NGN</span>
+                        {clickedProduct.price}
+                      </p>
+                      <p className="flex flex-row mt-1 flex-nowrap items-start text-[14px] lg:gap-0.5">
+                        {clickedProduct.rating_count || "2.5"}
+                        <Ratings rating={clickedProduct.rating_count || 2.5} />
+                      </p>
                     </p>
                   </div>
-                  <p
-                    className="text-[15px] hover:cursor-pointer hover:underline font-poppins text-[#7E7E7E]"
-                    aria-hidden
-                  >
-                    {/* Keep semantic category info if available; fallback */}
-                    {clickedProduct?.categories[0]?.name
-                      ?.replace("&amp;", "")
-                      ?.toLowerCase()}
-                  </p>
-                  <div className="my-6 flex gap-6 items-center w-full">
+                  <div className="my-6 flex flex-row gap-6 lg:items-center w-full">
                     <Avatar className="rounded-lg size-[5rem]">
                       <AvatarImage
                         src="https://github.com/evilrabbit.png"
@@ -353,7 +379,7 @@ export default function CategoryPageClient({
                       <AvatarFallback>ER</AvatarFallback>
                     </Avatar>
 
-                    <div className="flex-1 flex justify-between">
+                    <div className="flex-1 flex flex-col lg:flex-row justify-between">
                       <HoverCard>
                         <HoverCardTrigger className="cursor-pointer hover:underline">
                           Evilrabbit
@@ -390,10 +416,6 @@ export default function CategoryPageClient({
                       </div>
                     </div>
                   </div>
-                  <p className="flex flex-row flex-nowrap items-start text-[14px] lg:gap-0.5">
-                    {clickedProduct.rating_count}
-                    <Ratings rating={clickedProduct.rating_count || 2.5} />
-                  </p>
 
                   <ProductDescription shorten product={clickedProduct} />
                 </header>

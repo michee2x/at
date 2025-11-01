@@ -111,7 +111,7 @@ async function fetchWCProducts<T = unknown>(params: QueryParams): Promise<WCProd
 // 👨‍🍳 Fetch Dokan vendor products
 // -----------------------------
 async function fetchDokanProducts<T = unknown>(params: QueryParams): Promise<WCProductResponse<T>> {
-  const base = process.env.WC_BASE_URL!;
+  const base = process.env.WC_BASE_URL! || "https://atlaze.com";
   const store = params.store;
   if (!store) throw new Error("Missing store ID for Dokan fetch");
 

@@ -181,15 +181,12 @@ export function ProductCard({ product }: { product: WooProduct }) {
           className="object-cover index-10"
         />
       </div>
-      <div className="px-3 w-full h-auto">
+      <div className="px-3 w-full overflow-hidden h-auto">
         <div className="lg:text-[15px] text-[14px] flex flex-col font-medium text-black mb-1">
           <h2 className="text-start">{`${product.name.slice(0, 15)}...`}</h2>
-          <span className="flex justify-start lg:-ml-2">
+          <span className="flex justify-start -ml-2">
             <Ratings rating={3.2} />
           </span>
-        </div>
-        <div className="lg:text-[12px] lg:hidden text-[10px] text-black/50">
-          Elica 60 cm 1200 m3/hr Filterless Autocl...
         </div>
         <div className="flex mt-3 flex-col justify-between">
           <div className="flex flex-col">
