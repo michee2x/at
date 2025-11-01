@@ -43,7 +43,7 @@ import { GoArrowUpRight } from "react-icons/go";
 // -----------------------------
 export function Loader({ size = 48 }: { size?: number }) {
   return (
-    <div className="grid w-full lg:gap-x-4 gap-2 lg:p-2 bg-zinc-200 lg:bg-inherit grid-cols-2 md:grid-cols-3 xl:grid-cols-4 min-h-[100px]">
+    <div className="grid w-full lg:gap-x-4 gap-2 p-2 bg-zinc-200 lg:bg-inherit grid-cols-2 md:grid-cols-3 xl:grid-cols-4 min-h-[100px]">
       {Array.from({ length: 8 }).map((_, i) => (
         <ProductSkeleton key={i} />
       ))}
@@ -211,13 +211,14 @@ export default function CategoryPageClient({
         <div className="flex gap-6 md:gap-10">
           <Filters
             params={params}
+            setParams={setParams}
             onChange={handleFilterChange}
             availableAttributes={categoryMeta?.attributes || []}
             stores={AtlazeBrands}
             brands={productBrand}
           />
 
-          <main className="lg:flex-1 w-screen px-2 min-h-screen">
+          <main className="lg:flex-1 w-screen px-2 min-h-[20vh">
             <header
               id="header"
               className="text-xl lg:text-2xl sticky py-3 lg:relative top-0 bg-white z-20 border-gray-300 lg:border-0 border-b flex items-center pb-2 justify-between lg:p-0 px-4 font-semibold text-gray-900 lg:mb-6"
@@ -254,7 +255,7 @@ export default function CategoryPageClient({
               </div>
             </div>
 
-            <div className="min-h-screen w-full">
+            <div className="w-full">
               {isLoading ? (
                 <div className="w-full lg:p-6 bg-white rounded-lg mb-4">
                   <Loader />
@@ -271,7 +272,7 @@ export default function CategoryPageClient({
                   ))}
                 </section>
               ) : !isFetching ? (
-                <div className="col-span-full flex h-[60vh] flex-col items-center justify-center text-center pb-16 text-gray-600">
+                <div className="col-span-full flex h-[40vh] flex-col items-center justify-center text-center pb-16 text-gray-600">
                   <ProductNotFound />
                   <p className="text-lg font-semibold">No products found</p>
                   <p className="text-sm text-gray-500 mt-1">
@@ -334,15 +335,15 @@ export default function CategoryPageClient({
             </div>
             {clickedProduct && (
               <div className="flex-1 lg:p-6">
-                <header className="font-poppins">
+                <header className="font-poppins mt-10 lg:mt-0">
                   <div className="flex flex-col justify-between gap-4">
                     <div className="flex flex-col gap-1 lg:gap-2">
                       <h1
-                        className="text-[26px] flex items-center gap-2 lg:text-3xl font-bold"
+                        className="text-[26px] flex flex-wrap items-center gap-2 lg:text-3xl font-bold"
                         itemProp="name"
                       >
                         {clickedProduct.name}
-                        <GoArrowUpRight />
+                        <GoArrowUpRight className="inline-block" />
                       </h1>
                       <p
                         className="text-[15px] hover:cursor-pointer hover:underline font-poppins text-[#7E7E7E]"
@@ -422,12 +423,6 @@ export default function CategoryPageClient({
               </div>
             )}
           </div>
-          {/* <DrawerFooter>
-            <Button>Submit</Button>
-            <DrawerClose>
-              <Button variant="outline">Cancel</Button>
-            </DrawerClose>
-          </DrawerFooter> */}
         </DrawerContent>
       </Drawer>
     </div>

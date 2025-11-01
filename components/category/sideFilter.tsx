@@ -14,6 +14,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Button } from "../ui/button";
 
 type Brand = { id: number; name: string };
 type Store = { id: number; name: string };
@@ -24,6 +25,7 @@ interface FiltersProps {
   availableAttributes: { name: string; options: string[] }[];
   brands?: Brand[];
   stores?: Store[];
+  setParams?: (value: React.SetStateAction<Params>) => void;
 }
 
 // ✅ Debounce helper
@@ -44,6 +46,7 @@ function Filters({
   availableAttributes,
   brands = [],
   stores = [],
+  setParams
 }: FiltersProps) {
   const [local, setLocal] = useState<Params>({ ...params });
   const { showFilter, setShowFilter } = useFilter();
@@ -199,6 +202,18 @@ function Filters({
                 onChange={(e) => setAndApply("max_price", e.target.value)}
               />
             </div>
+          </div>
+
+          <div className="pl-3 flex pt-6 pr-6 items-start absolute bottom-0 left-0 w-full h-24">
+            {params && (
+              <Button
+                className="w-full hover:bg-white"
+                onClick={() => setParams?.({})} // 👈 the '!' asserts it's not undefined
+                variant="outline"
+              >
+                clear filter
+              </Button>
+            )}
           </div>
         </div>
       </div>
