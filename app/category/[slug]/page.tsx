@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ProductCard } from "../page";
@@ -9,42 +9,43 @@ import { useProducts } from "@/hooks/wc/useProducts";
 import Filters from "@/components/category/sideFilter";
 import { AtlazeBrands, productBrand } from "@/constants";
 import Image from "next/image";
-import { HiAdjustmentsHorizontal } from "react-icons/hi2";
+import { HiAdjustmentsHorizontal, HiOutlineBookmark } from "react-icons/hi2";
 import { useFilter } from "@/contexts/filter-context";
 import ProductNotFound from "@/components/lottie/ProductNotFound";
 import BannerCarousel from "@/components/Carousel/BannerCarousel";
 import Carousel from "@/components/category/carousel";
 import { useInView } from "react-intersection-observer";
-
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
+import { Button } from "@/components/ui/button";
+import { Ratings } from "@/components/Ratings";
+import ProductImageZoomWrapper from "@/app/product/[id]/ProductImageZoomWrapper";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hoverCard";
+import { HoverCardInfo } from "@/components/category/hovercard";
+import { ProductDescription } from "@/components/category/productDesc";
+import { ProductSkeleton } from "@/components/category/skeleton/product-skeleton";
 // -----------------------------
 // Loader
 // -----------------------------
 export function Loader({ size = 48 }: { size?: number }) {
   return (
-    <div className="flex items-center justify-center p-6">
-      <svg
-        className="animate-spin text-blue-600"
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        viewBox="0 0 24 24"
-        width={size}
-        height={size}
-      >
-        <circle
-          className="opacity-25"
-          cx="12"
-          cy="12"
-          r="10"
-          stroke="currentColor"
-          strokeWidth="4"
-        />
-        <path
-          className="opacity-75"
-          fill="currentColor"
-          d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
-        />
-      </svg>
-      <span className="sr-only">Loading</span>
+    <div className="grid lg:gap-x-4 gap-2 p-2 bg-zinc-200 lg:bg-inherit grid-cols-2 md:grid-cols-3 xl:grid-cols-4 min-h-[100px]">
+      {Array.from({ length: 8 }).map((_, i) => (
+        <ProductSkeleton key={i} />
+      ))}
     </div>
   );
 }
@@ -119,17 +120,14 @@ export default function CategoryPageClient({
     rootMargin: "200px",
     triggerOnce: false,
   });
+  const [clickedProduct, setClickedProduct] = useState<WooProduct | null>(null);
   const [params, setParams] = useState<Params>(initialParams);
   const [page, setPage] = useState<number>(Number(initialParams.page) || 1);
   const [perPage, setPerPage] = useState<number>(
     Number(initialParams.per_page) || 24
   );
-  const [productData, setProductData] = useState<WooProduct[]>([]);
   const [loadingMore, setLoadingMore] = useState(false);
   const [allProducts, setAllProducts] = useState<WooProduct[]>([]);
-
-
-
 
   const { data, isLoading, isFetching } = useProducts({
     ...params,
@@ -158,7 +156,6 @@ export default function CategoryPageClient({
     setLoadingMore(false);
   }, [products, isLoading, page]);
 
-
   useEffect(() => {
     if (!isMobile) return;
     if (inView && hasMore && !isLoading && !loadingMore) {
@@ -167,11 +164,11 @@ export default function CategoryPageClient({
     }
   }, [inView, isMobile, hasMore, isLoading, loadingMore]);
 
-    // Reset products when filters change
-    useEffect(() => {
-      setPage(1);
-      setAllProducts([]);
-    }, [JSON.stringify(params)]);
+  // Reset products when filters change
+  useEffect(() => {
+    setPage(1);
+    setAllProducts([]);
+  }, [JSON.stringify(params)]);
 
   function handleFilterChange(
     patch: Params & { _reset?: boolean; _apply?: boolean }
@@ -191,113 +188,223 @@ export default function CategoryPageClient({
   }
 
   return (
-    <div className="container bg-gray-50 w-full mx-auto lg:px- pb-8">
-      <div className="flex w-full px-4 flex-col gap-8">
-        <Carousel />
-        {/* <Banner /> */}
-        <Breadcrumb />
-      </div>
-      <div className="flex gap-6 md:gap-10">
-        <Filters
-          params={params}
-          onChange={handleFilterChange}
-          availableAttributes={categoryMeta?.attributes || []}
-          stores={AtlazeBrands}
-          brands={productBrand}
-        />
+    <div className="container w-full mx-auto lg:px- pb-8">
+      <Drawer>
+        <div className="flex w-full px-4 flex-col gap-8">
+          <Carousel />
+          {/* <Banner /> */}
+          <Breadcrumb />
+        </div>
+        <div className="flex gap-6 md:gap-10">
+          <Filters
+            params={params}
+            onChange={handleFilterChange}
+            availableAttributes={categoryMeta?.attributes || []}
+            stores={AtlazeBrands}
+            brands={productBrand}
+          />
 
-        <main className="lg:flex-1 w-screen px-2 min-h-screen">
-          <header
-            id="header"
-            className="text-xl lg:text-2xl sticky py-3 lg:relative top-0 bg-white z-20 border-gray-300 lg:border-0 border-b flex items-center pb-2 justify-between lg:p-0 px-4 font-semibold text-gray-900 lg:mb-6"
-          >
-            <h1 className="text-3xl font-bold">
-              {categoryMeta?.title ?? "Category"}
-            </h1>
-            {categoryMeta?.description && (
-              <p className="text-gray-600 mt-2">{categoryMeta.description}</p>
-            )}
-            <HiAdjustmentsHorizontal
-              onClick={() => setShowFilter(true)}
-              className="text-2xl lg:hidden text-gray-700"
-            />
-          </header>
+          <main className="lg:flex-1 w-screen px-2 min-h-screen">
+            <header
+              id="header"
+              className="text-xl lg:text-2xl sticky py-3 lg:relative top-0 bg-white z-20 border-gray-300 lg:border-0 border-b flex items-center pb-2 justify-between lg:p-0 px-4 font-semibold text-gray-900 lg:mb-6"
+            >
+              <h1 className="text-3xl font-bold">
+                {categoryMeta?.title ?? "Category"}
+              </h1>
+              {categoryMeta?.description && (
+                <p className="text-gray-600 mt-2">{categoryMeta.description}</p>
+              )}
+              <HiAdjustmentsHorizontal
+                onClick={() => setShowFilter(true)}
+                className="text-2xl lg:hidden text-gray-700"
+              />
+            </header>
 
-          <div className="flex items-center justify-between my-4">
-            <div className="text-sm text-gray-500">
-              {!isLoading && !isFetching && `${products.length} items`}
-            </div>
-            <div className="flex items-center gap-2">
-              <label className="text-sm">Per page</label>
-              <select
-                value={perPage}
-                onChange={(e) => setPerPage(Number(e.target.value))}
-                className="p-2 border rounded"
-              >
-                {[12, 24, 36, 48].map((n) => (
-                  <option key={n} value={n}>
-                    {n}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
-
-          <div className="min-h-screen w-full">
-            {isLoading ? (
-              <div className="w-full p-6 bg-white rounded-lg mb-4">
-                <Loader />
+            <div className="flex items-center justify-between my-4">
+              <div className="text-sm text-gray-500">
+                {!isLoading && !isFetching && `${products.length} items`}
               </div>
-            ) : allProducts.length > 0 ? (
-              <section className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2">
-                {allProducts.map((p) => (
-                  <ProductCard key={p.id} product={p} />
-                ))}
-              </section>
-            ) : !isFetching ? (
-              <div className="col-span-full flex h-[60vh] flex-col items-center justify-center text-center pb-16 text-gray-600">
-                <ProductNotFound />
-                <p className="text-lg font-semibold">No products found</p>
-                <p className="text-sm text-gray-500 mt-1">
-                  Try adjusting your filters or check back later.
-                </p>
-                {params && (
-                  <button
-                    onClick={() => setParams({})}
-                    className="mt-4 px-5 py-2 rounded-md bg-purple-600 text-white hover:bg-purple-700 transition"
-                  >
-                    Clear filters
-                  </button>
+              <div className="flex items-center gap-2">
+                <label className="text-sm">Per page</label>
+                <select
+                  value={perPage}
+                  onChange={(e) => setPerPage(Number(e.target.value))}
+                  className="p-2 border rounded"
+                >
+                  {[12, 24, 36, 48].map((n) => (
+                    <option key={n} value={n}>
+                      {n}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            <div className="min-h-screen w-full">
+              {isLoading ? (
+                <div className="w-full p-6 bg-white rounded-lg mb-4">
+                  <Loader />
+                </div>
+              ) : allProducts.length > 0 ? (
+                <section className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2">
+                  {allProducts.map((p) => (
+                    <DrawerTrigger onClick={() => setClickedProduct(p)}>
+                      <ProductCard key={p.id} product={p} />
+                    </DrawerTrigger>
+                  ))}
+                </section>
+              ) : !isFetching ? (
+                <div className="col-span-full flex h-[60vh] flex-col items-center justify-center text-center pb-16 text-gray-600">
+                  <ProductNotFound />
+                  <p className="text-lg font-semibold">No products found</p>
+                  <p className="text-sm text-gray-500 mt-1">
+                    Try adjusting your filters or check back later.
+                  </p>
+                  {params && (
+                    <button
+                      onClick={() => setParams({})}
+                      className="mt-4 px-5 py-2 rounded-md bg-purple-600 text-white hover:bg-purple-700 transition"
+                    >
+                      Clear filters
+                    </button>
+                  )}
+                </div>
+              ) : null}
+            </div>
+
+            <footer className="mt-6 flex flex-col items-center justify-between">
+              {/* <div className="text-sm hidden lg:flex text-gray-500">
+                Page {page}
+              </div> */}
+              <button
+                onClick={() => gotoPage(page + 1)}
+                disabled={!hasMore}
+                className={`px-6 hidden ${
+                  perPage * page > allProducts.length
+                 ? "border-0" : ""} mt-16 lg:flex py-2 w-[60vw] items-center justify-center mx-auto cursor-pointer border rounded disabled:border-gray-300 disabled:text-gray-400`}
+              >
+                {perPage * page > allProducts.length ? (
+                  <span className="loading text-[#6A00EF] loading-spinner loading-xl"></span>
+                ) : (
+                  "load more"
+                )}
+              </button>
+              <div
+                ref={loaderRef}
+                className="lg:hidden flex justify-center mt-10"
+              >
+                {hasMore && (
+                  <span className="loading text-[#6A00EF] loading-spinner loading-xl"></span>
                 )}
               </div>
-            ) : null}
-          </div>
+            </footer>
+          </main>
+        </div>
 
-          <footer className="mt-6 flex items-center justify-between">
-            <div className="text-sm hidden lg:flex text-gray-500">
-              Page {page}
-            </div>
-            <button
-              onClick={() => gotoPage(page + 1)}
-              disabled={!hasMore}
-              className="px-6 hidden lg:flex py-2 cursor-pointer border rounded disabled:border-gray-300 disabled:text-gray-400"
-            >
-              {perPage * page > allProducts.length
-                ? "Loading...."
-                : "load more"}
-            </button>
-            <div
-              ref={loaderRef}
-              className="lg:hidden flex justify-center mt-10"
-            >
-              {hasMore && (
-                <span className="loading text-[#6A00EF] loading-spinner loading-xl"></span>
+        <DrawerContent className="h-[100vh]">
+          <div className="flex-1 gap-10 flex px-16">
+            <div className="flex-1">
+              {clickedProduct && (
+                <ProductImageZoomWrapper
+                  src={clickedProduct.images[0].src}
+                  alt={
+                    clickedProduct.images[0].alt ??
+                    `${clickedProduct.name} image`
+                  }
+                  gallery={clickedProduct.images.slice(0, 6)}
+                />
               )}
             </div>
-          </footer>
-        </main>
-      </div>
+            {clickedProduct && (
+              <div className="flex-1 p-6">
+                <header className="font-poppins">
+                  <div className="flex justify-between items-center">
+                    <h1 className="text-3xl font-bold" itemProp="name">
+                      {clickedProduct.name}
+                    </h1>
+                    <p
+                      className="text-[15px] text-[#111111] font-semibold"
+                      itemProp="offers"
+                      itemScope
+                      itemType="http://schema.org/Offer"
+                    >
+                      NGN{clickedProduct.price}
+                    </p>
+                  </div>
+                  <p
+                    className="text-[15px] hover:cursor-pointer hover:underline font-poppins text-[#7E7E7E]"
+                    aria-hidden
+                  >
+                    {/* Keep semantic category info if available; fallback */}
+                    {clickedProduct?.categories[0]?.name
+                      ?.replace("&amp;", "")
+                      ?.toLowerCase()}
+                  </p>
+                  <div className="my-6 flex gap-6 items-center w-full">
+                    <Avatar className="rounded-lg size-[5rem]">
+                      <AvatarImage
+                        src="https://github.com/evilrabbit.png"
+                        alt="@evilrabbit"
+                      />
+                      <AvatarFallback>ER</AvatarFallback>
+                    </Avatar>
+
+                    <div className="flex-1 flex justify-between">
+                      <HoverCard>
+                        <HoverCardTrigger className="cursor-pointer hover:underline">
+                          Evilrabbit
+                        </HoverCardTrigger>
+                        <HoverCardContent className="bg-black text-white">
+                          <HoverCardInfo />
+                        </HoverCardContent>
+                      </HoverCard>
+                      <div className="flex gap-3 items-center">
+                        <div className="tooltip" data-tip="follow @evilrabbit">
+                          <button className="btn bg-gray-200 border-0 text-black shadow-none rounded-full">
+                            Follow
+                          </button>
+                        </div>
+                        <button className="btn btn-circle bg-inherit text-black border-gray-300">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            strokeWidth="2.5"
+                            stroke="currentColor"
+                            className="size-[1.2em]"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z"
+                            />
+                          </svg>
+                        </button>
+                        <button className="btn btn-circle bg-inherit text-black border-gray-300">
+                          <HiOutlineBookmark className="size-[1.2em] font-semibold" />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  <p className="flex flex-row flex-nowrap items-start text-[14px] lg:gap-0.5">
+                    {clickedProduct.rating_count}
+                    <Ratings rating={clickedProduct.rating_count || 2.5} />
+                  </p>
+
+                  <ProductDescription shorten product={clickedProduct} />
+                </header>
+              </div>
+            )}
+          </div>
+          {/* <DrawerFooter>
+            <Button>Submit</Button>
+            <DrawerClose>
+              <Button variant="outline">Cancel</Button>
+            </DrawerClose>
+          </DrawerFooter> */}
+        </DrawerContent>
+      </Drawer>
     </div>
   );
 }
-

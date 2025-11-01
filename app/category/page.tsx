@@ -12,6 +12,8 @@ import { FaStar } from "react-icons/fa";
 import { GoPlus } from "react-icons/go";
 import { useInView } from "react-intersection-observer";
 import { WooProduct } from "@/types";
+import { Ratings } from "@/components/Ratings";
+import { ProductSkeleton } from "@/components/category/skeleton/product-skeleton";
 
 const skeletonArray = Array.from({ length: 8 });
 type FilterMap = Record<string, string>;
@@ -170,10 +172,7 @@ export default function CategoryPage({searchParams}: {searchParams: {[key: strin
 
 export function ProductCard({ product }: { product: WooProduct }) {
   return (
-    <Link
-      href={`/product/${product?.id}`}
-      className="border border-gray-200 pb-2 font-poppins bg-white rounded-xl flex flex-col"
-    >
+    <div className="border border-gray-200 pb-2 font-poppins bg-white rounded-xl flex flex-col">
       <div className="relative w-full aspect-square mb-3">
         <Image
           src={product.images?.[0]?.src || "/placeholder.png"}
@@ -183,21 +182,16 @@ export function ProductCard({ product }: { product: WooProduct }) {
         />
       </div>
       <div className="px-3 w-full h-auto">
-        <h2 className="lg:text-[15px] text-[14px] flex flex-col lg:flex-row justify-between font-medium text-black mb-1">
-          {`${product.name.slice(0, 15)}...`}
-          <span className="flex items-center">
-            {[...Array(5)].map((_, idx) => (
-              <FaStar
-                key={idx}
-                className="text-[10px] text-[#FFD700] lg:text-[12px]"
-              />
-            ))}
+        <div className="lg:text-[15px] text-[14px] flex flex-col font-medium text-black mb-1">
+          <h2 className="text-start">{`${product.name.slice(0, 15)}...`}</h2>
+          <span className="flex justify-start lg:-ml-2">
+            <Ratings rating={3.2} />
           </span>
-        </h2>
-        <div className="lg:text-[12px] text-[10px] text-black/50">
+        </div>
+        <div className="lg:text-[12px] lg:hidden text-[10px] text-black/50">
           Elica 60 cm 1200 m3/hr Filterless Autocl...
         </div>
-        <div className="flex mt-3 lg:mt-6 flex-col lg:flex-row justify-between lg:items-center">
+        <div className="flex mt-3 flex-col justify-between">
           <div className="flex flex-col">
             <div className="flex items-center gap-2">
               <div className="w-[14.5px] relative h-[14.5px] lg:w-[20px] lg:h-[20px]">
@@ -212,25 +206,16 @@ export function ProductCard({ product }: { product: WooProduct }) {
                 {`${product.price.slice(0, 10)}...`}
               </span>
             </div>
-            <span className="text-[10px] text-black/50">300+ purchased</span>
+            <span className="text-[10px] w-full flex text-black/50">
+              300+ purchased
+            </span>
           </div>
-          <button className="lg:mt-auto mt-2 w-full lg:w-[110px] text-[10px] bg-[#6A00EF] text-white py-[6px] rounded-[24px] hover:bg-purple-700 items-center gap-1 justify-center flex transition">
+          <button className="lg:mt-5 mt-2 w-full text-[10px] bg-[#6A00EF] text-white py-[6px] rounded-[24px] hover:bg-purple-700 items-center gap-1 justify-center flex transition">
             <GoPlus className="text-2xl" />
             Add to Cart
           </button>
         </div>
       </div>
-    </Link>
-  );
-}
-
-function ProductSkeleton() {
-  return (
-    <div className="border border-gray-300 bg-white rounded-xl p-3 flex flex-col animate-pulse">
-      <div className="w-full aspect-square bg-gray-200 mb-3 rounded-lg"></div>
-      <div className="h-4 bg-gray-200 rounded mb-2"></div>
-      <div className="h-3 bg-gray-100 rounded mb-3 w-3/4"></div>
-      <div className="h-8 bg-gray-200 rounded mt-auto"></div>
     </div>
   );
 }

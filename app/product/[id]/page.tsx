@@ -9,6 +9,8 @@ import { FiHeart } from "react-icons/fi";
 import { GoArrowUpRight } from "react-icons/go";
 import { WooProduct } from "@/types";
 import SuggestionCardWrapper from "@/components/productdetails/suggestionCardWrapper";
+import { Ratings } from "@/components/Ratings";
+import { ProductDescription } from "@/components/category/productDesc";
 
 
 /**
@@ -292,31 +294,6 @@ function SizeChart() {
   );
 }
 
-function ProductDescription({ product }: { product: WooProduct }) {
-  return (
-    <section className="mt-8" itemProp="description">
-      <h2 className="text-xl font-semibold">Details</h2>
-      <div className="mt-2 prose max-w-none">
-        {/* short_description often contains HTML; if so, it's safer to sanitize.
-            Here we simply render as HTML. If product.short_description is untrusted,
-            sanitize before using dangerouslySetInnerHTML. */}
-        {product.short_description ? (
-          <div dangerouslySetInnerHTML={{ __html: product.short_description }} />
-        ) : product.description ? (
-          <div dangerouslySetInnerHTML={{ __html: product.description }} />
-        ) : (
-          <p>No description available.</p>
-        )}
-      </div>
-
-      <p className="mt-4">Colour Shown: Fleet/...</p>
-      <p>Style: DV7421-001</p>
-      <p className="mt-4">Declaration of Importer: Direct import by the individual customer</p>
-      <p>Marketed by: Nike Global Trading B.V. Singapore Branch</p>
-    </section>
-  );
-}
-
 // -------------------------
 // Product Suggestions (server component)
 // -------------------------
@@ -363,41 +340,6 @@ async function ProductSuggestion({ relatedIds }: { relatedIds?: number[] }) {
 
       <SuggestionCardWrapper suggestions={suggestions} />
     </section>
-  );
-}
-
-
-export function Ratings({ rating = 0 }: { rating?: number }) {
-  // Clamp the rating to a safe range (0–5)
-  const safeRating = Math.max(0, Math.min(5, rating));
-
-  // DaisyUI has 10 inputs (5 stars × 2 halves)
-  // Each half star = 0.5
-  const totalHalves = Math.round(safeRating * 2); // e.g. 4.5 → 9
-
-  return (
-    <div className="rating rating-xs lg:rating-sm rating-half">
-      <input type="radio" name={`rating-${rating}`} className="rating-hidden" />
-
-      {Array.from({ length: 10 }).map((_, i) => {
-        const value = (i + 1) / 2; // half-star values: 0.5, 1, 1.5, 2, ...
-        const isChecked = value === safeRating;
-
-        return (
-          <input
-            key={i}
-            type="radio"
-            name={`rating-${rating}`}
-            className={`mask mt-[1px] mask-star-2 ${
-              i % 2 === 0 ? "mask-half-1" : "mask-half-2"
-            } bg-[#6A00EF]`}
-            aria-label={`${value} star`}
-            defaultChecked={isChecked || totalHalves === i + 1}
-            readOnly
-          />
-        );
-      })}
-    </div>
   );
 }
 
