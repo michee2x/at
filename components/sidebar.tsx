@@ -242,7 +242,7 @@ const Sidebar = () => {
               <div className="flex-1 rounded-lg overflow-hidden relative">
                 <Image
                   src="/home/hero/Frame%201000003698.png"
-                  className="bg-cover"
+                  className="bg-cover hidden"
                   alt="bossmanimage"
                   fill
                 />

@@ -6,18 +6,15 @@ import { CiCircleInfo } from "react-icons/ci";
 import { IoMenuSharp } from "react-icons/io5";
 import AlgoliaSearch, { ProductHit } from "./AlgoliaSearch";
 import { usePathname } from "next/navigation";
-import Link from "next/link";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import AllCategoryModal from "./AllCategoryModal";
+
 
 const NavBar = () => {
   const pathname = usePathname();
   const {setShowSideBar} = useSideBar()
   const [open, setOpen] = useState<boolean>(false);
   const [hits, setHits] = useState<ProductHit[]>([]);
+  const [hoverAllCat, setHoverAllCat] = useState(false)
 
   const pages = [
     "search",
@@ -32,7 +29,7 @@ const NavBar = () => {
 
   return (
     <div className={`w-full z-50 h-auto flex flex-col`}>
-      <div className="w-full z-20 flex flex-col h-[112px]">
+      <div className="w-full gap-2 z-20 flex flex-col h-[125px]">
         <div className="h-[40px] flex justify-between items-center px-4 w-full">
           <h1 className="h-full aspect-square font-display text-[calc(18/1280 * 100vw)] tracking-[0%] leading-[100%] text-[#2B2B2B] flex items-center justify-center">
             ATLAZE
@@ -58,7 +55,7 @@ const NavBar = () => {
 
         <div className="w-full px-4 lg:px-[30px] flex justify-center items-center flex-1">
           <div className="w-full relative flex justify-between items-center h-full">
-            <div className="flex absolute left-0 -translate-y-1/2 top-1/2 gap-2.5 items-center">
+            <div className="flex w-1/3 flex-1 absolute left-0 -translate-y-1/2 top-1/2 gap-2.5 items-center">
               <span
                 onClick={() => setShowSideBar((prev) => !prev)}
                 className="text-[30px] 2xl:text-[40px] cursor-pointer"
@@ -66,17 +63,7 @@ const NavBar = () => {
                 <IoMenuSharp />
               </span>
 
-              <Link
-                href={"/category"}
-                className="text-[(16/1280 * 100vw)] hover:underline leading-[100%] tracking-[0%] font-display"
-              >
-                <Tooltip>
-                  <TooltipTrigger>Hover</TooltipTrigger>
-                  <TooltipContent side="right">
-                    <p className="w-[100vh] aspect-square bg-blue-500">Add to library`</p>
-                  </TooltipContent>
-                </Tooltip>
-              </Link>
+              <AllCategoryModal />
             </div>
 
             <div className="w-auto hidden lg:block pt-2 absolute top-0 -translate-x-1/2 left-1/2 min-h-32">
@@ -119,7 +106,7 @@ const NavBar = () => {
           </div>
         </div>
       </div>
-      <div className="w-full hidden mt-[10px] px-4 list-none lg:flex mb-6 h-12 items-center justify-between bg-black">
+      <div className="w-full  hidden px-4 list-none lg:flex mb-6 h-12 items-center justify-between bg-black">
         {[
           "TODAY'S DEALS",
           "WEEKLY DEALS",

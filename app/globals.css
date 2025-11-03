@@ -16,6 +16,12 @@ body {
   --foreground: #171717;
 }
 
+/* override radix inline transforms for your full-width tooltip */
+[data-slot="tooltip-content"][data-fullwidth="true"] {
+  left: 0 !important;
+  transform: none !important;
+}
+
 
 @theme inline {
   --color-background: var(--background);
