@@ -28,7 +28,7 @@ interface FiltersProps {
   setParams?: (value: React.SetStateAction<Params>) => void;
 }
 
-// ✅ Debounce helper
+// Debounce helper
 function debounce<T extends (...args: Parameters<T>) => void>(
   fn: T,
   wait = 300
@@ -208,7 +208,7 @@ function Filters({
             {params && (
               <Button
                 className="w-full hover:bg-white"
-                onClick={() => setParams?.({})} // 👈 the '!' asserts it's not undefined
+                onClick={() => setParams?.({})}
                 variant="outline"
               >
                 clear filter
