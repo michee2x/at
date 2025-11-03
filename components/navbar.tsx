@@ -7,7 +7,11 @@ import { IoMenuSharp } from "react-icons/io5";
 import AlgoliaSearch, { ProductHit } from "./AlgoliaSearch";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 const NavBar = () => {
   const pathname = usePathname();
@@ -62,8 +66,16 @@ const NavBar = () => {
                 <IoMenuSharp />
               </span>
 
-              <Link href={"/category"} className="text-[(16/1280 * 100vw)] hover:underline leading-[100%] tracking-[0%] font-display">
-                All Categories
+              <Link
+                href={"/category"}
+                className="text-[(16/1280 * 100vw)] hover:underline leading-[100%] tracking-[0%] font-display"
+              >
+                <Tooltip>
+                  <TooltipTrigger>Hover</TooltipTrigger>
+                  <TooltipContent side="right">
+                    <p className="w-[100vh] aspect-square bg-blue-500">Add to library`</p>
+                  </TooltipContent>
+                </Tooltip>
               </Link>
             </div>
 
