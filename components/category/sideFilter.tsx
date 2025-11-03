@@ -63,7 +63,7 @@ function Filters({
   };
 
   return (
-    <aside className="fixed bg-white font-poppins lg:sticky z-50 top-0 left-0 flex h-screen lg:w-[15vw]">
+    <aside className="fixed bg-white font-poppins lg:sticky z-40 top-0 left-0 flex h-screen lg:w-[15vw]">
       {/* Overlay for mobile */}
       <div
         onClick={() => setShowFilter(false)}

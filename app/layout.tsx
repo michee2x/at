@@ -46,17 +46,14 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} ${redHatDisplay.variable} ${poppins.variable} antialiased`}
       >
         <Providers>
-          <Sidebar />
-            <main
-              data-theme="light"
-              className="w-full h-auto relative"
-            >
-              <NavBar />
-              <SearchFilter />
-              {children}
-              <Footer />
-              <MobileFooter />
-            </main>
+          <main data-theme="light" className="w-full h-auto relative">
+            <Sidebar />
+            <NavBar />
+            {/* <SearchFilter /> */}
+            {children}
+            <Footer />
+            <MobileFooter />
+          </main>
         </Providers>
       </body>
     </html>

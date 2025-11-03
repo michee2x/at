@@ -38,6 +38,7 @@ import { HoverCardInfo } from "@/components/category/hovercard";
 import { ProductDescription } from "@/components/category/productDesc";
 import { ProductSkeleton } from "@/components/category/skeleton/product-skeleton";
 import { GoArrowUpRight } from "react-icons/go";
+import { FaTimes } from "react-icons/fa";
 // -----------------------------
 // Loader
 // -----------------------------
@@ -320,6 +321,9 @@ export default function CategoryPageClient({
         </div>
 
         <DrawerContent className="h-[90vh]">
+          <DrawerClose className="text-3xl cursor-pointer text-white fixed right-6 -top-10">
+            <FaTimes />
+          </DrawerClose>
           <div className="flex-1 overflow-auto pt-4 pb-10 h-full lg:gap-10 flex flex-col lg:flex-row px-6 lg:px-16">
             <div className="flex-1">
               {clickedProduct && (
@@ -339,7 +343,7 @@ export default function CategoryPageClient({
                   <div className="flex flex-col justify-between gap-4">
                     <div className="flex flex-col gap-1 lg:gap-2">
                       <Link
-                      href={`/product/${clickedProduct.id}`}
+                        href={`/product/${clickedProduct.id}`}
                         className="text-[26px] hover:underline hover:cursor-pointer flex flex-wrap items-center gap-2 lg:text-3xl font-bold"
                         itemProp="name"
                       >
@@ -373,12 +377,14 @@ export default function CategoryPageClient({
                     </p>
                   </div>
                   <div className="my-6 flex flex-row gap-6 lg:items-center w-full">
-                    <Avatar className="rounded-lg size-[5rem]">
+                    <Avatar className="rounded-full size-[5rem]">
                       <AvatarImage
                         src="https://github.com/evilrabbit.png"
                         alt="@evilrabbit"
                       />
-                      <AvatarFallback>ER</AvatarFallback>
+                      <AvatarFallback className="size-[5rem] bg-blue-600 text-white rounded-full">
+                        ER
+                      </AvatarFallback>
                     </Avatar>
 
                     <div className="flex-1 flex flex-col lg:flex-row justify-between">

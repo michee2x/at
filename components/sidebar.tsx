@@ -2,7 +2,6 @@
 
 import { useSideBar } from "@/contexts/sidebar-context"
 import Link from "next/link"
-import Avatar from "@/public/altaze-images/Desktop/Photo (1).png"
 import React, { useEffect, useState } from 'react'
 import Image from "next/image"
 import {FiEdit} from "react-icons/fi"
@@ -13,8 +12,17 @@ import {RiLightbulbFlashLine} from "react-icons/ri"
 import {GiHeartNecklace} from "react-icons/gi"
 import {FaChevronLeft, FaShoppingBag} from "react-icons/fa"
 import {GoArrowUpRight} from "react-icons/go"
-import AiImage from "@/public/altaze-images/Desktop/Download_Free_Vectors__Images__Photos___Videos___Vecteezy-removebg-preview 1.png"
-import BossManImage from "@/public/altaze-images/mens fashion/Men's Plus Size Tribal Print Patchwork Long Sleeve Shirt 2-Piece Set 1 (1).png"
+import { GiClothes, GiComb } from "react-icons/gi";
+import { LuPalette } from "react-icons/lu";
+import { PiPlugBold, PiBaby } from "react-icons/pi";
+import { RiPaintBrushLine } from "react-icons/ri";
+import { IoDiamondOutline } from "react-icons/io5";
+import { LiaToolsSolid } from "react-icons/lia";
+import { PiBooksDuotone } from "react-icons/pi";
+import { MdQueueMusic } from "react-icons/md";
+
+
+
 
 const Sidebar = () => {
     const [activeInput, setActiveInput] = useState(false)
@@ -44,30 +52,33 @@ const Sidebar = () => {
             setHoveringInput(false)
         }, 2000)
     }
-
+//h
     const navItems = [
-      { src: "/sidebar/Vector.png", navText: "FASHION" },
-      { src: "/sidebar/Vector%20(1).png", navText: "BEAUTY & WELLNESS" },
-      { src: "/sidebar/Vector%20(2).png", navText: "ART & CRAFTS" },
-      { src: "/sidebar/Vector%20(3).png", navText: "ELECTRONICS" },
-      { src: "/sidebar/Vector%20(4).png", navText: "HOME & LIVING" },
-      { src: "/sidebar/Vector.png", navText: "FOOD & DRINKS" },
-      { src: "/sidebar/Vector%20(5).png", navText: "JEWELLRIES" },
-      { src: "/sidebar/Vector%20(6).png", navText: "INDUSTRIAL SUPPLIES" },
-      { src: "/sidebar/Vector%20(7).png", navText: "BABY & TODDLER" },
-      { src: "/sidebar/fluent-emoji-high-contrast_books.png", navText: "BOOKS" },
-      { src: "/sidebar/Vector%20(8).png", navText: "MUSICAL INSTRUMENTS" },
+      { src: <GiClothes />, navText: "FASHION" },
+      { src: <GiComb />, navText: "BEAUTY & WELLNESS" },
+      { src: <LuPalette />, navText: "ART & CRAFTS" },
+      { src: <PiPlugBold />, navText: "ELECTRONICS" },
+      { src: <RiPaintBrushLine />, navText: "HOME & LIVING" },
+      { src: <RiPaintBrushLine />, navText: "FOOD & DRINKS" },
+      { src: <IoDiamondOutline />, navText: "JEWELLRIES" },
+      { src: <LiaToolsSolid />, navText: "INDUSTRIAL SUPPLIES" },
+      { src: <PiBaby />, navText: "BABY & TODDLER" },
+      {
+        src: <PiBooksDuotone />,
+        navText: "BOOKS",
+      },
+      { src: <MdQueueMusic />, navText: "MUSICAL INSTRUMENTS" },
     ];
 
   return (
-    <>
+    <div className="lg:flex z-50">
       <nav
-        className={`lg:w-[22%] w-screen flex-col overflow-y-scroll font-display flex bg-transparent z-50 fixed transition-all duration-300 ${
+        className={`lg:w-[22%] w-[70%] h-screen bg-white flex-col overflow-auto pb-16 font-poppins flex z-[9999] fixed transition-all duration-300 ${
           showSideBar ? "left-0" : "-left-[100vw]"
         } min-h-screen`}
       >
         <div
-          className={`w-full  p-4 bg-gray-100 ${
+          className={`w-full  p-4 ${
             showSideBar ? "left-0" : "-left-[100vw] lg:-left-[5vw]"
           }`}
         >
@@ -121,30 +132,27 @@ const Sidebar = () => {
                 src="/home/hero/d49ad3ba235d33ba9a0d6da5cd9ff0aefadb2ca5.png"
                 alt="AI logo"
                 priority
-                height={13}
-                width={13}
+                height={18}
+                width={18}
               />
             </div>
           </div>
 
           <div className="w-full flex flex-col lg:gap-3 gap-2 mt-14 h-auto">
             {navItems.map((e, i) => {
+              const icon = e.src;
               return (
                 <Link
                   onClick={() => setShowSideBar(false)}
                   href={`/categories/${e.navText.toLowerCase()}`}
                   onMouseEnter={() => setHoveringCategory(true)}
                   key={i}
-                  className="w-full text-[#2B2B2B] hover:text-[#D68A36] cursor-pointer h-auto flex items-center gap-5"
+                  className="w-full text-[#2B2B2B] hover:text-[#9747FF] cursor-pointer h-auto flex items-center gap-5"
                 >
-                  <Image
-                    src={e.src}
-                    className="object-cover z-0"
-                    alt="nigeria logo"
-                    width={18}
-                    height={18}
-                  />
-                  <span className={`text-[15px] lg:text-[16px] ${i === 0 ? "text-[#9747FF]" : ""}`}>{e.navText}</span>
+                  <span className="text-[18px] lg:text-[19px]">{icon}</span>
+                  <span className={`text-[15px] lg:text-[16px]`}>
+                    {e.navText}
+                  </span>
                 </Link>
               );
             })}
@@ -159,7 +167,7 @@ const Sidebar = () => {
         </div>
       </nav>
       <div
-        className={`w-screen hidden lg:block fixed overflow-hidden transition-all duration-500 h-screen ${
+        className={`w-screen fixed overflow-hidden transition-all duration-500 h-screen ${
           showSideBar ? "z-40 bg-gray-900/40" : "-z-40 bg-transparent"
         }`}
       >
@@ -231,13 +239,14 @@ const Sidebar = () => {
                 </button>
               </div>
 
-              <Image
-                src="/home/hero/Frame%201000003698.png"
-                className="bg-cover"
-                alt="bossmanimage"
-                width={500}
-                height={500}
-              />
+              <div className="flex-1 rounded-lg overflow-hidden relative">
+                <Image
+                  src="/home/hero/Frame%201000003698.png"
+                  className="bg-cover"
+                  alt="bossmanimage"
+                  fill
+                />
+              </div>
             </div>
           </div>
 
@@ -288,7 +297,7 @@ const Sidebar = () => {
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 }
 
