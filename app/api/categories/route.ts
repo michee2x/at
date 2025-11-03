@@ -47,7 +47,7 @@ export async function GET(request: Request) {
     return NextResponse.json(data);
 
   } catch (error: unknown) {
-    // ✅ Strong type guard without using `any`
+    // Strong type guard without using `any`
     if (
       typeof error === "object" &&
       error !== null &&

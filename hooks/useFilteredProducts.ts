@@ -17,7 +17,7 @@ export function useFilteredProducts({
   perPage = 12,
   categoryId = "",
 }: UseFilteredProductsOptions) {
-  // ✅ Use WooProduct[] (or a generic type) instead of any[]
+  //  Use WooProduct[] (or a generic type) instead of any[]
   const [data, setData] = useState<WooProduct[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -46,7 +46,7 @@ export function useFilteredProducts({
         });
 
         const url = `/api/products?${params.toString()}`;
-        console.log("🧭 Fetching products:", url);
+        console.log("Fetching products:", url);
 
         const res = await fetch(url, {
           cache: "no-store",
@@ -60,12 +60,12 @@ export function useFilteredProducts({
 
         const result: WooProduct[] = await res.json();
 
-        // ✅ If fewer results than per_page → no more pages
+        // If fewer results than per_page → no more pages
         setHasMore(Array.isArray(result) && result.length === perPage);
         setData(result);
       } catch (err) {
         if (err instanceof DOMException && err.name === "AbortError") return;
-        console.error("❌ Failed to fetch products:", err);
+        console.error("Failed to fetch products:", err);
         setError(err instanceof Error ? err.message : "An unexpected error occurred");
       } finally {
         setLoading(false);

@@ -25,7 +25,7 @@ export async function GET(request: Request) {
       const v = value.toLowerCase();
 
       switch (k) {
-        // ✅ Price range filter (e.g., "₦5,000 to ₦10,000")
+        // Price range filter (e.g., "₦5,000 to ₦10,000")
         case "price": {
           const match = value.match(/(\d[\d,]*)\D+(\d[\d,]*)/);
           if (match) {
@@ -37,7 +37,7 @@ export async function GET(request: Request) {
           break;
         }
 
-        // ✅ Brand filter (new)
+        // Brand filter (new)
         case "brand":
         case "brands": {
           // WooCommerce now supports brand=<id> directly
@@ -45,7 +45,7 @@ export async function GET(request: Request) {
           break;
         }
 
-        // ✅ Item condition
+        // Item condition
         case "condition":
         case "item condition": {
           url.searchParams.append("attribute", "pa_condition");
@@ -53,7 +53,7 @@ export async function GET(request: Request) {
           break;
         }
 
-        // ✅ Delivery Day
+        // Delivery Day
         case "delivery":
         case "delivery day": {
           url.searchParams.append("attribute", "pa_delivery");
@@ -61,14 +61,14 @@ export async function GET(request: Request) {
           break;
         }
 
-        // ✅ Pay on Delivery
+        // Pay on Delivery
         case "pay on delivery": {
           url.searchParams.append("attribute", "pa_payment");
           url.searchParams.append("attribute_term", "pay-on-delivery");
           break;
         }
 
-        // ✅ Deals & Discounts
+        // Deals & Discounts
         case "discount":
         case "deals":
         case "deals & discount": {
@@ -78,7 +78,7 @@ export async function GET(request: Request) {
           break;
         }
 
-        // ✅ Product Type
+        // Product Type
         case "type": {
           if (WC_ALLOWED_TYPES.has(v)) {
             url.searchParams.append("type", v);
@@ -88,7 +88,7 @@ export async function GET(request: Request) {
           break;
         }
 
-        // ✅ Native WooCommerce parameters (pass directly)
+        // Native WooCommerce parameters (pass directly)
         case "page":
         case "search":
         case "category":
@@ -104,7 +104,7 @@ export async function GET(request: Request) {
           break;
         }
 
-        // ✅ Fallback: forward unknown keys safely
+        // Fallback: forward unknown keys safely
         default: {
           url.searchParams.append(k, value);
           break;
@@ -112,7 +112,7 @@ export async function GET(request: Request) {
       }
     }
 
-    console.log("👉 Forwarding to WooCommerce:", url.toString());
+    console.log("Forwarding to WooCommerce:", url.toString());
 
     const response = await fetch(url.toString(), { cache: "no-store" });
 
@@ -125,7 +125,7 @@ export async function GET(request: Request) {
 
     return NextResponse.json(products);
   } catch (err) {
-    console.error("❌ Error in /api/products:", err);
+    console.error("Error in /api/products:", err);
     return NextResponse.json(
       { error: "Failed to fetch products" },
       { status: 500 }

@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 
 // -----------------------------
-// 🧩 Types
+// Types
 // -----------------------------
 interface QueryParams {
   cat?: string | number;
@@ -25,7 +25,7 @@ interface WCProductResponse<T = unknown> {
 }
 
 // -----------------------------
-// 🧩 Shared helper to map params → REST API format
+// Shared helper to map params → REST API format
 // -----------------------------
 function buildQueryParams(params: QueryParams): Record<string, string> {
   const query: Record<string, string> = {};
@@ -43,7 +43,7 @@ function buildQueryParams(params: QueryParams): Record<string, string> {
   if (params.q) query["search"] = String(params.q);
   if (params.brand_id) query["brand"] = String(params.brand_id);
 
-  // 🧩 Handle attribute filters (attr_color=Gold)
+  // Handle attribute filters (attr_color=Gold)
   for (const key of Object.keys(params)) {
     if (key.startsWith("attr_")) {
       const attr = key.replace("attr_", "");
@@ -52,7 +52,7 @@ function buildQueryParams(params: QueryParams): Record<string, string> {
     }
   }
 
-  // ⚙️ Sorting
+  // Sorting
   switch (params.sort) {
     case "price_asc":
       query["orderby"] = "price";
@@ -78,7 +78,7 @@ function buildQueryParams(params: QueryParams): Record<string, string> {
 }
 
 // -----------------------------
-// 🏪 Fetch WooCommerce products
+// Fetch WooCommerce products
 // -----------------------------
 async function fetchWCProducts<T = unknown>(params: QueryParams): Promise<WCProductResponse<T>> {
   const base = process.env.WC_BASE_URL! || "https://atlaze.com";
@@ -108,7 +108,7 @@ async function fetchWCProducts<T = unknown>(params: QueryParams): Promise<WCProd
 }
 
 // -----------------------------
-// 👨‍🍳 Fetch Dokan vendor products
+// Fetch Dokan vendor products
 // -----------------------------
 async function fetchDokanProducts<T = unknown>(params: QueryParams): Promise<WCProductResponse<T>> {
   const base = process.env.WC_BASE_URL! || "https://atlaze.com";
@@ -137,7 +137,7 @@ console.log("WC_BASE_URL:", base);
 }
 
 // -----------------------------
-// 🌐 App Router GET handler
+// App Router GET handler
 // -----------------------------
 export async function GET(req: Request) {
   try {

@@ -3,7 +3,7 @@
 import React, { Suspense, useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ProductCard } from "./v1/page";
+import { ProductCard } from "@/components/category/ProductCard";
 import { Params, WooProduct } from "@/types";
 import { useProducts } from "@/hooks/wc/useProducts";
 import Filters from "@/components/category/sideFilter";
@@ -12,7 +12,6 @@ import Image from "next/image";
 import { HiAdjustmentsHorizontal, HiOutlineBookmark } from "react-icons/hi2";
 import { useFilter } from "@/contexts/filter-context";
 import ProductNotFound from "@/components/lottie/ProductNotFound";
-import BannerCarousel from "@/components/Carousel/BannerCarousel";
 import Carousel from "@/components/category/carousel";
 import { useInView } from "react-intersection-observer";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -20,10 +19,6 @@ import {
   Drawer,
   DrawerClose,
   DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
