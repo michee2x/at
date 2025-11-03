@@ -258,7 +258,7 @@ export default function CategoryPageClient({
                 </div>
               ) : allProducts.length > 0 ? (
                 <section className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2">
-                  {allProducts.slice(3).map((p) => (
+                  {allProducts.map((p) => (
                     <DrawerTrigger
                       key={p.id}
                       onClick={() => setClickedProduct(p)}
