@@ -179,6 +179,7 @@ export default function CategoryPageClient({
     setAllProducts([]);
   }, [JSON.stringify(params)]);
 
+
   function handleFilterChange(
     patch: Params & { _reset?: boolean; _apply?: boolean }
   ) {
@@ -276,7 +277,7 @@ export default function CategoryPageClient({
                   </p>
                   {params && (
                     <button
-                      onClick={() => setParams({})}
+                      onClick={() => setParams({ per_page: 24, page: 1 })}
                       className="mt-4 px-5 py-2 rounded-md bg-purple-600 text-white hover:bg-purple-700 transition"
                     >
                       Clear filters
