@@ -208,7 +208,7 @@ function Filters({
             {params && (
               <Button
                 className="w-full hover:bg-white"
-                onClick={() => setParams?.({})}
+                onClick={() => setParams?.({ per_page: 24, page: 1 })}
                 variant="outline"
               >
                 clear filter
