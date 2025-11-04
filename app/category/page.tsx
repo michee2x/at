@@ -138,17 +138,19 @@ export default function CategoryPageClient({
   const isMobile = typeof window !== "undefined" && window.innerWidth < 1024;
   const hasMore = products.length === perPage;
 
-  // Merge/append products
-  useEffect(() => {
-    if (isLoading || !products) return;
-
-    setAllProducts((prev) => {
+  const setProductsFunc = () => {
+      setAllProducts((prev) => {
       if (page === 1) return products;
       const ids = new Set(prev.map((p) => p.id));
       const newItems = products.filter((p) => !ids.has(p.id));
       return [...prev, ...newItems];
     });
+  }
 
+  // Merge/append products
+  useEffect(() => {
+    if (isLoading || !products) return;
+    setProductsFunc()
     // stop showing spinner after new data arrives
     setLoadingMore(false);
   }, [products, isLoading, page]);
@@ -177,6 +179,7 @@ export default function CategoryPageClient({
   useEffect(() => {
     setPage(1);
     setAllProducts([]);
+    setAllProducts(products);
   }, [JSON.stringify(params)]);
 
 
@@ -268,21 +271,19 @@ export default function CategoryPageClient({
                     </DrawerTrigger>
                   ))}
                 </section>
-              ) : !isFetching ? (
+              ) : !isFetching && allProducts.length === 0 ? (
                 <div className="col-span-full flex h-[40vh] flex-col items-center justify-center text-center pb-16 text-gray-600">
                   <ProductNotFound />
                   <p className="text-lg font-semibold">No products found</p>
                   <p className="text-sm text-gray-500 mt-1">
-                    Try adjusting your filters or check back later.
+                    Try adjusting your filters or check back later...
                   </p>
-                  {params && (
-                    <button
-                      onClick={() => setParams({ per_page: 24, page: 1 })}
-                      className="mt-4 px-5 py-2 rounded-md bg-purple-600 text-white hover:bg-purple-700 transition"
-                    >
-                      Clear filters
-                    </button>
-                  )}
+                  <button
+                    onClick={() => setParams({ per_page: 24, page: 1 })}
+                    className="mt-4 px-5 py-2 rounded-md bg-purple-600 text-white hover:bg-purple-700 transition"
+                  >
+                    Clear filters
+                  </button>
                 </div>
               ) : null}
             </div>
@@ -372,18 +373,18 @@ export default function CategoryPageClient({
                       </p>
                     </p>
                   </div>
-                  <div className="my-6 flex flex-row gap-6 lg:items-center w-full">
-                    <Avatar className="rounded-full size-[5rem]">
+                  <div className="my-6 flex flex-row gap-4 lg:items-center w-full">
+                    <Avatar className="rounded-full size-[2.5rem]">
                       <AvatarImage
                         src="https://github.com/evilrabbit.png"
                         alt="@evilrabbit"
                       />
-                      <AvatarFallback className="size-[5rem] bg-blue-600 text-white rounded-full">
+                      <AvatarFallback className="size-[2.5rem] bg-blue-600 text-white rounded-full">
                         ER
                       </AvatarFallback>
                     </Avatar>
 
-                    <div className="flex-1 flex flex-col lg:flex-row justify-between">
+                    <div className="flex-1 flex flex-col items-center lg:flex-row justify-between">
                       <HoverCard>
                         <HoverCardTrigger className="cursor-pointer hover:underline">
                           Evilrabbit
