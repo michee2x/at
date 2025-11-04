@@ -34,6 +34,7 @@ import { ProductDescription } from "@/components/category/productDesc";
 import { ProductSkeleton } from "@/components/category/skeleton/product-skeleton";
 import { GoArrowUpRight } from "react-icons/go";
 import { FaTimes } from "react-icons/fa";
+import ClearButton from "@/components/buttons/clearButton";
 // -----------------------------
 // Loader
 // -----------------------------
@@ -119,6 +120,7 @@ export default function CategoryPageClient({
   });
   const [clickedProduct, setClickedProduct] = useState<WooProduct | null>(null);
   const [params, setParams] = useState<Params>(initialParams);
+  const [local, setLocal] = useState<Params>({ ...params });
   const [page, setPage] = useState<number>(Number(initialParams.page) || 1);
   const [perPage, setPerPage] = useState<number>(
     Number(initialParams.per_page) || 24
@@ -139,41 +141,40 @@ export default function CategoryPageClient({
   const hasMore = products.length === perPage;
 
   const setProductsFunc = () => {
-      setAllProducts((prev) => {
+    setAllProducts((prev) => {
       if (page === 1) return products;
       const ids = new Set(prev.map((p) => p.id));
       const newItems = products.filter((p) => !ids.has(p.id));
       return [...prev, ...newItems];
     });
-  }
+  };
 
   // Merge/append products
   useEffect(() => {
     if (isLoading || !products) return;
-    setProductsFunc()
+    setProductsFunc();
     // stop showing spinner after new data arrives
     setLoadingMore(false);
   }, [products, isLoading, page]);
 
- useEffect(() => {
-   if (
-     !isMobile ||
-     !inView ||
-     loadingMore ||
-     isLoading ||
-     isFetching ||
-     !hasMore
-   )
-     return;
+  useEffect(() => {
+    if (
+      !isMobile ||
+      !inView ||
+      loadingMore ||
+      isLoading ||
+      isFetching ||
+      !hasMore
+    )
+      return;
 
-   const timer = setTimeout(() => {
-     setLoadingMore(true);
-     setPage((prev) => prev + 1);
-   }, 300);
+    const timer = setTimeout(() => {
+      setLoadingMore(true);
+      setPage((prev) => prev + 1);
+    }, 300);
 
-   return () => clearTimeout(timer);
- }, [inView, isMobile, hasMore, isLoading, isFetching, loadingMore]);
-
+    return () => clearTimeout(timer);
+  }, [inView, isMobile, hasMore, isLoading, isFetching, loadingMore]);
 
   // Reset products when filters change
   useEffect(() => {
@@ -181,7 +182,6 @@ export default function CategoryPageClient({
     setAllProducts([]);
     setAllProducts(products);
   }, [JSON.stringify(params)]);
-
 
   function handleFilterChange(
     patch: Params & { _reset?: boolean; _apply?: boolean }
@@ -216,6 +216,8 @@ export default function CategoryPageClient({
             availableAttributes={categoryMeta?.attributes || []}
             stores={AtlazeBrands}
             brands={productBrand}
+            local={local}
+            setLocal={setLocal}
           />
 
           <main className="lg:flex-1 w-screen px-2 min-h-[20vh">
@@ -278,12 +280,14 @@ export default function CategoryPageClient({
                   <p className="text-sm text-gray-500 mt-1">
                     Try adjusting your filters or check back later...
                   </p>
-                  <button
-                    onClick={() => setParams({ per_page: 24, page: 1 })}
-                    className="mt-4 px-5 py-2 rounded-md bg-purple-600 text-white hover:bg-purple-700 transition"
-                  >
-                    Clear filters
-                  </button>
+                  {params && (
+                    <ClearButton
+                      className="mt-4 px-5  w-fit py-2lg:py-3 lg:px-7 rounded-md bg-purple-600 text-white hover:bg-purple-700 transition"
+                      setLocal={setLocal}
+                      setParams={setParams}
+                      onChange={handleFilterChange}
+                    />
+                  )}
                 </div>
               ) : null}
             </div>

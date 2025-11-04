@@ -15,6 +15,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Button } from "../ui/button";
+import ClearButton from "../buttons/clearButton";
 
 type Brand = { id: number; name: string };
 type Store = { id: number; name: string };
@@ -26,6 +27,8 @@ interface FiltersProps {
   brands?: Brand[];
   stores?: Store[];
   setParams?: (value: React.SetStateAction<Params>) => void;
+  local: Params;
+  setLocal?: (value: React.SetStateAction<Params>) => void;
 }
 
 // Debounce helper
@@ -46,9 +49,10 @@ function Filters({
   availableAttributes,
   brands = [],
   stores = [],
-  setParams
+  setParams,
+  local,
+  setLocal,
 }: FiltersProps) {
-  const [local, setLocal] = useState<Params>({ ...params });
   const { showFilter, setShowFilter } = useFilter();
 
   const debounced = useMemo(
@@ -58,7 +62,7 @@ function Filters({
 
   const setAndApply = (key: string, val: string | number | undefined) => {
     const next = { ...local, [key]: val };
-    setLocal(next);
+    setLocal?.(next);
     debounced(next);
   };
 
@@ -206,13 +210,11 @@ function Filters({
 
           <div className="pl-3 flex pt-6 pr-6 items-start absolute bottom-0 left-0 w-full h-24">
             {params && (
-              <Button
-                className="w-full hover:bg-white"
-                onClick={() => setParams?.({ per_page: 24, page: 1 })}
-                variant="outline"
-              >
-                clear filter
-              </Button>
+              <ClearButton
+                setLocal={setLocal}
+                setParams={setParams}
+                onChange={onChange}
+              />
             )}
           </div>
         </div>
