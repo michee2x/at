@@ -74,8 +74,9 @@ const CategoryInfo = ({ category }: { category: WooCategory }) => {
         {category?.name?.replace("amp;", "")} <IoChevronForward />
       </h1>
       <div className="grid grid-cols-5 gap-3">
-        {subCategories.map((sub) => (
+        {subCategories.map((sub, id) => (
           <Link
+          key={`${id}`}
             href={`/category/?cat=${sub.id}&title=${sub.name}`} // ✅ open subcategory page
             className="w-full flex items-center cursor-pointer flex-col gap-2 h-fit min-h-44 rounded-lg shadow-sm bg-gray-100 hover:bg-gray-200 transition"
           >

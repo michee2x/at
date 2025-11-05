@@ -53,7 +53,6 @@ const VerticalCategory = ({categories}:{categories: WooCategory[]}) => {
         style={{ WebkitOverflowScrolling: "touch" }}
       >
         {categories.map((c) => {
-          const [hovering, setHovering] = React.useState(false);
           return (
             <a
               onMouseEnter={() => setActiveCategory(c)}
