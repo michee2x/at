@@ -1,5 +1,6 @@
 "use client";
 
+import { useParentCategories } from "@/hooks/wc/useCategory";
 import { WooCategory } from "@/types";
 import {
   createContext,
@@ -18,12 +19,12 @@ interface AppError {
 
 // Context type
 type CategoryContextType = {
-  selectedCategory: string;
-  setSelectedCategory: Dispatch<SetStateAction<string>>;
-  categories: WooCategory[];
-  setCategories: Dispatch<SetStateAction<WooCategory[]>>;
-  loading: boolean;
-  error: string | null;
+  categories: WooCategory[] | undefined;
+  isLoading: boolean;
+  isError: boolean;
+  error: Error | null;
+  activeCategory: WooCategory | null;
+  setActiveCategory: (props: WooCategory | null) => void;
 };
 
 // Create context
@@ -32,43 +33,31 @@ const CategoryContext = createContext<CategoryContextType | undefined>(
 );
 
 export const CategoryProvider = ({ children }: { children: ReactNode }) => {
-  const [selectedCategory, setSelectedCategory] = useState("beauty & wellness");
-  const [categories, setCategories] = useState<WooCategory[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [activeCategory, setActiveCategory] = useState<WooCategory | null>(
+    null
+  );
+  const {
+    isLoading,
+    data: categories,
+    isError,
+    error,
+  } = useParentCategories({ id: 0 });
 
   useEffect(() => {
-    async function fetchCategories() {
-      setLoading(true);
-      try {
-        const res = await fetch("/api/categories");
-        if (!res.ok) throw new Error("Failed to fetch categories");
-
-        const data: WooCategory[] = await res.json();
-        setCategories(data);
-      } catch (err) {
-        if (err instanceof Error) {
-          setError(err.message);
-        } else {
-          setError("An unexpected error occurred");
-        }
-      } finally {
-        setLoading(false);
-      }
+    if (categories && categories.length > 0) {
+      setActiveCategory(categories[0]);
     }
-
-    fetchCategories();
-  }, [categories.length]);
+  }, [categories]);
 
   return (
     <CategoryContext.Provider
       value={{
-        selectedCategory,
-        setSelectedCategory,
         categories,
-        setCategories,
-        loading,
+        isLoading,
+        isError,
         error,
+        activeCategory,
+        setActiveCategory,
       }}
     >
       {children}

@@ -1,22 +1,10 @@
+import { QueryParams } from "@/types";
 import { NextResponse } from "next/server";
 
 // -----------------------------
 // Types
 // -----------------------------
-interface QueryParams {
-  cat?: string | number;
-  page?: string | number;
-  per_page?: string | number;
-  min_price?: string | number;
-  max_price?: string | number;
-  in_stock?: string | boolean;
-  q?: string;
-  brand_id?: string | number;
-  sort?: string;
-  store?: string;
-  domain?: string;
-  [key: string]: string | number | boolean | undefined; // allow attr_* and custom keys
-}
+
 
 interface WCProductResponse<T = unknown> {
   products: T[];

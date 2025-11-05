@@ -82,6 +82,21 @@ export interface WooDownload {
   file: string;
 }
 
+export interface QueryParams {
+  cat?: string | number;
+  page?: string | number;
+  per_page?: string | number;
+  min_price?: string | number;
+  max_price?: string | number;
+  in_stock?: string | boolean;
+  q?: string;
+  brand_id?: string | number;
+  sort?: string;
+  store?: string;
+  domain?: string;
+  [key: string]: string | number | boolean | undefined; // allow attr_* and custom keys
+}
+
 // Attribute
 export interface WooProductAttribute {
   id: number;
