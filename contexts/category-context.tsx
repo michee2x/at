@@ -1,4 +1,5 @@
 "use client";
+
 import { useParentCategories } from "@/hooks/wc/useCategory";
 import { WooCategory } from "@/types";
 import {
@@ -8,19 +9,21 @@ import {
   useEffect,
   ReactNode,
 } from "react";
-import { useSearchParams } from "next/navigation";
+
+export type queryType = { catId: string|number; catTitle: string };
 
 type CategoryContextType = {
-  categories: WooCategory[];
+  categories: WooCategory[] | undefined;
   isLoading: boolean;
   isError: boolean;
   error: Error | null;
   activeCategory: WooCategory | null;
   setActiveCategory: (props: WooCategory | null) => void;
-  queryCat: string | null;
-  queryTitle: string | null;
+  queryData: queryType;
+  setQueryData: (props: queryType) => void;
 };
 
+// Create context
 const CategoryContext = createContext<CategoryContextType | undefined>(
   undefined
 );
@@ -28,33 +31,20 @@ const CategoryContext = createContext<CategoryContextType | undefined>(
 export const CategoryProvider = ({ children }: { children: ReactNode }) => {
   const [activeCategory, setActiveCategory] = useState<WooCategory | null>(
     null
-  );
-  const [queryCat, setQueryCat] = useState<string | null>(null);
-  const [queryTitle, setQueryTitle] = useState<string | null>(null);
-  const [isClient, setIsClient] = useState(false);
-
-  const searchParams = useSearchParams();
-
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
-
-  useEffect(() => {
-    if (isClient) {
-      setQueryCat(searchParams.get("cat"));
-      setQueryTitle(searchParams.get("title"));
-    }
-  }, [isClient, searchParams]);
+  )
+  const [queryData, setQueryData] = useState<queryType>({catId:0,catTitle:'General'})
 
   const {
     isLoading,
-    data: categories = [],
+    data: categories,
     isError,
     error,
-  } = useParentCategories({ id: Number(queryCat ?? 0) });
+  } = useParentCategories({ id: queryData.catId });
 
   useEffect(() => {
-    if (categories.length > 0) setActiveCategory(categories[0]);
+    if (categories && categories.length > 0) {
+      setActiveCategory(categories[0]);
+    }
   }, [categories]);
 
   return (
@@ -66,8 +56,8 @@ export const CategoryProvider = ({ children }: { children: ReactNode }) => {
         error,
         activeCategory,
         setActiveCategory,
-        queryCat,
-        queryTitle,
+        queryData,
+        setQueryData
       }}
     >
       {children}
@@ -75,9 +65,11 @@ export const CategoryProvider = ({ children }: { children: ReactNode }) => {
   );
 };
 
+// Custom hook
 export const useCategory = () => {
   const context = useContext(CategoryContext);
-  if (!context)
+  if (!context) {
     throw new Error("useCategory must be used within a CategoryProvider");
+  }
   return context;
 };

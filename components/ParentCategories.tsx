@@ -4,12 +4,15 @@ import React from "react";
 import VerticalCategory from "./VerticalCategory";
 import { useCategory } from "@/contexts/category-context";
 import { FaArrowLeftLong } from "react-icons/fa6";
+import { useSearchParams } from "next/navigation";
 
 const ParentCategories: React.FC = () => {
+  const searchParams = useSearchParams();
+  const queryCat = searchParams.get("cat");
+  const queryTitle = searchParams.get("title");
   const {
     categories, isLoading, isError, error
   } = useCategory()
-  const {queryTitle} = useCategory()
 
   if (isLoading) {
     return (

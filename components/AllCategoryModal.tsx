@@ -114,7 +114,8 @@ const CategoryInfoSkeleton = () => {
 );
 };
 const AllCategoryModal = () => {
-  const {activeCategory, setActiveCategory,queryCat} = useCategory()
+  
+  const {activeCategory, setActiveCategory} = useCategory()
   return (
     <Link
       href={"/category"}
