@@ -1,5 +1,4 @@
 "use client";
-
 import { useParentCategories } from "@/hooks/wc/useCategory";
 import { WooCategory } from "@/types";
 import {
@@ -11,9 +10,8 @@ import {
 } from "react";
 import { useSearchParams } from "next/navigation";
 
-
 type CategoryContextType = {
-  categories: WooCategory[] | undefined;
+  categories: WooCategory[];
   isLoading: boolean;
   isError: boolean;
   error: Error | null;
@@ -23,7 +21,6 @@ type CategoryContextType = {
   queryTitle: string | null;
 };
 
-// Create context
 const CategoryContext = createContext<CategoryContextType | undefined>(
   undefined
 );
@@ -32,21 +29,32 @@ export const CategoryProvider = ({ children }: { children: ReactNode }) => {
   const [activeCategory, setActiveCategory] = useState<WooCategory | null>(
     null
   );
+  const [queryCat, setQueryCat] = useState<string | null>(null);
+  const [queryTitle, setQueryTitle] = useState<string | null>(null);
+  const [isClient, setIsClient] = useState(false);
+
   const searchParams = useSearchParams();
-  const queryCat = searchParams.get("cat");
-  const queryTitle = searchParams.get("title");
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  useEffect(() => {
+    if (isClient) {
+      setQueryCat(searchParams.get("cat"));
+      setQueryTitle(searchParams.get("title"));
+    }
+  }, [isClient, searchParams]);
 
   const {
     isLoading,
-    data: categories,
+    data: categories = [],
     isError,
     error,
   } = useParentCategories({ id: Number(queryCat ?? 0) });
 
   useEffect(() => {
-    if (categories && categories.length > 0) {
-      setActiveCategory(categories[0]);
-    }
+    if (categories.length > 0) setActiveCategory(categories[0]);
   }, [categories]);
 
   return (
@@ -67,11 +75,9 @@ export const CategoryProvider = ({ children }: { children: ReactNode }) => {
   );
 };
 
-// Custom hook
 export const useCategory = () => {
   const context = useContext(CategoryContext);
-  if (!context) {
+  if (!context)
     throw new Error("useCategory must be used within a CategoryProvider");
-  }
   return context;
 };
