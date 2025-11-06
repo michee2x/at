@@ -7,7 +7,7 @@ const {parent} = Object.fromEntries(searchParams.entries());
 // console.log("REQUESET IS MADEEEEEEEEEEEEEEEEEEEEEEEEEE TO:")
 //   console.log("\n\n\n\n\n\n\n\n\n\n\n\n\n\nREQUESET IS MADEEEEEEEEEEEEEEEEEEEEEEEEEE TO:", parent,"\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
 // }
-  const url = `${process.env.WC_API_URL}wp-json/wc/v3/products/categories?parent=${parent}`;
+  const url = `${process.env.WC_API_URL || "https://atlaze.com/"}wp-json/wc/v3/products/categories?parent=${parent}`;
 
   //https://atlaze.com/wp-json/wc/v3/products/categories?parent=118
   //https://atlaze.com/wp-json/wc/v3/products/categories?per_page=100&parent=47
