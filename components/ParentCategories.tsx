@@ -4,12 +4,9 @@ import React from "react";
 import VerticalCategory from "./VerticalCategory";
 import { useCategory } from "@/contexts/category-context";
 import { FaArrowLeftLong } from "react-icons/fa6";
-import { useSearchParams } from "next/navigation";
 
 const ParentCategories: React.FC = () => {
-  const searchParams = useSearchParams();
-  const queryCat = searchParams.get("cat");
-  const queryTitle = searchParams.get("title");
+  const {queryData} = useCategory()
   const {
     categories, isLoading, isError, error
   } = useCategory()
@@ -41,7 +38,7 @@ const ParentCategories: React.FC = () => {
   return (
     <div className="h-full max-w-[30%] bg-gray-200">
       <div className="p-4 text-black text-3xl">
-        {!queryTitle ? (
+        {!queryData.catTitle ? (
           <h1>General Categories</h1>
         ) : (
           <>
@@ -49,7 +46,7 @@ const ParentCategories: React.FC = () => {
               <FaArrowLeftLong className="text-xl cursor-pointer hover:text-blue-600" />
               subcategory for
             </span>
-            <h1>{queryTitle}</h1>
+            <h1>{queryData.catTitle}</h1>
           </>
         )}
       </div>

@@ -7,9 +7,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { FaChevronUp } from "react-icons/fa6";
-import HorizontalCategory from "./VerticalCategory";
 import ParentCategories from "./ParentCategories";
-import { useEffect, useState } from "react";
 import { WooCategory } from "@/types";
 import { useCategory } from "@/contexts/category-context";
 import { IoChevronForward } from "react-icons/io5";

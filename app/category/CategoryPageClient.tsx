@@ -38,7 +38,6 @@ import ClearButton from "@/components/buttons/clearButton";
 import { isCleared } from "@/utils/isCleared";
 import { queryType, useCategory } from "@/contexts/category-context";
 
-
 // -----------------------------
 // Loader
 // -----------------------------
@@ -124,10 +123,9 @@ export default function CategoryPageClient({
   });
 
   //Get the search params and store in variables
-  const searchParams = useSearchParams()
-  const title = searchParams.get("title")
-  const category = searchParams.get("cat")
-
+  const searchParams = useSearchParams();
+  const title = searchParams.get("title");
+  const category = searchParams.get("cat");
 
   const [clickedProduct, setClickedProduct] = useState<WooProduct | null>(null);
   const [params, setParams] = useState<Params>(initialParams);
@@ -143,9 +141,9 @@ export default function CategoryPageClient({
     ...params,
     page,
     per_page: perPage,
-    ...(category ? { category } : {}),//fetch products from a specific caetgory else from all categories
+    ...(category ? { category } : {}), //fetch products from a specific caetgory else from all categories
   });
-  const {queryData, setQueryData} = useCategory()
+  const { queryData, setQueryData } = useCategory();
 
   const products: WooProduct[] = Array.isArray(data)
     ? data
@@ -164,10 +162,11 @@ export default function CategoryPageClient({
 
   //Set context catId to category id if it changes
   useEffect(() => {
-  const catId = category ?? 0;
-  const update:queryType = {...queryData, catId}
-  setQueryData(update)
-}, [category]);
+    const catId = category ?? 0;
+    const catTitle = title ?? "General";
+    const update: queryType = { ...queryData, catId, catTitle };
+    setQueryData(update);
+  }, [category]);
 
   // Merge/append products
   useEffect(() => {
@@ -219,9 +218,9 @@ export default function CategoryPageClient({
   function gotoPage(n: number) {
     setPage(n);
   }
-  const ParamsIsEmpty = isCleared(params,cleared)||isCleared(params,{});
+  const ParamsIsEmpty = isCleared(params, cleared) || isCleared(params, {});
 
-console.log("\n\n\n\n\n\n\n\n", ParamsIsEmpty, "\n\n\n\n\n");
+  console.log("\n\n\n\n\n\n\n\n", ParamsIsEmpty, "\n\n\n\n\n");
   return (
     <div className="container w-full mx-auto lg:px- pb-8">
       <Drawer>
