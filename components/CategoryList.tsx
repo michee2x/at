@@ -27,7 +27,7 @@ export default function CategoryList({
 
   return (
     <div className={`w-full ${className}`}>
-      {categories && categories.length > 0 ? (
+      {categories && categories?.length > 0 ? (
         <div className="w-full min-h-64">
           <BrandShowCase
             categories={categories}

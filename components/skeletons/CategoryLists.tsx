@@ -28,7 +28,7 @@ export default function CategoList({
 
   return (
     <div className={`space-y-8 ${className}`}>
-      {categories.length > 0 ? (
+      {categories && categories.length > 0 ? (
         <div className="w-full min-h-64">
           <BrandShowCase
             categories={categories}

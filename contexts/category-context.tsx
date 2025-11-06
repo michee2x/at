@@ -11,8 +11,9 @@ import {
 } from "react";
 import { useSearchParams } from "next/navigation";
 
+
 type CategoryContextType = {
-  categories: WooCategory[]; // ✅ no longer possibly undefined
+  categories: WooCategory[] | undefined;
   isLoading: boolean;
   isError: boolean;
   error: Error | null;
@@ -35,15 +36,15 @@ export const CategoryProvider = ({ children }: { children: ReactNode }) => {
   const queryCat = searchParams.get("cat");
   const queryTitle = searchParams.get("title");
 
-  const { isLoading, data, isError, error } = useParentCategories({
-    id: Number(queryCat ?? 0),
-  });
-
-  // ✅ Always provide an array, even if data is undefined
-  const categories = data ?? [];
+  const {
+    isLoading,
+    data: categories,
+    isError,
+    error,
+  } = useParentCategories({ id: Number(queryCat ?? 0) });
 
   useEffect(() => {
-    if (categories.length > 0) {
+    if (categories && categories.length > 0) {
       setActiveCategory(categories[0]);
     }
   }, [categories]);

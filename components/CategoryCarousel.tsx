@@ -124,7 +124,7 @@ export default function CategoryCarousel() {
           className="category-scroll flex overflow-x-auto gap-4 px-10 py-2 touch-pan-x"
         >
           {catsWithImage &&
-            catsWithImage.length >= 1 &&
+            catsWithImage?.length >= 1 &&
             catsWithImage?.map((cat, index) => (
               <div
                 key={index}
@@ -147,7 +147,7 @@ export default function CategoryCarousel() {
               </div>
             ))}
 
-          {catsWithImage.length < 1 && (
+          {catsWithImage?.length < 1 && (
             <div className="flex w-screen overflow-x-hidden h-auto">
               {[...Array(20)].map((id) => {
                 return (
@@ -163,7 +163,7 @@ export default function CategoryCarousel() {
             </div>
           )}
 
-          {catsWithImage && catsWithImage.length >= 1 && (
+          {catsWithImage && catsWithImage?.length >= 1 && (
             <div className="flex flex-col items-center min-w-[80px] cursor-pointer group select-none">
               <div className="w-16 h-16 bg-gray-400 rounded-xl overflow-hidden border-2 border-transparent group-hover:border-purple-300 transition text-3xl flex items-center justify-center text-white">
                 <CiCircleMore />
