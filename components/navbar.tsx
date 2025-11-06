@@ -12,9 +12,6 @@ import AllCategoryModal from "./AllCategoryModal";
 const NavBar = () => {
   const pathname = usePathname();
   const {setShowSideBar} = useSideBar()
-  const [open, setOpen] = useState<boolean>(false);
-  const [hits, setHits] = useState<ProductHit[]>([]);
-  const [hoverAllCat, setHoverAllCat] = useState(false)
 
   const pages = [
     "search",
