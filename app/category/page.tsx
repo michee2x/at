@@ -37,6 +37,11 @@ import { FaTimes } from "react-icons/fa";
 import ClearButton from "@/components/buttons/clearButton";
 import { isCleared } from "@/utils/isCleared";
 import { queryType, useCategory } from "@/contexts/category-context";
+
+
+//Don’t pre-render this page, always render it on the server dynamically.
+export const dynamic = "force-dynamic";
+
 // -----------------------------
 // Loader
 // -----------------------------
