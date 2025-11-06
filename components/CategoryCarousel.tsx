@@ -147,7 +147,7 @@ export default function CategoryCarousel() {
               </div>
             ))}
 
-          {catsWithImage?.length < 1 && (
+          {catsWithImage && catsWithImage?.length < 1 && (
             <div className="flex w-screen overflow-x-hidden h-auto">
               {[...Array(20)].map((id) => {
                 return (
