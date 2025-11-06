@@ -2,12 +2,12 @@
 
 import React, { Suspense, useEffect, useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { ProductCard } from "@/components/category/ProductCard";
 import { Params, WooProduct } from "@/types";
 import { useProducts } from "@/hooks/wc/useProducts";
 import Filters from "@/components/category/sideFilter";
-import { AtlazeBrands, productBrand } from "@/constants";
+import { AtlazeBrands, cleared, productBrand } from "@/constants";
 import Image from "next/image";
 import { HiAdjustmentsHorizontal, HiOutlineBookmark } from "react-icons/hi2";
 import { useFilter } from "@/contexts/filter-context";
@@ -35,6 +35,7 @@ import { ProductSkeleton } from "@/components/category/skeleton/product-skeleton
 import { GoArrowUpRight } from "react-icons/go";
 import { FaTimes } from "react-icons/fa";
 import ClearButton from "@/components/buttons/clearButton";
+import { isCleared } from "@/utils/isCleared";
 // -----------------------------
 // Loader
 // -----------------------------
@@ -118,6 +119,13 @@ export default function CategoryPageClient({
     rootMargin: "200px",
     triggerOnce: false,
   });
+
+  //Get the search params and store in variables
+  const searchParams = useSearchParams()
+  const title = searchParams.get("title")
+  const category = searchParams.get("cat")
+
+
   const [clickedProduct, setClickedProduct] = useState<WooProduct | null>(null);
   const [params, setParams] = useState<Params>(initialParams);
   const [local, setLocal] = useState<Params>({ ...params });
@@ -132,6 +140,7 @@ export default function CategoryPageClient({
     ...params,
     page,
     per_page: perPage,
+    ...(category ? { category } : {}),//fetch products from a specific caetgory else from all categories
   });
 
   const products: WooProduct[] = Array.isArray(data)
@@ -199,7 +208,9 @@ export default function CategoryPageClient({
   function gotoPage(n: number) {
     setPage(n);
   }
+  const ParamsIsEmpty = isCleared(params,cleared)||isCleared(params,{});
 
+console.log("\n\n\n\n\n\n\n\n", ParamsIsEmpty, "\n\n\n\n\n");
   return (
     <div className="container w-full mx-auto lg:px- pb-8">
       <Drawer>
@@ -225,9 +236,7 @@ export default function CategoryPageClient({
               id="header"
               className="text-xl lg:text-2xl sticky py-3 lg:relative top-0 bg-white z-20 border-gray-300 lg:border-0 border-b flex items-center pb-2 justify-between lg:p-0 px-4 font-semibold text-gray-900 lg:mb-6"
             >
-              <h1 className="text-3xl font-bold">
-                {categoryMeta?.title ?? "Category"}
-              </h1>
+              <h1 className="text-3xl font-bold">{title ?? "Category"}</h1>
               {categoryMeta?.description && (
                 <p className="text-gray-600 mt-2">{categoryMeta.description}</p>
               )}
@@ -273,7 +282,7 @@ export default function CategoryPageClient({
                     </DrawerTrigger>
                   ))}
                 </section>
-              ) : !isFetching && allProducts.length === 0 ? (
+              ) : !isFetching && allProducts.length === 0 && !ParamsIsEmpty ? (
                 <div className="col-span-full flex h-[40vh] flex-col items-center justify-center text-center pb-16 text-gray-600">
                   <ProductNotFound />
                   <p className="text-lg font-semibold">No products found</p>
@@ -287,6 +296,24 @@ export default function CategoryPageClient({
                       setParams={setParams}
                       onChange={handleFilterChange}
                     />
+                  )}
+                </div>
+              ) : !isFetching && allProducts.length === 0 && ParamsIsEmpty ? (
+                <div className="col-span-full flex h-[40vh] flex-col items-center justify-center text-center pb-16 text-gray-600">
+                  <ProductNotFound />
+                  <p className="text-lg font-semibold">
+                    No products found under this category
+                  </p>
+                  <p className="text-sm text-gray-500 mt-1">
+                    Try checking back later...
+                  </p>
+                  {params && (
+                    <Button
+                      className="mt-4 px-5  w-fit py-2lg:py-3 lg:px-7 rounded-md bg-purple-600 text-white hover:bg-purple-700 transition"
+                      asChild
+                    >
+                      <a href="/category">Back to all categories</a>
+                    </Button>
                   )}
                 </div>
               ) : null}

@@ -28,7 +28,7 @@ export default function Home() {
         <div className="w-full hidden h-auto lg:order-2">
           <div className="w-full pl-4 h-auto">
             <ul className="list-none w-full gap-[16px] scrollcat lg:justify-center items-center mt-5 flex">
-              {categories?.length > 0 ? (
+              {categories && categories?.length > 0 ? (
                 categories?.map((cat, idx) => {
                   return (
                     <Link

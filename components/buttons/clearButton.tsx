@@ -2,6 +2,8 @@ import React from 'react'
 import { Button } from '../ui/button';
 import { Params } from '@/types';
 import { cn } from '@/lib/utils';
+import { cleared } from '@/constants';
+
 
 interface ClearButtonProps {
   setLocal?: React.Dispatch<React.SetStateAction<Params>>;
@@ -17,16 +19,6 @@ const ClearButton: React.FC<ClearButtonProps> = ({
   className
 }) => {
   const handleClear = () => {
-    const cleared: Params = {
-      sort: "",
-      brand: "",
-      store: "",
-      stock_status: "",
-      min_price: "",
-      max_price: "",
-      per_page: 24,
-      page: 1,
-    };
 
     setLocal?.(cleared);
     setParams?.(cleared);

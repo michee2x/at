@@ -18,7 +18,7 @@ interface WCProductResponse<T = unknown> {
 function buildQueryParams(params: QueryParams): Record<string, string> {
   const query: Record<string, string> = {};
 
-  if (params.cat) query["category"] = String(params.cat);
+  if (params.category) query["category"] = String(params.category);
   if (params.page) query["page"] = String(params.page);
   query["per_page"] = params.per_page ? String(params.per_page) : "12";
 
@@ -39,6 +39,7 @@ function buildQueryParams(params: QueryParams): Record<string, string> {
       query["attribute_term"] = String(params[key]);
     }
   }
+
 
   // Sorting
   switch (params.sort) {
@@ -62,6 +63,7 @@ function buildQueryParams(params: QueryParams): Record<string, string> {
       query["orderby"] = "popularity";
   }
 
+
   return query;
 }
 
@@ -79,6 +81,8 @@ async function fetchWCProducts<T = unknown>(params: QueryParams): Promise<WCProd
   Object.entries({ ...query, consumer_key: key, consumer_secret: secret }).forEach(
     ([k, v]) => url.searchParams.set(k, v)
   );
+
+  console.log("\n\n\n\n\n the main url for the cw endpoint for products", url, 'params; ', params, "query", query, "\n\n\n\n\n")
 
   const res = await fetch(url.toString(), {
     headers: { Accept: "application/json" },
@@ -109,6 +113,9 @@ console.log("WC_BASE_URL:", base);
 
   Object.entries(query).forEach(([k, v]) => url.searchParams.set(k, v));
 
+  console.log("\n\n\n\n\n the main url for the cw endpoint for products", url, "\n\n\n\n\n")
+
+
   const res = await fetch(url.toString(), {
     headers: { Accept: "application/json" },
     cache: "no-store",
@@ -134,7 +141,7 @@ export async function GET(req: Request) {
     const { store, domain } = params;
 
     const useDokan = domain === "dokan" || (store && store !== "none");
-    console.log("👉 Using Dokan?", useDokan, "Domain:", domain);
+    console.log("\n\n\n\n\n\n👉 Using Dokan?", useDokan, "Domain:", domain, "params", params, "\n\n\n\n\n");
 
     const result = useDokan
       ? await fetchDokanProducts(params)

@@ -8,16 +8,10 @@ import {
   useState,
   useEffect,
   ReactNode,
-  Dispatch,
-  SetStateAction,
 } from "react";
+import { useSearchParams } from "next/navigation";
 
-// Define a proper Error type (instead of `any`)
-interface AppError {
-  message: string;
-}
 
-// Context type
 type CategoryContextType = {
   categories: WooCategory[] | undefined;
   isLoading: boolean;
@@ -25,6 +19,8 @@ type CategoryContextType = {
   error: Error | null;
   activeCategory: WooCategory | null;
   setActiveCategory: (props: WooCategory | null) => void;
+  queryCat: string | null;
+  queryTitle: string | null;
 };
 
 // Create context
@@ -36,12 +32,16 @@ export const CategoryProvider = ({ children }: { children: ReactNode }) => {
   const [activeCategory, setActiveCategory] = useState<WooCategory | null>(
     null
   );
+  const searchParams = useSearchParams();
+  const queryCat = searchParams.get("cat");
+  const queryTitle = searchParams.get("title");
+
   const {
     isLoading,
     data: categories,
     isError,
     error,
-  } = useParentCategories({ id: 0 });
+  } = useParentCategories({ id: Number(queryCat ?? 0) });
 
   useEffect(() => {
     if (categories && categories.length > 0) {
@@ -58,6 +58,8 @@ export const CategoryProvider = ({ children }: { children: ReactNode }) => {
         error,
         activeCategory,
         setActiveCategory,
+        queryCat,
+        queryTitle,
       }}
     >
       {children}

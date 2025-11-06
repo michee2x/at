@@ -3,6 +3,7 @@ import { CATEGORIES } from "@/constants";
 import { useCategory } from "@/contexts/category-context";
 import { cn } from "@/lib/utils";
 import { WooCategory } from "@/types";
+import Link from "next/link";
 import React, { useRef } from "react";
 import { MdArrowOutward } from "react-icons/md";
 
@@ -41,7 +42,7 @@ const VerticalCategory = ({categories}:{categories: WooCategory[]}) => {
     }
   };
   return (
-    <div className="relative flex flex-col group bg-gray-100">
+    <div className="relative flex-1 flex flex-col group">
 
       {/* Scroll container */}
       <div
@@ -54,11 +55,11 @@ const VerticalCategory = ({categories}:{categories: WooCategory[]}) => {
       >
         {categories.map((c) => {
           return (
-            <a
+            <Link
               onMouseEnter={() => setActiveCategory(c)}
               key={c.id}
               role="listitem"
-              href={`/category/${c.slug}`}
+              href={`/category/?cat=${c.id}&title=${c.name}`}
               className="snap-center w-fit bg-white py-1 px-2 flex-shrink-0 bgwhite/5 hover:bg-white/10 focus-visible:ring-2 focus-visible:ring-offset-2 items-center hover:underline focus-visible:ring-indigo-500 flex gap-2"
               aria-label={c.name}
             >
@@ -66,7 +67,7 @@ const VerticalCategory = ({categories}:{categories: WooCategory[]}) => {
                 {c.name?.toLowerCase()?.replace("amp;", "")}
               </span>
               <MdArrowOutward className="text-black text-xl" />
-            </a>
+            </Link>
           );
         })}
       </div>

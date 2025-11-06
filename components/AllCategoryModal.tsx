@@ -71,7 +71,7 @@ const CategoryInfo = ({ category }: { category: WooCategory }) => {
   return (
     <div className="flex-1 overflow-auto flex flex-col gap-4 p-4">
       <h1 className="text-xl flex items-center gap-2">
-        {category?.name?.replace("amp;", "")} <IoChevronForward />
+        {category.name.replace("amp;", "")} <IoChevronForward />
       </h1>
       <div className="grid grid-cols-5 gap-3">
         {subCategories.map((sub, id) => (
@@ -114,7 +114,7 @@ const CategoryInfoSkeleton = () => {
 );
 };
 const AllCategoryModal = () => {
-  const {activeCategory, setActiveCategory} = useCategory()
+  const {activeCategory, setActiveCategory,queryCat} = useCategory()
   return (
     <Link
       href={"/category"}

@@ -1,3 +1,5 @@
+import { Params } from "@/types";
+
 export interface Category {
   name: string;
   image: string;
@@ -385,3 +387,14 @@ export const CATEGORIES = [
 { id: "39", name: "Underwear", slug: "underwear", emoji: "🩲" },
 { id: "40", name: "Gifts", slug: "gifts", emoji: "🎁" },
 ];
+
+export const cleared: Params = {
+  sort: "",
+  brand: "",
+  store: "",
+  stock_status: "",
+  min_price: "",
+  max_price: "",
+  per_page: 24,
+  page: 1,
+};
