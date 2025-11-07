@@ -51,8 +51,8 @@ export default function ProductMediaGallery({
   product,
   className = "",
 }: Props) {
-  // --- Hooks (must be declared first!)
-  const [active, setActive] = useState(0);
+  // --- States
+  const [active, setActive] = useState<number | null>(null);
   const [prevActive, setPrevActive] = useState<number | null>(null);
   const [direction, setDirection] = useState<"left" | "right">("right");
   const mainRef = useRef<HTMLDivElement | null>(null);
@@ -60,27 +60,33 @@ export default function ProductMediaGallery({
   // --- Meta data ---
   const meta = useMemo(() => product.meta_data ?? [], [product.meta_data]);
 
-  // --- Extract videos ---
+  // --- Extract videos from meta dynamically ---
   const videosFromMeta = useMemo<MediaItem[]>(() => {
     const items: MediaItem[] = [];
-    for (let i = 1; i <= 10; i++) {
-      const urlMeta = meta.find((m) => m.key === `_product_video_url_${i}`);
-      if (!urlMeta?.value || typeof urlMeta.value !== "string") continue;
-      const thumbMeta = meta.find((m) => m.key === `_product_video_thumb_${i}`);
-      const isYouTube = /youtube\.com|youtu\.be/.test(urlMeta.value);
-      items.push({
-        id: `video-${i}`,
-        type: "video",
-        src: urlMeta.value,
-        thumb:
-          typeof thumbMeta?.value === "string" ? thumbMeta.value : undefined,
-        provider: isYouTube ? "youtube" : "other",
-      });
-    }
+    meta.forEach((m) => {
+      if (
+        m.key.startsWith("_product_video_url_") &&
+        typeof m.value === "string"
+      ) {
+        const index = m.key.replace("_product_video_url_", "");
+        const thumbMeta = meta.find(
+          (x) => x.key === `_product_video_thumb_${index}`
+        );
+        const isYouTube = /youtube\.com|youtu\.be/.test(m.value);
+        items.push({
+          id: `video-${index}`,
+          type: "video",
+          src: m.value,
+          thumb:
+            typeof thumbMeta?.value === "string" ? thumbMeta.value : undefined,
+          provider: isYouTube ? "youtube" : "other",
+        });
+      }
+    });
     return items;
   }, [meta]);
 
-  // --- Extract images ---
+  // --- Extract images dynamically ---
   const imagesFromProduct = useMemo<MediaItem[]>(() => {
     return (product.images || []).map((img, idx) => ({
       id: `img-${img.id ?? idx}`,
@@ -91,7 +97,7 @@ export default function ProductMediaGallery({
     }));
   }, [product.images, product.name]);
 
-  // --- Combine order ---
+  // --- Combine dynamically ---
   const mediaList = useMemo(() => {
     const posMeta = meta.find((m) => m.key === "_product_video_position");
     const pos = (
@@ -102,52 +108,47 @@ export default function ProductMediaGallery({
       : [...imagesFromProduct, ...videosFromMeta];
   }, [videosFromMeta, imagesFromProduct, meta]);
 
-  // --- Preload ---
+  // --- Preload thumbnails ---
   useEffect(() => {
     mediaList.forEach((m) => {
       if (m.type === "image" || m.thumb) {
         const img = new window.Image();
         img.src = m.thumb ?? m.src;
-      } else if (m.type === "video" && !/youtube/.test(m.src)) {
-        const video = document.createElement("video");
-        video.src = m.src;
-        video.preload = "auto";
       }
     });
   }, [mediaList]);
 
-  // --- Early return AFTER hooks ---
-  if (!mediaList.length) {
-    return (
-      <div className={`w-full ${className}`}>
-        <div className="bg-gray-100 w-full h-80 flex items-center justify-center">
-          <span className="text-sm text-gray-500">No media available</span>
-        </div>
-      </div>
-    );
-  }
+  // --- Auto select first item immediately when list becomes available ---
+  useEffect(() => {
+    if (mediaList.length > 0 && active === null) {
+      setActive(0);
+      setPrevActive(null);
+    }
+  }, [mediaList, active]);
 
-  // --- Handlers ---
-  const prev = () => {
-    setPrevActive(active);
-    setDirection("left");
-    setActive((s) => (s - 1 + mediaList.length) % mediaList.length);
-  };
-
-  const next = () => {
-    setPrevActive(active);
-    setDirection("right");
-    setActive((s) => (s + 1) % mediaList.length);
-  };
-
-  // --- Helpers ---
+  // --- YouTube helper ---
   const youtubeEmbedUrl = (url: string) => {
     const match = url.match(/(?:v=|\/embed\/|youtu\.be\/)([A-Za-z0-9_-]{6,})/);
     const id = match?.[1];
     return id ? `https://www.youtube.com/embed/${id}?rel=0&playsinline=1` : url;
   };
 
-  // --- Render Main ---
+  // --- Navigation ---
+  const prev = () => {
+    if (!mediaList.length) return;
+    setPrevActive(active);
+    setDirection("left");
+    setActive((s) => ((s ?? 0) - 1 + mediaList.length) % mediaList.length);
+  };
+
+  const next = () => {
+    if (!mediaList.length) return;
+    setPrevActive(active);
+    setDirection("right");
+    setActive((s) => ((s ?? 0) + 1) % mediaList.length);
+  };
+
+  // --- Main renderer ---
   const renderMain = (item: MediaItem) => {
     if (item.type === "image") {
       return (
@@ -171,7 +172,7 @@ export default function ProductMediaGallery({
           src={embed}
           allow="autoplay; encrypted-media; picture-in-picture"
           allowFullScreen
-          className="w-full h-full"
+          className="w-full h-full border-none rounded-lg"
         />
       );
     }
@@ -195,7 +196,18 @@ export default function ProductMediaGallery({
     );
   };
 
-  // --- JSX ---
+  // --- Fallback if no media ---
+  if (!mediaList.length) {
+    return (
+      <div className={`w-full ${className}`}>
+        <div className="bg-gray-100 w-full h-80 flex items-center justify-center">
+          <span className="text-sm text-gray-500">No media available</span>
+        </div>
+      </div>
+    );
+  }
+
+  // --- JSX (only change: transform logic ensures current always translateX(0)) ---
   return (
     <div
       className={`flex flex-col-reverse lg:w-[60%] sm:flex-row gap-4 w-full items-center sm:items-start ${className}`}
@@ -208,7 +220,7 @@ export default function ProductMediaGallery({
             onClick={() => {
               if (idx === active) return;
               setPrevActive(active);
-              setDirection(idx > active ? "right" : "left");
+              setDirection(idx > (active ?? 0) ? "right" : "left");
               setActive(idx);
             }}
             className={`flex-shrink-0 w-20 h-20 sm:w-16 sm:h-16 rounded-md overflow-hidden border ${
@@ -275,24 +287,31 @@ export default function ProductMediaGallery({
         {/* Media Render */}
         <div className="relative w-full h-full overflow-hidden">
           {mediaList.map((m, idx) => {
-            const isCurrent = idx === active;
+            const isCurrent = idx === (active ?? 0);
             const isPrev = idx === prevActive;
             if (!isCurrent && !isPrev) return null;
+
+            // *** FIXED: always place current at translateX(0) so it is visible immediately on load ***
+            let transformValue = "translateX(0)";
+            if (isCurrent) {
+              transformValue = "translateX(0)";
+            } else if (isPrev) {
+              transformValue =
+                direction === "right"
+                  ? "translateX(-100%)"
+                  : "translateX(100%)";
+            } else {
+              transformValue =
+                direction === "right"
+                  ? "translateX(100%)"
+                  : "translateX(-100%)";
+            }
 
             return (
               <div
                 key={m.id}
                 className="absolute inset-0 transition-transform duration-500 ease-in-out"
-                style={{
-                  transform:
-                    isCurrent && prevActive !== null
-                      ? "translateX(0)"
-                      : isPrev
-                      ? direction === "right"
-                        ? "translateX(-100%)"
-                        : "translateX(100%)"
-                      : "translateX(100%)",
-                }}
+                style={{ transform: transformValue }}
               >
                 <div className="w-full h-full flex items-center justify-center bg-white">
                   {renderMain(m)}
