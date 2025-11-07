@@ -51,16 +51,14 @@ export default function ProductMediaGallery({
   product,
   className = "",
 }: Props) {
-  // --- States
   const [active, setActive] = useState<number | null>(null);
   const [prevActive, setPrevActive] = useState<number | null>(null);
   const [direction, setDirection] = useState<"left" | "right">("right");
   const mainRef = useRef<HTMLDivElement | null>(null);
 
-  // --- Meta data ---
   const meta = useMemo(() => product.meta_data ?? [], [product.meta_data]);
 
-  // --- Extract videos from meta dynamically ---
+  // --- Extract videos dynamically ---
   const videosFromMeta = useMemo<MediaItem[]>(() => {
     const items: MediaItem[] = [];
     meta.forEach((m) => {
@@ -97,7 +95,7 @@ export default function ProductMediaGallery({
     }));
   }, [product.images, product.name]);
 
-  // --- Combine dynamically ---
+  // --- Combine ---
   const mediaList = useMemo(() => {
     const posMeta = meta.find((m) => m.key === "_product_video_position");
     const pos = (
@@ -118,7 +116,7 @@ export default function ProductMediaGallery({
     });
   }, [mediaList]);
 
-  // --- Auto select first item immediately when list becomes available ---
+  // --- Auto select first item ---
   useEffect(() => {
     if (mediaList.length > 0 && active === null) {
       setActive(0);
@@ -126,7 +124,7 @@ export default function ProductMediaGallery({
     }
   }, [mediaList, active]);
 
-  // --- YouTube helper ---
+  // --- YouTube embed helper ---
   const youtubeEmbedUrl = (url: string) => {
     const match = url.match(/(?:v=|\/embed\/|youtu\.be\/)([A-Za-z0-9_-]{6,})/);
     const id = match?.[1];
@@ -148,7 +146,7 @@ export default function ProductMediaGallery({
     setActive((s) => ((s ?? 0) + 1) % mediaList.length);
   };
 
-  // --- Main renderer ---
+  // --- Render main media ---
   const renderMain = (item: MediaItem) => {
     if (item.type === "image") {
       return (
@@ -196,7 +194,6 @@ export default function ProductMediaGallery({
     );
   };
 
-  // --- Fallback if no media ---
   if (!mediaList.length) {
     return (
       <div className={`w-full ${className}`}>
@@ -207,7 +204,7 @@ export default function ProductMediaGallery({
     );
   }
 
-  // --- JSX (only change: transform logic ensures current always translateX(0)) ---
+  // --- UI ---
   return (
     <div
       className={`flex flex-col-reverse lg:w-[60%] sm:flex-row gap-4 w-full items-center sm:items-start ${className}`}
@@ -223,7 +220,13 @@ export default function ProductMediaGallery({
               setDirection(idx > (active ?? 0) ? "right" : "left");
               setActive(idx);
             }}
-            className={`flex-shrink-0 w-20 h-20 sm:w-16 sm:h-16 rounded-md overflow-hidden border ${
+            onMouseEnter={() => {
+              if (idx === active) return;
+              setPrevActive(active);
+              setDirection(idx > (active ?? 0) ? "right" : "left");
+              setActive(idx);
+            }}
+            className={`flex-shrink-0 w-20 h-20 sm:w-16 sm:h-16 rounded-md overflow-hidden border transition-all ${
               idx === active
                 ? "ring-2 ring-indigo-500"
                 : "border-gray-200 hover:border-gray-400"
@@ -256,12 +259,11 @@ export default function ProductMediaGallery({
         ))}
       </div>
 
-      {/* Main Viewer */}
+      {/* Main viewer */}
       <div
         ref={mainRef}
         className="relative w-full lg:w-[60%] bg-gray-200 sm:flex-1 h-[400px] sm:h-[480px] rounded-lg overflow-hidden shadow-sm"
       >
-        {/* Navigation */}
         <button
           onClick={prev}
           className="absolute left-2 top-1/2 -translate-y-1/2 z-20 p-2 rounded-full bg-white/80 hover:bg-white shadow"
@@ -284,28 +286,17 @@ export default function ProductMediaGallery({
           </svg>
         </button>
 
-        {/* Media Render */}
         <div className="relative w-full h-full overflow-hidden">
           {mediaList.map((m, idx) => {
             const isCurrent = idx === (active ?? 0);
             const isPrev = idx === prevActive;
             if (!isCurrent && !isPrev) return null;
 
-            // *** FIXED: always place current at translateX(0) so it is visible immediately on load ***
-            let transformValue = "translateX(0)";
-            if (isCurrent) {
-              transformValue = "translateX(0)";
-            } else if (isPrev) {
-              transformValue =
-                direction === "right"
-                  ? "translateX(-100%)"
-                  : "translateX(100%)";
-            } else {
-              transformValue =
-                direction === "right"
-                  ? "translateX(100%)"
-                  : "translateX(-100%)";
-            }
+            const transformValue = isCurrent
+              ? "translateX(0)"
+              : direction === "right"
+              ? "translateX(-100%)"
+              : "translateX(100%)";
 
             return (
               <div

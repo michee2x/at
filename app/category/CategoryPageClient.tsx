@@ -37,6 +37,7 @@ import { FaTimes } from "react-icons/fa";
 import ClearButton from "@/components/buttons/clearButton";
 import { isCleared } from "@/utils/isCleared";
 import { queryType, useCategory } from "@/contexts/category-context";
+import ProductMediaGallery from "@/components/ProductMediaGallery";
 
 // -----------------------------
 // Loader
@@ -362,19 +363,8 @@ export default function CategoryPageClient({
           <DrawerClose className="text-3xl cursor-pointer text-white fixed right-6 -top-10">
             <FaTimes />
           </DrawerClose>
-          <div className="flex-1 overflow-auto pt-4 pb-10 h-full lg:gap-10 flex flex-col lg:flex-row px-6 lg:px-16">
-            <div className="flex-1">
-              {clickedProduct && (
-                <ProductImageZoomWrapper
-                  src={clickedProduct.images[0].src}
-                  alt={
-                    clickedProduct.images[0].alt ??
-                    `${clickedProduct.name} image`
-                  }
-                  gallery={clickedProduct.images.slice(0, 6)}
-                />
-              )}
-            </div>
+          <div className="flex-1 overflow-auto pt-4 pb-10 h-full lg:gap-10 flex flex-col lg:flex-row px-6 lg:px-8">
+            {clickedProduct && <ProductMediaGallery product={clickedProduct} />}
             {clickedProduct && (
               <div className="flex-1 lg:p-6">
                 <header className="font-poppins mt-10 lg:mt-0">
