@@ -198,7 +198,7 @@ export default function ProductMediaGallery({
   // --- JSX ---
   return (
     <div
-      className={`flex flex-col-reverse sm:flex-row gap-4 w-full items-center sm:items-start ${className}`}
+      className={`flex flex-col-reverse lg:w-[60%] sm:flex-row gap-4 w-full items-center sm:items-start ${className}`}
     >
       {/* Thumbnails */}
       <div className="flex h-full sm:flex-col gap-3 w-full sm:w-24 overflow-x-auto sm:overflow-y-auto sm:max-h-[490px] scrollbar-thin scrollbar-thumb-gray-300">
@@ -247,7 +247,7 @@ export default function ProductMediaGallery({
       {/* Main Viewer */}
       <div
         ref={mainRef}
-        className="relative w-full sm:flex-1 h-[400px] sm:h-[480px] bg-white rounded-lg overflow-hidden shadow-sm"
+        className="relative w-full lg:w-[60%] bg-gray-200 sm:flex-1 h-[400px] sm:h-[480px] rounded-lg overflow-hidden shadow-sm"
       >
         {/* Navigation */}
         <button

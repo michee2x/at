@@ -99,7 +99,7 @@ export default async function ProductPage({ params }: { params: { id: string } }
   const image = product!.images?.[0]?.src ?? null;
 
   return (
-    <main className="container w-full mx-auto md:max-w-[95%] lg:max-w-full xl:max-w-[1300px] 2xl:max-w-[1440px] font-poppins px-4 py-8">
+    <main className="container w-full mx-auto md:max-w-[95%] lg:max-w-full xl:max-w-[1300px] 2xl:max-w-[1440px] font-poppins px-2 py-8">
       {/* Breadcrumb — keep semantic & crawlable links */}
       <nav aria-label="breadcrumb">
         <ol className="flex flex-wrap gap-x-2 text-sm">
@@ -140,7 +140,7 @@ export default async function ProductPage({ params }: { params: { id: string } }
         </Suspense>
 
         {/* Right: Info */}
-        <section className="flex-1">
+        <section className="flex-1 px-2">
           <Suspense fallback={<HeaderSkeleton />}>
             <ProductHeader product={product!} />
           </Suspense>
@@ -333,7 +333,7 @@ async function ProductSuggestion({ relatedIds }: { relatedIds?: number[] }) {
 
   return (
     <section
-      aria-labelledby="suggestion-title"
+      aria-labelledby="suggestion-title px-4"
       className="w-full h-auto font-display mt-10"
     >
       <h2 id="suggestion-title" className="text-gray-900 py-3">
