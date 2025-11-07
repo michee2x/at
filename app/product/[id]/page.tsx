@@ -11,6 +11,7 @@ import { WooProduct } from "@/types";
 import SuggestionCardWrapper from "@/components/productdetails/suggestionCardWrapper";
 import { Ratings } from "@/components/Ratings";
 import { ProductDescription } from "@/components/category/productDesc";
+import ProductMediaGallery from "@/components/ProductMediaGallery";
 
 
 /**
@@ -129,17 +130,17 @@ export default async function ProductPage({ params }: { params: { id: string } }
       </nav>
 
       <article
-        className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-16"
+        className="mt-8 flex gap-5"
         itemScope
         itemType="http://schema.org/Product"
       >
         {/* Left: Images */}
         <Suspense fallback={<ImageGallerySkeleton />}>
-          <ImageGallery product={product!} />
+          <ProductMediaGallery product={product} />
         </Suspense>
 
         {/* Right: Info */}
-        <section>
+        <section className="flex-1">
           <Suspense fallback={<HeaderSkeleton />}>
             <ProductHeader product={product!} />
           </Suspense>
@@ -168,6 +169,7 @@ export default async function ProductPage({ params }: { params: { id: string } }
           </Suspense>
         </section>
       </article>
+
 
       <Suspense fallback={<ProductSuggestionSkeleton />}>
         <ProductSuggestion relatedIds={product?.related_ids || []} />
@@ -217,10 +219,10 @@ function ProductHeader({ product }: { product: WooProduct }) {
         {/* Keep semantic category info if available; fallback */}
         {product?.categories[0]?.name?.replace("&amp;", "")?.toLowerCase()}
       </p>
-      <p className="flex flex-row flex-nowrap items-start text-[14px] lg:gap-0.5">
+      <div className="flex flex-row flex-nowrap items-start text-[14px] lg:gap-0.5">
         {product.rating_count}
         <Ratings rating={product.rating_count} />
-      </p>
+      </div>
       <p
         className="text-[15px] mt-6 text-[#111111] font-semibold"
         itemProp="offers"
