@@ -51,31 +51,33 @@ export default function ProductMediaGallery({
   product,
   className = "",
 }: Props) {
-  // ✅ Memoize meta to avoid useMemo dependency warnings
+  // --- Hooks (must be declared first!)
+  const [active, setActive] = useState(0);
+  const [prevActive, setPrevActive] = useState<number | null>(null);
+  const [direction, setDirection] = useState<"left" | "right">("right");
+  const mainRef = useRef<HTMLDivElement | null>(null);
+
+  // --- Meta data ---
   const meta = useMemo(() => product.meta_data ?? [], [product.meta_data]);
 
-  // --- Extract video URLs and thumbnails from metadata ---
+  // --- Extract videos ---
   const videosFromMeta = useMemo<MediaItem[]>(() => {
-    const videoItems: MediaItem[] = [];
+    const items: MediaItem[] = [];
     for (let i = 1; i <= 10; i++) {
-      const urlKey = `_product_video_url_${i}`;
-      const thumbKey = `_product_video_thumb_${i}`;
-      const urlMeta = meta.find((m) => m.key === urlKey);
+      const urlMeta = meta.find((m) => m.key === `_product_video_url_${i}`);
       if (!urlMeta?.value || typeof urlMeta.value !== "string") continue;
-      const thumbMeta = meta.find((m) => m.key === thumbKey);
-      const urlVal = urlMeta.value;
-      const thumbVal =
-        typeof thumbMeta?.value === "string" ? thumbMeta.value : undefined;
-      const isYouTube = /youtube\.com|youtu\.be/.test(urlVal);
-      videoItems.push({
-        id: `video-${i}-${Math.random().toString(36).slice(2, 7)}`,
+      const thumbMeta = meta.find((m) => m.key === `_product_video_thumb_${i}`);
+      const isYouTube = /youtube\.com|youtu\.be/.test(urlMeta.value);
+      items.push({
+        id: `video-${i}`,
         type: "video",
-        src: urlVal,
-        thumb: thumbVal,
+        src: urlMeta.value,
+        thumb:
+          typeof thumbMeta?.value === "string" ? thumbMeta.value : undefined,
         provider: isYouTube ? "youtube" : "other",
       });
     }
-    return videoItems;
+    return items;
   }, [meta]);
 
   // --- Extract images ---
@@ -89,7 +91,7 @@ export default function ProductMediaGallery({
     }));
   }, [product.images, product.name]);
 
-  // --- Combine media order based on metadata ---
+  // --- Combine order ---
   const mediaList = useMemo(() => {
     const posMeta = meta.find((m) => m.key === "_product_video_position");
     const pos = (
@@ -100,14 +102,13 @@ export default function ProductMediaGallery({
       : [...imagesFromProduct, ...videosFromMeta];
   }, [videosFromMeta, imagesFromProduct, meta]);
 
-  // --- Preload all media ---
+  // --- Preload ---
   useEffect(() => {
     mediaList.forEach((m) => {
       if (m.type === "image" || m.thumb) {
         const img = new window.Image();
         img.src = m.thumb ?? m.src;
-      }
-      if (m.type === "video" && !/youtube/.test(m.src)) {
+      } else if (m.type === "video" && !/youtube/.test(m.src)) {
         const video = document.createElement("video");
         video.src = m.src;
         video.preload = "auto";
@@ -115,6 +116,7 @@ export default function ProductMediaGallery({
     });
   }, [mediaList]);
 
+  // --- Early return AFTER hooks ---
   if (!mediaList.length) {
     return (
       <div className={`w-full ${className}`}>
@@ -124,12 +126,6 @@ export default function ProductMediaGallery({
       </div>
     );
   }
-
-  // --- Hooks (moved outside any conditional blocks) ---
-  const [active, setActive] = useState(0);
-  const [prevActive, setPrevActive] = useState<number | null>(null);
-  const [direction, setDirection] = useState<"left" | "right">("right");
-  const mainRef = useRef<HTMLDivElement | null>(null);
 
   // --- Handlers ---
   const prev = () => {
@@ -144,13 +140,14 @@ export default function ProductMediaGallery({
     setActive((s) => (s + 1) % mediaList.length);
   };
 
+  // --- Helpers ---
   const youtubeEmbedUrl = (url: string) => {
     const match = url.match(/(?:v=|\/embed\/|youtu\.be\/)([A-Za-z0-9_-]{6,})/);
     const id = match?.[1];
     return id ? `https://www.youtube.com/embed/${id}?rel=0&playsinline=1` : url;
   };
 
-  // --- Render main media ---
+  // --- Render Main ---
   const renderMain = (item: MediaItem) => {
     if (item.type === "image") {
       return (
@@ -160,19 +157,17 @@ export default function ProductMediaGallery({
           fill
           priority
           sizes="(max-width: 768px) 100vw, 50vw"
-          loading="eager"
           className="object-contain"
         />
       );
     }
 
-    const video = item;
-    const isYouTube = video.provider === "youtube";
+    const isYouTube = item.provider === "youtube";
     if (isYouTube) {
-      const embed = youtubeEmbedUrl(video.src);
+      const embed = youtubeEmbedUrl(item.src);
       return (
         <iframe
-          title={`video-${video.id}`}
+          title={`video-${item.id}`}
           src={embed}
           allow="autoplay; encrypted-media; picture-in-picture"
           allowFullScreen
@@ -181,22 +176,20 @@ export default function ProductMediaGallery({
       );
     }
 
-    const isMp4 = /\.(mp4|webm|ogg)$/i.test(video.src);
-    return isMp4 ? (
+    return /\.(mp4|webm|ogg)$/i.test(item.src) ? (
       <video
-        src={video.src}
+        src={item.src}
         controls
         playsInline
         preload="auto"
-        poster={video.thumb}
+        poster={item.thumb}
         className="w-full h-full object-contain bg-black"
       />
     ) : (
       <NextImage
-        src={video.thumb ?? "/placeholder.jpg"}
+        src={item.thumb ?? "/placeholder.jpg"}
         alt="video"
         fill
-        priority
         className="object-contain"
       />
     );
@@ -205,10 +198,10 @@ export default function ProductMediaGallery({
   // --- JSX ---
   return (
     <div
-      className={`flex flex-col-reverse w-full sm:flex-row gap-4 sm:gap-6 lg:w-[60%] items-center sm:items-start ${className}`}
+      className={`flex flex-col-reverse sm:flex-row gap-4 w-full items-center sm:items-start ${className}`}
     >
       {/* Thumbnails */}
-      <div className="flex h-full sm:flex-col gap-3 w-full sm:w-24 overflow-x-auto sm:overflow-y-auto sm:max-h-[490px] scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent">
+      <div className="flex h-full sm:flex-col gap-3 w-full sm:w-24 overflow-x-auto sm:overflow-y-auto sm:max-h-[490px] scrollbar-thin scrollbar-thumb-gray-300">
         {mediaList.map((m, idx) => (
           <button
             key={m.id}
@@ -230,9 +223,7 @@ export default function ProductMediaGallery({
                 alt={m.alt ?? ""}
                 width={64}
                 height={64}
-                quality={80}
                 className="object-cover w-full h-full"
-                loading="eager"
               />
             ) : (
               <div className="relative w-full h-full">
@@ -241,7 +232,6 @@ export default function ProductMediaGallery({
                   alt="video thumb"
                   fill
                   className="object-cover"
-                  loading="eager"
                 />
                 <div className="absolute inset-0 flex items-center justify-center bg-black/30">
                   <svg width="22" height="22" viewBox="0 0 24 24" fill="white">
@@ -257,12 +247,11 @@ export default function ProductMediaGallery({
       {/* Main Viewer */}
       <div
         ref={mainRef}
-        className="relative w-full sm:flex-1 max-w-3xl h-[400px] sm:h-[480px] bg-white rounded-lg overflow-hidden shadow-sm"
+        className="relative w-full sm:flex-1 h-[400px] sm:h-[480px] bg-white rounded-lg overflow-hidden shadow-sm"
       >
-        {/* Nav buttons */}
+        {/* Navigation */}
         <button
           onClick={prev}
-          aria-label="Previous media"
           className="absolute left-2 top-1/2 -translate-y-1/2 z-20 p-2 rounded-full bg-white/80 hover:bg-white shadow"
         >
           <svg
@@ -276,7 +265,6 @@ export default function ProductMediaGallery({
         </button>
         <button
           onClick={next}
-          aria-label="Next media"
           className="absolute right-2 top-1/2 -translate-y-1/2 z-20 p-2 rounded-full bg-white/80 hover:bg-white shadow"
         >
           <svg width="16" height="16" viewBox="0 0 24 24">
@@ -284,7 +272,7 @@ export default function ProductMediaGallery({
           </svg>
         </button>
 
-        {/* Animated transitions */}
+        {/* Media Render */}
         <div className="relative w-full h-full overflow-hidden">
           {mediaList.map((m, idx) => {
             const isCurrent = idx === active;
@@ -303,9 +291,7 @@ export default function ProductMediaGallery({
                       ? direction === "right"
                         ? "translateX(-100%)"
                         : "translateX(100%)"
-                      : direction === "right"
-                      ? "translateX(100%)"
-                      : "translateX(-100%)",
+                      : "translateX(100%)",
                 }}
               >
                 <div className="w-full h-full flex items-center justify-center bg-white">
