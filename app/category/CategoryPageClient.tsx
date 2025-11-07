@@ -23,7 +23,6 @@ import {
 } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
 import { Ratings } from "@/components/Ratings";
-import ProductImageZoomWrapper from "@/app/product/[id]/ProductImageZoomWrapper";
 import {
   HoverCard,
   HoverCardContent,
@@ -33,11 +32,11 @@ import { HoverCardInfo } from "@/components/category/hovercard";
 import { ProductDescription } from "@/components/category/productDesc";
 import { ProductSkeleton } from "@/components/category/skeleton/product-skeleton";
 import { GoArrowUpRight } from "react-icons/go";
-import { FaTimes } from "react-icons/fa";
 import ClearButton from "@/components/buttons/clearButton";
 import { isCleared } from "@/utils/isCleared";
 import { queryType, useCategory } from "@/contexts/category-context";
 import ProductMediaGallery from "@/components/ProductMediaGallery";
+import { LiaTimesSolid } from "react-icons/lia";
 
 // -----------------------------
 // Loader
@@ -359,11 +358,11 @@ export default function CategoryPageClient({
           </main>
         </div>
 
-        <DrawerContent className="h-[90vh]">
-          <DrawerClose className="text-3xl cursor-pointer text-white fixed right-6 -top-10">
-            <FaTimes />
+        <DrawerContent className="h-[90vh] pt-0">
+          <DrawerClose className="text-3xl hidden lg:flex cursor-pointer top-4 text-black lg:text-white fixed right-6 lg:-top-10">
+            <LiaTimesSolid />
           </DrawerClose>
-          <div className="flex-1 overflow-auto pt-4 pb-10 h-full lg:gap-10 flex flex-col lg:flex-row px-2 lg:px-8">
+          <div className="flex-1 overflow-auto lg:pt-4 pb-10 h-full lg:gap-10 flex flex-col lg:flex-row px-2 lg:px-8">
             {clickedProduct && <ProductMediaGallery product={clickedProduct} />}
             {clickedProduct && (
               <div className="flex-1 lg:p-6">
