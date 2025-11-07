@@ -196,7 +196,7 @@ export default function ProductMediaGallery({
 
   return (
     <div
-      className={`flex flex-col sm:flex-row gap-4 sm:gap-6 w-[60%] items-center sm:items-start ${className}`}
+      className={`flex flex-col-reverse w-full sm:flex-row gap-4 sm:gap-6 lg:w-[60%] items-center sm:items-start ${className}`}
     >
       {/* Thumbnails */}
       <div className="flex h-full sm:flex-col gap-3 w-full sm:w-24 overflow-x-auto sm:overflow-y-auto sm:max-h-[490px] scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent">

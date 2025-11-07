@@ -130,7 +130,7 @@ export default async function ProductPage({ params }: { params: { id: string } }
       </nav>
 
       <article
-        className="mt-8 flex gap-5"
+        className="mt-8 flex flex-col lg:flex-row gap-5"
         itemScope
         itemType="http://schema.org/Product"
       >
