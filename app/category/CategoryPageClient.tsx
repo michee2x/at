@@ -363,11 +363,11 @@ export default function CategoryPageClient({
           <DrawerClose className="text-3xl cursor-pointer text-white fixed right-6 -top-10">
             <FaTimes />
           </DrawerClose>
-          <div className="flex-1 overflow-auto pt-4 pb-10 h-full lg:gap-10 flex flex-col lg:flex-row px-6 lg:px-8">
+          <div className="flex-1 overflow-auto pt-4 pb-10 h-full lg:gap-10 flex flex-col lg:flex-row px-2 lg:px-8">
             {clickedProduct && <ProductMediaGallery product={clickedProduct} />}
             {clickedProduct && (
               <div className="flex-1 lg:p-6">
-                <header className="font-poppins mt-10 lg:mt-0">
+                <header className="font-poppins mt-5 lg:mt-0">
                   <div className="flex flex-col justify-between gap-4">
                     <div className="flex flex-col gap-1 lg:gap-2">
                       <Link
@@ -410,12 +410,12 @@ export default function CategoryPageClient({
                         src="https://github.com/evilrabbit.png"
                         alt="@evilrabbit"
                       />
-                      <AvatarFallback className="size-[2.5rem] bg-blue-600 text-white rounded-full">
+                      <AvatarFallback className="size-[2.5rem] text-white rounded-full">
                         ER
                       </AvatarFallback>
                     </Avatar>
 
-                    <div className="flex-1 flex flex-col items-center lg:flex-row justify-between">
+                    <div className="flex-1 flex flex-col lg:items-center lg:flex-row lg:justify-between">
                       <HoverCard>
                         <HoverCardTrigger className="cursor-pointer hover:underline">
                           Evilrabbit

@@ -210,7 +210,7 @@ export default function ProductMediaGallery({
       className={`flex flex-col-reverse lg:w-[60%] sm:flex-row gap-4 w-full items-center sm:items-start ${className}`}
     >
       {/* Thumbnails */}
-      <div className="flex h-full sm:flex-col gap-3 w-full sm:w-24 overflow-x-auto sm:overflow-y-auto sm:max-h-[490px] scrollbar-thin scrollbar-thumb-gray-300">
+      <div className="flex h-auto lg:h-full sm:flex-col gap-3 w-full sm:w-24 overflow-x-auto sm:overflow-y-auto sm:max-h-[490px] scrollbar-thin scrollbar-thumb-gray-300">
         {mediaList.map((m, idx) => (
           <button
             key={m.id}
