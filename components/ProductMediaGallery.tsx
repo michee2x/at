@@ -3,6 +3,9 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import NextImage from "next/image";
 
+// --------------------
+// Types
+// --------------------
 type WooImage = {
   id: number;
   src: string;
@@ -13,7 +16,7 @@ type WooImage = {
 type MetaDatum = {
   id?: number;
   key: string;
-  value: any;
+  value: string | number | boolean | null;
 };
 
 type WooProduct = {
@@ -48,19 +51,21 @@ export default function ProductMediaGallery({
   product,
   className = "",
 }: Props) {
-  const meta = product.meta_data ?? [];
+  // ✅ Memoize meta to avoid useMemo dependency warnings
+  const meta = useMemo(() => product.meta_data ?? [], [product.meta_data]);
 
   // --- Extract video URLs and thumbnails from metadata ---
-  const videosFromMeta = useMemo((): MediaItem[] => {
+  const videosFromMeta = useMemo<MediaItem[]>(() => {
     const videoItems: MediaItem[] = [];
     for (let i = 1; i <= 10; i++) {
       const urlKey = `_product_video_url_${i}`;
       const thumbKey = `_product_video_thumb_${i}`;
       const urlMeta = meta.find((m) => m.key === urlKey);
-      if (!urlMeta?.value) continue;
+      if (!urlMeta?.value || typeof urlMeta.value !== "string") continue;
       const thumbMeta = meta.find((m) => m.key === thumbKey);
-      const urlVal = urlMeta.value as string;
-      const thumbVal = thumbMeta?.value as string | undefined;
+      const urlVal = urlMeta.value;
+      const thumbVal =
+        typeof thumbMeta?.value === "string" ? thumbMeta.value : undefined;
       const isYouTube = /youtube\.com|youtu\.be/.test(urlVal);
       videoItems.push({
         id: `video-${i}-${Math.random().toString(36).slice(2, 7)}`,
@@ -87,13 +92,15 @@ export default function ProductMediaGallery({
   // --- Combine media order based on metadata ---
   const mediaList = useMemo(() => {
     const posMeta = meta.find((m) => m.key === "_product_video_position");
-    const pos = (posMeta?.value ?? "first").toLowerCase();
+    const pos = (
+      typeof posMeta?.value === "string" ? posMeta.value : "first"
+    ).toLowerCase();
     return pos === "first"
       ? [...videosFromMeta, ...imagesFromProduct]
       : [...imagesFromProduct, ...videosFromMeta];
   }, [videosFromMeta, imagesFromProduct, meta]);
 
-  // --- Preload all media for instant transitions ---
+  // --- Preload all media ---
   useEffect(() => {
     mediaList.forEach((m) => {
       if (m.type === "image" || m.thumb) {
@@ -118,17 +125,19 @@ export default function ProductMediaGallery({
     );
   }
 
-  // --- State for animation ---
+  // --- Hooks (moved outside any conditional blocks) ---
   const [active, setActive] = useState(0);
   const [prevActive, setPrevActive] = useState<number | null>(null);
   const [direction, setDirection] = useState<"left" | "right">("right");
   const mainRef = useRef<HTMLDivElement | null>(null);
 
+  // --- Handlers ---
   const prev = () => {
     setPrevActive(active);
     setDirection("left");
     setActive((s) => (s - 1 + mediaList.length) % mediaList.length);
   };
+
   const next = () => {
     setPrevActive(active);
     setDirection("right");
@@ -141,7 +150,7 @@ export default function ProductMediaGallery({
     return id ? `https://www.youtube.com/embed/${id}?rel=0&playsinline=1` : url;
   };
 
-  // --- Render main media (image or video) ---
+  // --- Render main media ---
   const renderMain = (item: MediaItem) => {
     if (item.type === "image") {
       return (
@@ -157,9 +166,8 @@ export default function ProductMediaGallery({
       );
     }
 
-    const video = item as Extract<MediaItem, { type: "video" }>;
+    const video = item;
     const isYouTube = video.provider === "youtube";
-
     if (isYouTube) {
       const embed = youtubeEmbedUrl(video.src);
       return (
@@ -194,6 +202,7 @@ export default function ProductMediaGallery({
     );
   };
 
+  // --- JSX ---
   return (
     <div
       className={`flex flex-col-reverse w-full sm:flex-row gap-4 sm:gap-6 lg:w-[60%] items-center sm:items-start ${className}`}
@@ -245,12 +254,12 @@ export default function ProductMediaGallery({
         ))}
       </div>
 
-      {/* Main Viewer with slide animation */}
+      {/* Main Viewer */}
       <div
         ref={mainRef}
         className="relative w-full sm:flex-1 max-w-3xl h-[400px] sm:h-[480px] bg-white rounded-lg overflow-hidden shadow-sm"
       >
-        {/* Navigation buttons */}
+        {/* Nav buttons */}
         <button
           onClick={prev}
           aria-label="Previous media"
@@ -275,7 +284,7 @@ export default function ProductMediaGallery({
           </svg>
         </button>
 
-        {/* Animated slide layers */}
+        {/* Animated transitions */}
         <div className="relative w-full h-full overflow-hidden">
           {mediaList.map((m, idx) => {
             const isCurrent = idx === active;
@@ -285,7 +294,7 @@ export default function ProductMediaGallery({
             return (
               <div
                 key={m.id}
-                className={`absolute inset-0 transition-transform duration-500 ease-in-out`}
+                className="absolute inset-0 transition-transform duration-500 ease-in-out"
                 style={{
                   transform:
                     isCurrent && prevActive !== null
