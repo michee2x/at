@@ -9,7 +9,7 @@ import { usePathname } from "next/navigation";
 import AllCategoryModal from "./AllCategoryModal";
 
 
-const NavBar = () => {
+const NavBar = ({showCategories}:{showCategories?:boolean}) => {
   const pathname = usePathname();
   const {setShowSideBar} = useSideBar()
 
@@ -27,8 +27,7 @@ const NavBar = () => {
   return (
     <div className={`w-full z-50 h-auto flex flex-col`}>
       <div className="w-full gap-2 z-20 flex flex-col h-[125px]">
-        <div className="min-h-[40px] pt-1 flex justify-between items-center px-4 w-full">
-          
+        <div className="min-h-[40px] pt-2 flex justify-between items-center px-4 w-full">
           <div className="w-fit flex items-center gap-0.5">
             <div className="lg:size-[2.5rem] size-[1.8rem] relative">
               <Image
@@ -61,7 +60,7 @@ const NavBar = () => {
           </ul>
         </div>
 
-        <div className="w-full px-4 lg:px-[30px] flex justify-center items-center flex-1">
+        <div className="w-full px-4 mb-2 lg:px-[30px] flex justify-center items-center flex-1">
           <div className="w-full relative flex justify-center items-center h-full">
             <div className="flex w-1/3 flex-1 absolute left-0 -translate-y-1/2 top-1/2 gap-2.5 items-center">
               <span
@@ -114,7 +113,7 @@ const NavBar = () => {
           </div>
         </div>
       </div>
-      <div className="w-full  hidden px-4 list-none lg:flex mb-6 h-12 items-center justify-between bg-black">
+      <div className="w-full hidden px-4 list-none lg:flex h-12 items-center justify-between bg-black">
         {[
           "TODAY'S DEALS",
           "WEEKLY DEALS",

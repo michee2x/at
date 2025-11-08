@@ -30,7 +30,9 @@ export default function ProductSuggestion({
             itemType="http://schema.org/Product"
           >
             <Link
-              href={`/product/${item.id}`}
+              href={`/product/${item.slug}`}
+              target="_blank"
+              rel="noopener noreferrer"
               className="block bg-[#FAFAFA] relative overflow-hidden w-full h-[175px] lg:w-full lg:min-h-[242.61px]"
               itemProp="url"
               onClick={() => updateClickedItem(idx)}

@@ -7,6 +7,7 @@ import Providers from "./Providers";
 import MobileFooter from "@/components/mobile-footer";
 import Sidebar from "@/components/sidebar";
 import SearchFilter from "@/components/SearchFilter";
+import { FloatingNav } from "@/components/ui/floating-navbar";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -52,7 +53,10 @@ export default function RootLayout({
         <Providers>
           <main data-theme="light" className="w-full h-auto relative">
             <Sidebar />
-            <NavBar />
+            <FloatingNav>
+              
+            </FloatingNav>
+            {/* <NavBar /> */}
             {/* <SearchFilter /> */}
             {children}
             <Footer />

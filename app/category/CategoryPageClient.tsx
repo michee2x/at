@@ -222,7 +222,7 @@ export default function CategoryPageClient({
 
   console.log("\n\n\n\n\n\n\n\n", ParamsIsEmpty, "\n\n\n\n\n");
   return (
-    <div className="container w-full mx-auto lg:px- pb-8">
+    <div className="container pt-5 w-full mx-auto lg:px- pb-8">
       <Drawer>
         <div className="flex w-full px-4 flex-col gap-8">
           <Carousel />
