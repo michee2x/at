@@ -73,7 +73,7 @@ const Sidebar = () => {
   return (
     <div className="lg:flex z-50">
       <nav
-        className={`lg:w-[22%] w-[70%] h-screen bg-white flex-col overflow-auto pb-16 font-poppins flex z-[9999] fixed transition-all duration-300 ${
+        className={`lg:w-[22%] w-[75%] h-screen bg-white flex-col overflow-auto pb-16 font-poppins flex z-[9999] fixed transition-all duration-300 ${
           showSideBar ? "left-0" : "-left-[100vw]"
         } min-h-screen`}
       >
@@ -82,7 +82,7 @@ const Sidebar = () => {
             showSideBar ? "left-0" : "-left-[100vw] lg:-left-[5vw]"
           }`}
         >
-          <div className="w-full lg:min-h-28 flex flex-col place-content-between">
+          <div className="w-full mt-4 lg:mt-0 min-h-16 lg:min-h-28 flex flex-col place-content-between">
             <div className="w-full flex items-center h-auto">
               <span
                 onClick={() => setShowSideBar(false)}

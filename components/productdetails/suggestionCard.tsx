@@ -1,15 +1,11 @@
-// components/ProductList.tsx
-"use client";
-
 import { WooProduct } from "@/types";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
 import { FiHeart } from "react-icons/fi";
 import { GoArrowUpRight } from "react-icons/go";
 
 
-export default function ProductSuggestion({
+export default function ProductSuggestionList({
   suggestions,
 }: {
   suggestions: WooProduct[];

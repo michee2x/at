@@ -8,10 +8,10 @@ import Link from "next/link";
 import { FiHeart } from "react-icons/fi";
 import { GoArrowUpRight } from "react-icons/go";
 import { WooProduct } from "@/types";
-import SuggestionCardWrapper from "@/components/productdetails/suggestionCardWrapper";
 import { Ratings } from "@/components/Ratings";
 import { ProductDescription } from "@/components/category/productDesc";
 import ProductMediaGallery from "@/components/ProductMediaGallery";
+import ProductSuggestionList from "@/components/productdetails/suggestionCard";
 
 //https://atlaze.com/wp-json/wc/v3/products?slug=noise-buds-n1
 //https://atlaze.com/wp-json/wc/v3/products?slug=noise-buds-n1
@@ -363,7 +363,7 @@ async function ProductSuggestion({ relatedIds }: { relatedIds?: number[] }) {
         YOU MAY ALSO LIKE
       </h2>
 
-      <SuggestionCardWrapper suggestions={suggestions} />
+      <ProductSuggestionList suggestions={suggestions} />
     </section>
   );
 }
