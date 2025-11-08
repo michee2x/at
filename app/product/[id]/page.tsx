@@ -13,7 +13,8 @@ import { Ratings } from "@/components/Ratings";
 import { ProductDescription } from "@/components/category/productDesc";
 import ProductMediaGallery from "@/components/ProductMediaGallery";
 
-
+//https://atlaze.com/wp-json/wc/v3/products?slug=noise-buds-n1
+//https://atlaze.com/wp-json/wc/v3/products?slug=noise-buds-n1
 /**
  * Assumptions & notes:
  * - This is an app-router server component (file under /app/product/[id]/page.tsx).
@@ -32,23 +33,42 @@ import ProductMediaGallery from "@/components/ProductMediaGallery";
    - uses query params for WooCommerce auth (simpler & avoids Basic header issues)
    - throws on non-200 to allow notFound
    ------------------------- */
-async function fetchProduct(productId: string): Promise<WooProduct> {
-  if (!productId) throw new Error("Missing product id");
+async function fetchProduct(productSlug: string): Promise<WooProduct> {
+  if (!productSlug) throw new Error("Missing product id");
+
   const base = process.env.WC_API_BASE ?? "https://atlaze.com/wp-json/wc/v3";
   const key = process.env.WC_CONSUMER_KEY;
   const secret = process.env.WC_CONSUMER_SECRET;
-  if (!key || !secret) throw new Error("Missing WC consumer key/secret env variables");
+  if (!key || !secret)
+    throw new Error("Missing WC consumer key/secret env variables");
 
-  const url = `${base}/products/${encodeURIComponent(productId)}?consumer_key=${encodeURIComponent(
-    key
-  )}&consumer_secret=${encodeURIComponent(secret)}`;
+  const url = `${base}/products?slug=${encodeURIComponent(productSlug)}`;
 
-  const res = await fetch(url, { next: { revalidate: 3600 } }); // ISR 1 hour
+  // Encode credentials as Base64 for Basic Auth
+  const authHeader =
+    "Basic " + Buffer.from(`${key}:${secret}`).toString("base64");
+
+  console.log("\n🔍 Fetching product slug:", productSlug, "\nURL:", url, "\n");
+
+  const res = await fetch(url, {
+    headers: {
+      Authorization: authHeader,
+      "Content-Type": "application/json",
+    },
+    // Optional: ISR (Incremental Static Regeneration)
+    next: { revalidate: 3600 },
+  });
+
   if (res.status === 404) throw new Error("Not found");
-  if (!res.ok) throw new Error(`Failed to fetch product (${res.status})`);
-  const data = (await res.json()) as WooProduct;
-  return data;
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error(`Failed to fetch product (${res.status}): ${text}`);
+  }
+
+  const data = (await res.json()) as WooProduct[];
+  return data[0]; // since Woo returns an array for slug query
 }
+
 
 /* -------------------------
    Metadata (dynamic)
@@ -84,11 +104,11 @@ export async function generateMetadata({
    Page (server component)
    ------------------------- */
 export default async function ProductPage({ params }: { params: { id: string } }) {
-  const id = params.id;
+  const slug = params.id;
 
   let product: WooProduct | null = null;
   try {
-    product = await fetchProduct(id);
+    product = await fetchProduct(slug);
   } catch (err) {
     // If fetch fails, show 404 page to Next
     console.error("product fetch error:", err);
@@ -105,6 +125,8 @@ export default async function ProductPage({ params }: { params: { id: string } }
         <ol className="flex flex-wrap gap-x-2 text-sm">
           <li>
             <Link
+              target="_blank"
+              rel="noopener noreferrer"
               href="/"
               className="text-blue-600 cursor-pointer hover:underline"
             >
@@ -115,6 +137,8 @@ export default async function ProductPage({ params }: { params: { id: string } }
           <li>
             <Link
               href={`/category?cat=${product?.categories[0]?.id}`}
+              target="_blank"
+              rel="noopener noreferrer"
               className="text-blue-600 cursor-pointer hover:underline"
             >
               {product?.categories[0]?.name
@@ -169,7 +193,6 @@ export default async function ProductPage({ params }: { params: { id: string } }
           </Suspense>
         </section>
       </article>
-
 
       <Suspense fallback={<ProductSuggestionSkeleton />}>
         <ProductSuggestion relatedIds={product?.related_ids || []} />

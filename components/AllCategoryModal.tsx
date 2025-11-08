@@ -130,7 +130,7 @@ const AllCategoryModal = () => {
       className="text-[(16/1280 * 100vw)] flex-1 h-full leading-[100%] tracking-[0%] font-display"
     >
       <Tooltip>
-        <TooltipTrigger className="flex h-[5rem] items-center gap-2">
+        <TooltipTrigger className="flex text-nowrap h-[5rem] items-center gap-2">
           {queryData.catTitle !== "General"
             ? title.toLowerCase()
             : "All Categories"}{" "}

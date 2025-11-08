@@ -27,12 +27,23 @@ const NavBar = () => {
   return (
     <div className={`w-full z-50 h-auto flex flex-col`}>
       <div className="w-full gap-2 z-20 flex flex-col h-[125px]">
-        <div className="h-[40px] flex justify-between items-center px-4 w-full">
-          <h1 className="h-full aspect-square font-display text-[calc(18/1280 * 100vw)] tracking-[0%] leading-[100%] text-[#2B2B2B] flex items-center justify-center">
-            ATLAZE
-          </h1>
+        <div className="min-h-[40px] pt-1 flex justify-between items-center px-4 w-full">
+          
+          <div className="w-fit flex items-center gap-0.5">
+            <div className="lg:size-[2.5rem] size-[1.8rem] relative">
+              <Image
+                className="object-cover"
+                fill
+                alt="atlaze-logo"
+                src="/logo/Untitled_design_20251108_095010_0000__1_-removebg-preview.png"
+              />
+            </div>
+            <h1 className="h-full aspect-square font-display text-[calc(18/1280 * 100vw)] tracking-[0%] leading-[100%] text-2xl italic text-[#2B2B2B] flex items-center justify-center">
+              atlaze
+            </h1>
+          </div>
 
-          <ul className="lg:flex hidden h-[50%] w-fit lg:mr-4">
+          <ul className="lg:flex hidden h-[50%] w-fit">
             {["Find a Store", "Help", "Become a Seller", "Sign In"].map(
               (text, idx) => {
                 return (
@@ -51,7 +62,7 @@ const NavBar = () => {
         </div>
 
         <div className="w-full px-4 lg:px-[30px] flex justify-center items-center flex-1">
-          <div className="w-full relative flex justify-between items-center h-full">
+          <div className="w-full relative flex justify-center items-center h-full">
             <div className="flex w-1/3 flex-1 absolute left-0 -translate-y-1/2 top-1/2 gap-2.5 items-center">
               <span
                 onClick={() => setShowSideBar((prev) => !prev)}
@@ -63,7 +74,7 @@ const NavBar = () => {
               <AllCategoryModal />
             </div>
 
-            <div className="w-auto hidden lg:block pt-2 absolute top-0 -translate-x-1/2 left-1/2 min-h-32">
+            <div className="w-auto hidden lg:block">
               <AlgoliaSearch />
             </div>
 

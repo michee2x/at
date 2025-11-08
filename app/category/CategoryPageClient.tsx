@@ -369,14 +369,24 @@ export default function CategoryPageClient({
                 <header className="font-poppins mt-5 lg:mt-0">
                   <div className="flex flex-col justify-between gap-4">
                     <div className="flex flex-col gap-1 lg:gap-2">
-                      <Link
-                        href={`/product/${clickedProduct.id}`}
-                        className="text-[26px] hover:underline hover:cursor-pointer flex flex-wrap items-center gap-2 lg:text-3xl font-bold"
-                        itemProp="name"
-                      >
-                        {clickedProduct.name}
-                        <GoArrowUpRight className="inline-block" />
-                      </Link>
+                      <div className="flex flex-col">
+                        <h1
+                          className="text-[26px] lg:text-3xl font-bold"
+                          itemProp="name"
+                        >
+                          {clickedProduct.name}
+                        </h1>
+                        <Link
+                          href={`/product/${clickedProduct.slug}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-[16px] mt-3 hover:underline hover:cursor-pointer flex flex-wrap items-center gap-2 w-fit rounded-full bg-gray-100 border border-gray-400 px-5 py-1 font-medium"
+                          itemProp="name"
+                        >
+                          more details
+                          <GoArrowUpRight className="inline-block" />
+                        </Link>
+                      </div>
                       <p
                         className="text-[15px] hover:cursor-pointer hover:underline font-poppins text-[#7E7E7E]"
                         aria-hidden
@@ -425,7 +435,7 @@ export default function CategoryPageClient({
                       </HoverCard>
                       <div className="flex gap-3 items-center">
                         <div className="tooltip" data-tip="follow @evilrabbit">
-                          <button className="btn bg-gray-200 border-0 text-black shadow-none rounded-full">
+                          <button className="btn font-medium bg-gray-200 border-0 text-black shadow-none rounded-full">
                             Follow
                           </button>
                         </div>

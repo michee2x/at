@@ -124,6 +124,24 @@ export default function ProductMediaGallery({
     }
   }, [mediaList, active]);
 
+  // --- Stop all videos when switching active media ---
+  useEffect(() => {
+    // Pause HTML5 <video> elements
+    const videos = document.querySelectorAll("video");
+    videos.forEach((v) => {
+      if (!v.paused) v.pause();
+    });
+
+    // Reload YouTube iframes (forces stop)
+    const iframes = document.querySelectorAll("iframe");
+    iframes.forEach((iframe) => {
+      const src = iframe.getAttribute("src");
+      if (src && src.includes("youtube")) {
+        iframe.setAttribute("src", src); // reloads iframe, stopping video
+      }
+    });
+  }, [active]);
+
   // --- YouTube embed helper ---
   const youtubeEmbedUrl = (url: string) => {
     const match = url.match(/(?:v=|\/embed\/|youtu\.be\/)([A-Za-z0-9_-]{6,})/);

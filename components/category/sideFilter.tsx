@@ -164,7 +164,7 @@ function Filters({
           )}
 
           {/* Availability */}
-          <div>
+          {/* <div>
             <label className="text-sm font-medium mb-1 block">
               Availability
             </label>
@@ -185,7 +185,8 @@ function Filters({
                 </SelectGroup>
               </SelectContent>
             </Select>
-          </div>
+          </div> */}
+          
 
           {/* Price */}
           <div>

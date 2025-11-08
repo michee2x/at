@@ -32,7 +32,11 @@ const poppins = Poppins({
 
 export const metadata: Metadata = {
   title: "Atlaze | Shop Africa",
-  description: "Explore a curated marketplace of African brands, artisans, and entrepreneurs — shop and support Africa’s creativity with every purchase",
+  description:
+    "Explore a curated marketplace of African brands, artisans, and entrepreneurs — shop and support Africa’s creativity with every purchase",
+  icons: {
+    icon: "/logo/Untitled%20design_20251108_095010_0000%20(1).png",
+  },
 };
 
 export default function RootLayout({
