@@ -26,7 +26,7 @@ const NavBar = ({showCategories}:{showCategories?:boolean}) => {
   const { search } = status;
 
   return (
-    <div className={`w-full border-b-[1.3px] border-gray-400 z-50 h-auto flex flex-col`}>
+    <div className={`w-full border-b-[1.3px] border-gray-200 z-50 h-auto flex flex-col`}>
       <div className="w-full gap-2 h-[100px] z-20 flex flex-col lg:h-[125px]">
         <div className="lg:min-h-[44px] h-[50px] lg:pt-6 flex justify-between items-center px-4 w-full">
           <div className="flex text-nowrap h-[5rem] items-center gap-2">
