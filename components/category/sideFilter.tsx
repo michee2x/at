@@ -67,7 +67,7 @@ function Filters({
   };
 
   return (
-    <aside className="fixed bg-white font-poppins lg:sticky z-40 top-0 left-0 flex h-screen lg:w-[15vw]">
+    <aside className="fixed bg-white font-poppins lg:sticky z-[9999] top-0 left-0 flex h-screen lg:w-[15vw]">
       {/* Overlay for mobile */}
       <div
         onClick={() => setShowFilter(false)}
@@ -78,7 +78,7 @@ function Filters({
 
       {/* Sidebar content */}
       <div
-        className={`relative transition-all duration-400 ${
+        className={`relative z-[9999] transition-all duration-400 ${
           showFilter ? "block" : "hidden lg:block"
         }`}
       >

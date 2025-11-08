@@ -78,21 +78,21 @@ const Sidebar = () => {
         } min-h-screen`}
       >
         <div
-          className={`w-full  p-4 ${
+          className={`w-full px-2 lg:px-4 p-4 ${
             showSideBar ? "left-0" : "-left-[100vw] lg:-left-[5vw]"
           }`}
         >
-          <div className="w-full min-h-28  flex flex-col place-content-between">
+          <div className="w-full lg:min-h-28 flex flex-col place-content-between">
             <div className="w-full flex items-center h-auto">
               <span
                 onClick={() => setShowSideBar(false)}
-                className="text-xl text-black cursor-pointer"
+                className="text-xl hidden lg:flex text-black cursor-pointer"
               >
                 <FaChevronLeft />
               </span>
             </div>
 
-            <div className="w-full  flex h-auto">
+            <div className="w-full flex h-auto">
               <div className="w-2/3 items-center gap-2 flex h-full">
                 <Image
                   src="/sidebar/0fe7f6ba74b472666313b2290f18bc2b474b5ded.png"
@@ -167,8 +167,9 @@ const Sidebar = () => {
         </div>
       </nav>
       <div
+        onClick={() => setShowSideBar(false)}
         className={`w-screen fixed overflow-hidden transition-all duration-500 h-screen ${
-          showSideBar ? "z-40 bg-gray-900/40" : "-z-40 bg-transparent"
+          showSideBar ? "z-[9998] bg-gray-900/40" : "-z-40 bg-transparent"
         }`}
       >
         <div className="w-full h-full relative">

@@ -14,10 +14,6 @@ export default function ProductSuggestion({
 }: {
   suggestions: WooProduct[];
 }) {
-  const [clickedItemIndex, setClickedItemIndex] = useState<number | null>(null)
-  const updateClickedItem = (idx: number) => {
-    setClickedItemIndex(idx)
-  }
   return (
     <ul className="w-full grid grid-cols-2 gap-y-4 lg:flex lg:gap-x-6 h-auto">
       {suggestions.map((item, idx) => {
@@ -35,13 +31,7 @@ export default function ProductSuggestion({
               rel="noopener noreferrer"
               className="block bg-[#FAFAFA] relative overflow-hidden w-full h-[175px] lg:w-full lg:min-h-[242.61px]"
               itemProp="url"
-              onClick={() => updateClickedItem(idx)}
             >
-              {clickedItemIndex === idx && (
-                <div className="absolute bg-zinc-500/[0.1] inset-0 z-20 flex items-center justify-center">
-                  <span className="loading loading-spinner loading-xl text-[#7e15ff]"></span>
-                </div>
-              )}
 
               <Image
                 fill
