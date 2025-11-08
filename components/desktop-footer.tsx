@@ -5,7 +5,7 @@ import { FaArrowRight } from "react-icons/fa";
 
 export default function Footer() {
   return (
-    <footer className="w-full hidden lg:flex items-center justify-center  bg-white border-t border-gray-200 py-12">
+    <footer className="w-full mt-[10rem] hidden lg:flex items-center justify-center  bg-white border-t border-gray-200 py-12">
       <div className="w-fit h-auto mx-auto px-6 flex flex-col items-center gap-12">
         {/* Top Section */}
         <div className="w-full flex flex-wrap justify-between gap-12 text-sm text-gray-700">

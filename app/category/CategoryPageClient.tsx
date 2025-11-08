@@ -69,10 +69,13 @@ export function Breadcrumb() {
   }));
 
   return (
-    <nav className="text-[15px] text-gray-500 mb-3" aria-label="Breadcrumb">
+    <nav
+      className="text-[15px] capitalize text-gray-500 mb-3"
+      aria-label="Breadcrumb"
+    >
       <ol className="flex items-center flex-wrap gap-1">
         <li>
-          <Link href="/" className="hover:text-blue-600 text-[#9747FF]">
+          <Link href="/" className="hover:text-[#ab23e0] text-[#cb47ff]">
             Home
           </Link>
         </li>

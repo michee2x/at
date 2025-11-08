@@ -4,8 +4,8 @@ import { WooProduct } from "@/types";
 
 export function ProductDescription({ product, shorten = false }: { product: WooProduct, shorten?:boolean }) {
   return (
-    <section className="mt-8 px-2" itemProp="description">
-      <h2 className="text-xl font-semibold">Details</h2>
+    <section className="mt-8 lg:pt-10 px-2 p-5" itemProp="description">
+      <h2 className="lg:text-3xl text-xl mb-6 font-semibold">Details</h2>
       <div className="mt-2 prose max-w-none">
         {/* short_description often contains HTML; if so, it's safer to sanitize.
             Here we simply render as HTML. If product.short_description is untrusted,

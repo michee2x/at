@@ -122,13 +122,13 @@ export default async function ProductPage({ params }: { params: { id: string } }
     <main className="container w-full mx-auto md:max-w-[95%] lg:max-w-full xl:max-w-[1300px] 2xl:max-w-[1440px] font-poppins px-2 py-8">
       {/* Breadcrumb — keep semantic & crawlable links */}
       <nav aria-label="breadcrumb">
-        <ol className="flex flex-wrap gap-x-2 text-sm">
+        <ol className="flex capitalize flex-wrap gap-x-2 text-sm">
           <li>
             <Link
               target="_blank"
               rel="noopener noreferrer"
               href="/"
-              className="text-blue-600 cursor-pointer hover:underline"
+              className="hover:text-[#ab23e0] text-[#cb47ff] cursor-pointer hover:underline"
             >
               Home
             </Link>
@@ -139,7 +139,7 @@ export default async function ProductPage({ params }: { params: { id: string } }
               href={`/category?cat=${product?.categories[0]?.id}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-blue-600 cursor-pointer hover:underline"
+              className="hover:text-[#ab23e0] text-[#cb47ff] cursor-pointer hover:underline"
             >
               {product?.categories[0]?.name
                 ?.replace("&amp;", "")
@@ -187,12 +187,12 @@ export default async function ProductPage({ params }: { params: { id: string } }
               Favorite <FiHeart className="text-[20px]" />
             </button>
           </div>
-
-          <Suspense fallback={<DescriptionSkeleton />}>
-            <ProductDescription product={product!} />
-          </Suspense>
         </section>
       </article>
+
+      <Suspense fallback={<DescriptionSkeleton />}>
+        <ProductDescription product={product!} />
+      </Suspense>
 
       <Suspense fallback={<ProductSuggestionSkeleton />}>
         <ProductSuggestion relatedIds={product?.related_ids || []} />
