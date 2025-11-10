@@ -225,9 +225,9 @@ export default function CategoryPageClient({
 
   console.log("\n\n\n\n\n\n\n\n", ParamsIsEmpty, "\n\n\n\n\n");
   return (
-    <div className="container pt-5 w-full mx-auto lg:px- pb-8">
+    <div className=" pt-5 w-full mx-auto lg:px- pb-8">
       <Drawer>
-        <div className="flex w-full px-4 flex-col gap-8">
+        <div className="flex w-full px-4 lg:px-7 2xl:px-12 flex-col gap-8">
           <Carousel />
           {/* <Banner /> */}
           <Breadcrumb />
@@ -287,12 +287,9 @@ export default function CategoryPageClient({
               ) : allProducts.length > 0 ? (
                 <section className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2">
                   {allProducts.map((p) => (
-                    <DrawerTrigger
-                      key={p.id}
-                      onClick={() => setClickedProduct(p)}
-                    >
+                    <div key={p.id} onClick={() => setClickedProduct(p)}>
                       <ProductCard product={p} />
-                    </DrawerTrigger>
+                    </div>
                   ))}
                 </section>
               ) : !isFetching && allProducts.length === 0 && !ParamsIsEmpty ? (

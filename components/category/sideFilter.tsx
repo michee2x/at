@@ -113,6 +113,28 @@ function Filters({
             </Select>
           </div>
 
+          {/* Sort */}
+          <div className="font-poppins">
+            <label className="text-sm font-medium flex items-center gap-2 mb-1">
+              Deals & Discount
+            </label>
+            <Select
+              value={local.sort as string}
+              onValueChange={(v) => setAndApply("sort", v)}
+            >
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select sort order" />
+              </SelectTrigger>
+              <SelectContent className="bg-white">
+                <SelectGroup>
+                  <SelectLabel>Deals & Discount</SelectLabel>
+                  <SelectItem value="none">All Discount</SelectItem>
+                  <SelectItem value="popularity">Popularity</SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </div>
+
           {/* Store */}
           {stores.length > 0 && (
             <div>
@@ -186,7 +208,6 @@ function Filters({
               </SelectContent>
             </Select>
           </div> */}
-          
 
           {/* Price */}
           <div>

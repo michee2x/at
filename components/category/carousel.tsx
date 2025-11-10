@@ -4,7 +4,7 @@ import Image from "next/image";
 
 export function Banner() {
   return (
-    <div className="w-full relative h-full block lg:h-[245px] bg-blue-600">
+    <div className="w-full relative h-full block  bg-blue-600">
       <div className="absolute w-2/3 top-2 left-2 leading-[1.2rem] lg:leading-[2rem] z-10 text-[20px] lg:top-[20%] lg:left-[15%] lg:w-[461px] lg:h-[94px] lg:text-[31px]">
         Efficient and Durable Electronics
       </div>
@@ -12,9 +12,9 @@ export function Banner() {
         alt="Atlaze category banner"
         src="/banner/Rectangle%2025.png"
         fill
-        className="object-cover h-full"
+        className="object-fill h-full"
       />
-      <div className="lg:w-[336px] w-[136px] h-[28px] right-4 top-10 lg:h-[228px] absolute lg:top-[10%] lg:right-[16%]">
+      <div className="lg:w-[336px] w-[136px] h-[28px] right-4 top-10 lg:h-[228px] absolute lg:top-[10%] lg:right-[19%]">
         <Image
           fill
           alt="atlaze electronics category image"
@@ -119,13 +119,13 @@ export function BannerTwo() {
 const Carousel = () => {
   return (
     <BannerCarousel
-      className="h-28 lg:h-[16rem] rounded-xl overflow-hidden"
+      className="h-28 lg:h-[16rem] xl:h-[18rem] 2xl:h-[20rem] rounded-xl overflow-hidden"
       interval={6000}
       slides={[
         {
           id: "1",
           content: (
-            <div className="flex-1 flex items-center justify-center font-bold w-full h-full">
+            <div className="flex-1 bg-green-500 flex items-center justify-center font-bold w-full h-full">
               <Banner />
             </div>
           ),

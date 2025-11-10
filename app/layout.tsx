@@ -53,9 +53,7 @@ export default function RootLayout({
         <Providers>
           <main data-theme="light" className="w-full h-auto relative">
             <Sidebar />
-            <FloatingNav>
-              
-            </FloatingNav>
+            <FloatingNav></FloatingNav>
             {/* <NavBar /> */}
             {/* <SearchFilter /> */}
             {children}
