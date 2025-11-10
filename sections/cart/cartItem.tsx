@@ -44,7 +44,7 @@ const CartItem = ({ product }: { product: CartProducts }) => {
           <div className="w-[99px] text-[#343A40] flex gap-2 items-center justify-center h-[36px] py-[12px] bg-[#F5F5F5] px-[8px] rounded-[50px]">
             <AiOutlineMinus
               onClick={() => {
-                product.quantity >= 1 &&
+                product.quantity > 1 &&
                   addToCart({ ...product, quantity: -1 });
               }}
             />
