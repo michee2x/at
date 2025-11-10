@@ -232,7 +232,7 @@ export default function CategoryPageClient({
           {/* <Banner /> */}
           <Breadcrumb />
         </div>
-        <div className="flex gap-6 md:gap-10">
+        <div className="flex container mx-auto gap-6 md:gap-10">
           <Filters
             params={params}
             setParams={setParams}
