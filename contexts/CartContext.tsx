@@ -42,6 +42,22 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
       }
       return [...prev, item];
     });
+
+    const toastPayload = {
+      slug: item.slug,
+      name: item.name,
+      price: Number(item.price),
+      quantity: item.quantity,
+      image: item.images?.[0]?.src || null,
+      time: Date.now(),
+    };
+
+    // Dispatch a custom event so the toast layer only reacts to explicit user actions
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(
+        new CustomEvent("cart:add", { detail: toastPayload })
+      );
+    }
   };
 
   const removeFromCart = (slug: string) =>

@@ -8,6 +8,7 @@ import MobileFooter from "@/components/mobile-footer";
 import Sidebar from "@/components/sidebar";
 import SearchFilter from "@/components/SearchFilter";
 import { FloatingNav } from "@/components/ui/floating-navbar";
+import CartToastContainer from "@/components/cart/CartToastContainer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -28,7 +29,7 @@ const redHatDisplay = Red_Hat_Display({
 const poppins = Poppins({
   variable: "--font-poppins",
   subsets: ["latin"],
-  weight: "400"
+  weight: "400",
 });
 
 export const metadata: Metadata = {

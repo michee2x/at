@@ -37,6 +37,7 @@ import { isCleared } from "@/utils/isCleared";
 import { queryType, useCategory } from "@/contexts/category-context";
 import ProductMediaGallery from "@/components/ProductMediaGallery";
 import { LiaTimesSolid } from "react-icons/lia";
+import CartToastContainer from "@/components/cart/CartToastContainer";
 
 // -----------------------------
 // Loader
@@ -226,6 +227,7 @@ export default function CategoryPageClient({
   console.log("\n\n\n\n\n\n\n\n", ParamsIsEmpty, "\n\n\n\n\n");
   return (
     <div className=" pt-5 w-full mx-auto lg:px- pb-8">
+      <CartToastContainer />
       <Drawer>
         <div className="flex w-full px-4 lg:px-7 2xl:px-12 flex-col gap-8">
           <Carousel />

@@ -14,16 +14,6 @@ export function ProductCard({ product }: { product: WooProduct }) {
   const handleAddToCart = () => {
     const item = { ...product, quantity: 1 };
     addToCart(item);
-
-    // show popup
-    toast(<CartToast product={item} />, {
-      icon: false,
-      closeButton: false,
-      hideProgressBar: true,
-      autoClose: 4000,
-      pauseOnHover: true,
-      className: "!bg-transparent !shadow-none !p-0 !m-0",
-    });
   };
   return (
     <div className="border border-gray-200 pb-2 font-poppins bg-white rounded-xl flex flex-col">
@@ -37,8 +27,9 @@ export function ProductCard({ product }: { product: WooProduct }) {
           />
         </div>
         <div className="px-3 w-full overflow-hidden h-auto">
-          <div className="lg:text-[15px] text-[14px] flex flex-col font-medium text-black mb-1">
-            <h2 className="text-start">{`${product.name.slice(0, 19)}...`}</h2>
+          <div className="lg:text-[15px] text-[13px] flex flex-col font-medium text-black mb-1">
+            <h2 className="text-start hidden">{`${product.name.slice(0, 19)}...`}</h2>
+            <h2 className="text-start lg:hidden">{`${product.name.slice(0, 16)}...`}</h2>
             <span className="flex justify-start -ml-2">
               <Ratings rating={3.2} />
             </span>
@@ -55,7 +46,7 @@ export function ProductCard({ product }: { product: WooProduct }) {
                   />
                 </div>
                 <span className="text-[12px] lg:text-[14px] text-[#6A00EF]">
-                  {product.price.slice(0, 10)}
+                  {Number(product.price).toLocaleString()}
                 </span>
               </div>
               <span className="text-[10px] w-full flex text-black/50">

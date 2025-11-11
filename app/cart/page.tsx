@@ -52,7 +52,7 @@ const page = () => {
     <Dialog>
       <div className="w-screen px-2 container flex lg:flex-row flex-col mx-auto lg:px-10 pt-7 min-h-screen">
         <div className="lg:w-1/2">
-          <div className="w-full h-[68px] bg-[#F5F5F5] pl-[4px]">
+          <div className="w-full h-[68px] bg-[#F5F5F5] p-[8px]">
             <h1 className="text-[16px]">Free Delivery</h1>
             <h3 className="text-[14px] mt-[3px]">
               Applies to orders of #20 000.00 or more.{" "}
