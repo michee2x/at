@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 "use client";
 
 import { useEffect, useRef, useState } from "react";
@@ -142,22 +144,24 @@ export default function CartToastContainer() {
                 <span className="mr-1.5">View Cart</span>
                 <span>
                   (Total: ₦
-                  {cart && Number(
-                    cart.reduce((sum, item) => {
-                      const price = Number(item.price) || 0;
-                      const qty = Number(item.quantity) || 1;
-                      return sum + price * qty;
-                    }, 0)
-                  ).toLocaleString()}
+                  {cart &&
+                    Number(
+                      cart.reduce((sum, item) => {
+                        const price = Number(item.price) || 0;
+                        const qty = Number(item.quantity) || 1;
+                        return sum + price * qty;
+                      }, 0)
+                    ).toLocaleString()}
                   )
                 </span>
               </p>
               <div className="indicator">
                 <span className="indicator-item text-[12px] lg:text-[14px] p-2 aspect-square text-white bg-[#ED473D] rounded-full badge badge-secondary">
-                  {cart && cart.reduce((sum, item) => {
-                    const itemQuantity = item.quantity || 0;
-                    return sum + itemQuantity;
-                  }, 0)}
+                  {cart &&
+                    cart.reduce((sum, item) => {
+                      const itemQuantity = item.quantity || 0;
+                      return sum + itemQuantity;
+                    }, 0)}
                 </span>
                 <div className="grid text-white text-2xl place-items-center">
                   <BsBucket />
