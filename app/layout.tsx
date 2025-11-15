@@ -5,10 +5,10 @@ import NavBar from "@/components/navbar";
 import Footer from "@/components/desktop-footer";
 import Providers from "./Providers";
 import MobileFooter from "@/components/mobile-footer";
-import Sidebar from "@/components/sidebar";
-import SearchFilter from "@/components/SearchFilter";
+import dynamic from "next/dynamic";
 import { FloatingNav } from "@/components/ui/floating-navbar";
 import CartToastContainer from "@/components/cart/CartToastContainer";
+import SidebarWrapper from "@/components/SidebarWrapper";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -53,10 +53,8 @@ export default function RootLayout({
       >
         <Providers>
           <main data-theme="light" className="w-full h-auto relative">
-            <Sidebar />
-            <FloatingNav></FloatingNav>
-            {/* <NavBar /> */}
-            {/* <SearchFilter /> */}
+            <SidebarWrapper /> {/* CLIENT ONLY, SAFE */}
+            <FloatingNav />
             {children}
             <Footer />
             <MobileFooter />

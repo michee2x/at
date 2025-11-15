@@ -42,7 +42,7 @@ export const CategoryProvider = ({ children }: { children: ReactNode }) => {
     data: categories,
     isError,
     error,
-  } = useParentCategories({ id: queryData.catId, cache: false });
+  } = useParentCategories({ id: queryData.catId, cache: true });
 
   useEffect(() => {
     if (categories && categories.length > 0) {
