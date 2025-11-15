@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { useSideBar } from "@/contexts/sidebar-context";
 import Image from "next/image";
 import React, { useState } from "react";
@@ -9,14 +9,11 @@ import { usePathname } from "next/navigation";
 import AllCategoryModal from "./AllCategoryModal";
 import { FaChevronUp } from "react-icons/fa6";
 
-
-const NavBar = ({showCategories}:{showCategories?:boolean}) => {
+const NavBar = ({ showCategories }: { showCategories?: boolean }) => {
   const pathname = usePathname();
-  const {setShowSideBar} = useSideBar()
+  const { setShowSideBar } = useSideBar();
 
-  const pages = [
-    "search",
-  ] as const;
+  const pages = ["search"] as const;
 
   const status = Object.fromEntries(
     pages.map((page) => [page, pathname?.includes(page)])
@@ -26,7 +23,9 @@ const NavBar = ({showCategories}:{showCategories?:boolean}) => {
   const { search } = status;
 
   return (
-    <div className={`w-full border-b-[1.3px] border-gray-200 z-50 h-auto flex flex-col`}>
+    <div
+      className={`w-full border-b-[1.5px] border-gray-300 z-50 h-auto flex flex-col`}
+    >
       <div className="w-full gap-2 h-[100px] z-20 flex flex-col lg:h-[125px]">
         <div className="lg:min-h-[44px] h-[50px] lg:pt-6 flex justify-between items-center px-4 w-full">
           <div className="flex text-nowrap h-[5rem] items-center gap-2">

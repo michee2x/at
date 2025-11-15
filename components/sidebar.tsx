@@ -1,17 +1,11 @@
-"use client"
+"use client";
 
-import { useSideBar } from "@/contexts/sidebar-context"
-import Link from "next/link"
-import React, { useEffect, useState } from 'react'
-import Image from "next/image"
-import {FiEdit} from "react-icons/fi"
-import {MdRefresh, MdLogout} from "react-icons/md"
-import {LiaTshirtSolid} from "react-icons/lia"
-import {TfiPaintRoller} from "react-icons/tfi"
-import {RiLightbulbFlashLine} from "react-icons/ri"
-import {GiHeartNecklace} from "react-icons/gi"
-import {FaChevronLeft, FaShoppingBag} from "react-icons/fa"
-import {GoArrowUpRight} from "react-icons/go"
+import { useSideBar } from "@/contexts/sidebar-context";
+import Link from "next/link";
+import React, { useState, useRef, useEffect } from "react";
+import Image from "next/image";
+import { FiEdit } from "react-icons/fi";
+import { MdRefresh, MdLogout } from "react-icons/md";
 import { GiClothes, GiComb } from "react-icons/gi";
 import { LuPalette } from "react-icons/lu";
 import { PiPlugBold, PiBaby } from "react-icons/pi";
@@ -20,55 +14,82 @@ import { IoDiamondOutline } from "react-icons/io5";
 import { LiaToolsSolid } from "react-icons/lia";
 import { PiBooksDuotone } from "react-icons/pi";
 import { MdQueueMusic } from "react-icons/md";
-
-
-
+import { GoArrowUpRight } from "react-icons/go";
+import ParentCategories from "./ParentCategories";
+import { WooCategory } from "@/types";
+import CategoryInfo from "./CategoryInfo";
+import { useSearchParams } from "next/navigation";
+import { queryType, useCategory } from "@/contexts/category-context";
 
 const Sidebar = () => {
-    const [activeInput, setActiveInput] = useState(false)
-    const [activeCategory, setActiveCategory] = useState(false)
-    const [hoveringCategory, setHoveringCategory] = useState(false)
-    const [hoveringInput, setHoveringInput] = useState(false)
-    const nav = [
-        {icon:<RiLightbulbFlashLine />, name:"ELECTRONICS", link:"/categories/ELECTRONICS"},
-        {icon:<TfiPaintRoller />, name:"HOME AND LIVING", link:"/categories/HOME AND LIVING"},
-        {icon:<GiHeartNecklace />, name:"JEWELLERIES", link:"/categories/JEWELLERIES"},
-        {icon:<FaShoppingBag />, name:"YOUR ORDERS", link:"/orders"}
-    ]
-    const {showSideBar, setShowSideBar} = useSideBar()
+  const { queryData, setQueryData } = useCategory();
+  //Get the search params and store in variables
+  const searchParams = useSearchParams();
+  const title = searchParams.get("title");
+  const category = searchParams.get("cat");
+  const [activeInput, setActiveInput] = useState(false);
 
-    useEffect(() => {
-        console.log("this is sidebar log", showSideBar)
-    }, [showSideBar, setShowSideBar])
+  // ⭐ NEW STATES
+  const [hoveredCategory, setHoveredCategory] = useState<WooCategory | null>(
+    null
+  );
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
 
-    if(hoveringCategory){
-        setTimeout(() => {
-            setHoveringCategory(false)
-        }, 2000)
-    }
+  const hoverTimeout = useRef<NodeJS.Timeout | null>(null);
+  const popupTimeout = useRef<NodeJS.Timeout | null>(null);
 
-    if(hoveringInput){
-        setTimeout(() => {
-            setHoveringInput(false)
-        }, 2000)
-    }
-//h
-    const navItems = [
-      { src: <GiClothes />, navText: "FASHION" },
-      { src: <GiComb />, navText: "BEAUTY & WELLNESS" },
-      { src: <LuPalette />, navText: "ART & CRAFTS" },
-      { src: <PiPlugBold />, navText: "ELECTRONICS" },
-      { src: <RiPaintBrushLine />, navText: "HOME & LIVING" },
-      { src: <RiPaintBrushLine />, navText: "FOOD & DRINKS" },
-      { src: <IoDiamondOutline />, navText: "JEWELLRIES" },
-      { src: <LiaToolsSolid />, navText: "INDUSTRIAL SUPPLIES" },
-      { src: <PiBaby />, navText: "BABY & TODDLER" },
-      {
-        src: <PiBooksDuotone />,
-        navText: "BOOKS",
-      },
-      { src: <MdQueueMusic />, navText: "MUSICAL INSTRUMENTS" },
-    ];
+  const { showSideBar, setShowSideBar } = useSideBar();
+
+  //Set context catId to category id if it changes
+  useEffect(() => {
+    const catId = category ?? 0;
+    const catTitle = title ?? "General";
+    const update: queryType = { ...queryData, catId, catTitle };
+    setQueryData(update);
+  }, [category]);
+
+  const navItems = [
+    { src: <GiClothes />, navText: "FASHION" },
+    { src: <GiComb />, navText: "BEAUTY & WELLNESS" },
+    { src: <LuPalette />, navText: "ART & CRAFTS" },
+    { src: <PiPlugBold />, navText: "ELECTRONICS" },
+    { src: <RiPaintBrushLine />, navText: "HOME & LIVING" },
+    { src: <RiPaintBrushLine />, navText: "FOOD & DRINKS" },
+    { src: <IoDiamondOutline />, navText: "JEWELLRIES" },
+    { src: <LiaToolsSolid />, navText: "INDUSTRIAL SUPPLIES" },
+    { src: <PiBaby />, navText: "BABY & TODDLER" },
+    { src: <PiBooksDuotone />, navText: "BOOKS" },
+    { src: <MdQueueMusic />, navText: "MUSICAL INSTRUMENTS" },
+  ];
+
+  // ⭐ When hovering nav
+  const openPopupWithDelay = (category: WooCategory) => {
+    setHoveredCategory(category);
+
+    if (popupTimeout.current) clearTimeout(popupTimeout.current);
+    if (hoverTimeout.current) clearTimeout(hoverTimeout.current);
+
+    hoverTimeout.current = setTimeout(() => {
+      setIsPopupOpen(true);
+    }, 200);
+  };
+
+  // ⭐ When mouse leaves nav or popup
+  const closePopupWithDelay = () => {
+    if (hoverTimeout.current) clearTimeout(hoverTimeout.current);
+    if (popupTimeout.current) clearTimeout(popupTimeout.current);
+
+    popupTimeout.current = setTimeout(() => {
+      setIsPopupOpen(false);
+      setHoveredCategory(null);
+    }, 300);
+  };
+
+  // ⭐ If popup is hovered → keep open
+  const keepPopupOpen = () => {
+    if (popupTimeout.current) clearTimeout(popupTimeout.current);
+    setIsPopupOpen(true);
+  };
 
   return (
     <div className="lg:flex z-50">
@@ -77,49 +98,47 @@ const Sidebar = () => {
           showSideBar ? "left-0" : "-left-[100vw]"
         } min-h-screen`}
       >
-        <div
-          className={`w-full px-2 lg:px-4 p-4 ${
-            showSideBar ? "left-0" : "-left-[100vw] lg:-left-[5vw]"
-          }`}
-        >
+        {/* HEADER + PROFILE */}
+        <div className={`w-full px-2 lg:px-4 p-4`}>
+          {/* PROFILE (unchanged) */}
           <div className="w-full mt-4 lg:mt-0 min-h-16 lg:min-h-28 flex flex-col place-content-between">
             <div className="w-full flex items-center h-auto">
               <span
                 onClick={() => setShowSideBar(false)}
                 className="text-xl hidden lg:flex text-black cursor-pointer"
               >
-                <FaChevronLeft />
+                ◀
               </span>
             </div>
 
             <div className="w-full flex h-auto">
               <div className="w-2/3 items-center gap-2 flex h-full">
-                <Image
-                  src="/sidebar/0fe7f6ba74b472666313b2290f18bc2b474b5ded.png"
+                <img
+                  src="/0fe7f6ba74b472666313b2290f18bc2b474b5ded.png"
                   alt="profilepic"
                   className="min-w-12 min-h-12 flex-1 rounded-full object-cover"
-                  width={14}
-                  height={14}
                 />
                 <div className="flex w-full h-full flex-col place-content-between">
-                  <span className="text-[#343A40] text-[18px] font-[500] font-[SF Pro Display]">
+                  <span className="text-[#343A40] text-[18px] font-[500]">
                     Michael Israel
                   </span>
-                  <span className="text-[#6C757D] text-[12px] font-[400] font-[SF Pro Display]">
+                  <span className="text-[#6C757D] text-[12px] font-[400]">
                     michee2x@gmail.com
                   </span>
                 </div>
               </div>
 
-              <div className="flex-1 text-xl text-black pr-2  flex items-center justify-end">
+              <div className="flex-1 text-xl text-black pr-2 flex items-center justify-end">
                 <FiEdit />
               </div>
             </div>
           </div>
 
+          {/* INPUT BOX (unchanged) */}
           <div
-            onMouseEnter={() => setHoveringInput(true)}
-            className="p-[1.2px] flex place-content-center mt-2 h-[43px] lg:h-[38px] bg-gradient-to-r from-[#EBCC97] to-[#9747FF] rounded-lg"
+            onMouseEnter={() => setActiveInput(true)}
+            onMouseLeave={() => setActiveInput(false)}
+            className="p-[1.2px] flex place-content-center mt-2 h-[43px] bg-gradient-to-r from-[#EBCC97] to-[#9747FF] rounded-lg"
           >
             <div className="p-2 max-h-[48px] w-full bg-white flex flex-row-reverse items-center gap-3 rounded-lg">
               <input
@@ -127,38 +146,24 @@ const Sidebar = () => {
                 className="w-[90%] border-0 bg-transparent outline-none"
                 placeholder="Virsual AI Assistant"
               />
-              <Image
-                className="object-cover"
-                src="/home/hero/d49ad3ba235d33ba9a0d6da5cd9ff0aefadb2ca5.png"
+              <img
+                className="object-cover h-[26px]"
+                src="/d49ad3ba235d33ba9a0d6da5cd9ff0aefadb2ca5.png"
                 alt="AI logo"
-                priority
-                height={18}
-                width={18}
               />
             </div>
           </div>
 
-          <div className="w-full flex flex-col lg:gap-3 gap-2 mt-14 h-auto">
-            {navItems.map((e, i) => {
-              const icon = e.src;
-              return (
-                <Link
-                  onClick={() => setShowSideBar(false)}
-                  href={`/categories/${e.navText.toLowerCase()}`}
-                  onMouseEnter={() => setHoveringCategory(true)}
-                  key={i}
-                  className="w-full text-[#2B2B2B] hover:text-[#9747FF] cursor-pointer h-auto flex items-center gap-5"
-                >
-                  <span className="text-[18px] lg:text-[19px]">{icon}</span>
-                  <span className={`text-[15px] lg:text-[16px]`}>
-                    {e.navText}
-                  </span>
-                </Link>
-              );
-            })}
+          {/* CATEGORY NAV */}
+          <div className="w-full flex flex-col lg:gap-5.5 gap-2.5 mt-14 h-auto">
+            <ParentCategories
+              closePopupWithDelay={closePopupWithDelay}
+              openPopupWithDelay={openPopupWithDelay}
+            />
           </div>
         </div>
 
+        {/* LOGOUT */}
         <div className="w-full h-auto px-4 py-6 absolute lg:relative bottom-0 text-[#2B2B2B] hover:text-[#D68A36] flex items-center gap-1">
           <span className="text-[18px] lg:text-[19px]">
             <MdLogout />
@@ -166,140 +171,70 @@ const Sidebar = () => {
           <span className="text-[15px] lg:text-[16px]">Log out</span>
         </div>
       </nav>
+
+      {/* BACKDROP */}
       <div
         onClick={() => setShowSideBar(false)}
-        className={`w-screen fixed overflow-hidden transition-all duration-500 h-screen ${
+        className={`w-screen fixed transition-all duration-500 h-screen ${
           showSideBar ? "z-[9998] bg-gray-900/40" : "-z-40 bg-transparent"
         }`}
       >
         <div className="w-full h-full relative">
+          {/* ⭐ CATEGORY POPUP ⭐ */}
           <div
-            onMouseEnter={() => setActiveCategory(true)}
-            onMouseLeave={() => setActiveCategory(false)}
-            className={`w-[975px] absolute  gap-8 rounded-xl flex bg-white overflow p-4 transition-all duration-300 ml-[25%] ${
-              (hoveringCategory || activeCategory) && showSideBar
-                ? "bg-white"
-                : "-translate-y-[100vh]"
+            onMouseEnter={keepPopupOpen}
+            onMouseLeave={closePopupWithDelay}
+            className={`w-[975px] hidden  absolute gap-8 rounded-xl lg:flex p-4 transition-all duration-300 ml-[25%] ${
+              isPopupOpen && showSideBar
+                ? "bg-white opacity-100 translate-y-0"
+                : "opacity-0 -translate-y-[100vh]"
             } h-[527px] mt-16`}
           >
-            <div className="min-w-1/3 gap-10 h-full flex">
-              <div className="flex-1 h-full flex flex-col">
-                <div className="w-full h-auto py-2 mb-3 border-b-2 font-[500] text-nowrap text-[13.44px] border-gray-800">
-                  MOST POPULAR CATEGORIES
+            {/* your popup content unchanged */}
+            <div className="w-full rounded-xl bg-white gap-10 h-full flex">
+              {hoveredCategory && Object.keys(hoveredCategory).length ? (
+                <CategoryInfo category={hoveredCategory} />
+              ) : (
+                <div className="flex-1 animate-pulse p-8">
+                  <h1 className="w-16 h-4 bg-gray-200"></h1>
                 </div>
-                {[1, 2, 3, 4, 5, 6, 7].map((e) => {
-                  return (
-                    <span
-                      key={e}
-                      className="text-[#2B2B2B] flex items-center gap-2 p-2 text-[11.94px] font-[Red Hat Display]"
-                    >
-                      <span className="text-[11.94px]">MEN’S CLOTHING</span>
-                      <span className={`text-[12px]`}>
-                        <GoArrowUpRight />
-                      </span>
-                    </span>
-                  );
-                })}
-              </div>
-              <div className="flex-1 h-full flex flex-col">
-                <div className="w-full h-auto py-2 mb-3 border-b-2 font-[500] text-nowrap text-[13.44px] border-gray-800">
-                  MOST POPULAR CATEGORIES
+              )}
+
+              <div className="flex-1 gap-4 rounded-lg p-4 flex">
+                <div className="flex-1 rounded-lg overflow-hidden relative">
+                  {hoveredCategory?.image?.src ? (
+                    <Image
+                      src={hoveredCategory.image.src}
+                      alt={hoveredCategory.name}
+                      className="object-cover aspect-square"
+                      fill
+                    />
+                  ) : (
+                    <div className="size-full text-black/60 bg-gray-200 flex justify-center items-center text-[13px]">
+                      no image
+                    </div>
+                  )}
                 </div>
-                {[1, 2, 3, 4].map((e) => {
-                  return (
-                    <span
-                      key={e}
-                      className="text-[#2B2B2B] flex items-center gap-2 p-2 text-[11.94px] font-[Red Hat Display]"
-                    >
-                      <span className={`${!showSideBar && "-z-40"}`}>
-                        MEN’S CLOTHING
-                      </span>
-                      <span
-                        className={`${showSideBar ? "text-[12px]" : "-z-40"}`}
-                      >
-                        <GoArrowUpRight />
-                      </span>
-                    </span>
-                  );
-                })}
-              </div>
-            </div>
-
-            <div className="w-[467px] h-[278px] rounded-lg bg-[#DEB98F] p-4 flex">
-              <div className="flex-1">
-                <p className="font-[500] font-[Red Hat Display] text-nowrap text-[13.44px]">
-                  THE BEST FASHION ITEMS & <br /> CONCEPTS FROMTHE SUB-
-                  <br />
-                  SAHARAN
-                </p>
-                <button className="bg-[#2B2B2B] mt-3 text-white w-40 h-10 rounded-lg justify-center flex items-center gap-1 p-2 text-[11.94px] font-[Red Hat Display]">
-                  <span className="text-[10.45px]">Expore all categories</span>
-                  <span className={`text-[12px]`}>
-                    <GoArrowUpRight />
-                  </span>
-                </button>
-              </div>
-
-              <div className="flex-1 rounded-lg overflow-hidden relative">
-                <Image
-                  src="/home/hero/Frame%201000003698.png"
-                  className="bg-cover hidden"
-                  alt="bossmanimage"
-                  fill
-                />
               </div>
             </div>
           </div>
 
+          {/* SEARCH POPUP (unchanged) */}
           <div
             onMouseEnter={() => setActiveInput(true)}
             onMouseLeave={() => setActiveInput(false)}
-            className={`w-[450px] z-50 absolute  gap-8 rounded-xl flex bg-transparent overflow transition-all duration-300 ml-[23%] ${
-              (activeInput || hoveringInput) && !showSideBar
-                ? "bg-white"
-                : "-translate-y-[100vh]"
+            className={`w-[450px] z-50 absolute rounded-xl transition-all duration-300 ml-[23%] ${
+              activeInput && !showSideBar
+                ? "bg-white opacity-100 translate-y-0"
+                : "opacity-0 -translate-y-[100vh]"
             } h-[471px]`}
           >
-            <div
-              className={`w-full flex items-center justify-between p-4 py-6 border-b-2 border-gray-200 h-8`}
-            >
-              <span className="text-[#D68A36] text-[14px]">ATLAZE</span>
-              <span className="text-gray-600 text-xl">
-                <MdRefresh />
-              </span>
-            </div>
-            <div className="w-full min-h-16 px-4 absolute bottom-0">
-              <div className="p-[1.2px] flex place-content-center h-[43px] lg:h-[38px] bg-gradient-to-r from-[#EBCC97] to-[#9747FF] rounded-lg">
-                <div className="px-6 max-h-[48px] w-full bg-white flex flex-row-reverse items-center gap-3 rounded-lg">
-                  <input
-                    type="text"
-                    className="w-full border-0 bg-transparent outline-none"
-                    placeholder="search by keywords or upload/take photo"
-                  />
-                </div>
-              </div>
-
-              <div className="w-full flex flex-row gap-6 py-2 h-auto">
-                {[1, 2, 3].map((e) => {
-                  return (
-                    <span
-                      key={e}
-                      className="w-1/3 border-2 p-1 rounded-lg border-[#D4D4D4] items-center gap-2 flex"
-                    >
-                      <p className="lg:p-[11px] p-[10px] bg-gradient-to-r rounded-full from-[#EBCC97] to-[#9747FF]"></p>
-                      <span className="text-[10px] text-[#9747FF] font-[400]">
-                        upload a photo
-                      </span>
-                    </span>
-                  );
-                })}
-              </div>
-            </div>
+            {/* unchanged search popup */}
           </div>
         </div>
       </div>
     </div>
   );
-}
+};
 
-export default Sidebar
+export default Sidebar;

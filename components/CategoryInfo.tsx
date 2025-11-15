@@ -1,19 +1,9 @@
 "use client";
 
-import Link from "next/link";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { FaChevronUp } from "react-icons/fa6";
-import ParentCategories from "./ParentCategories";
-import { WooCategory } from "@/types";
-import { useCategory } from "@/contexts/category-context";
-import { IoChevronForward } from "react-icons/io5";
 import { useParentCategories } from "@/hooks/wc/useCategory";
-import { useLockBodyScroll } from "@/hooks/useLockBodyScroll";
-import { useState } from "react";
+import { WooCategory } from "@/types";
+import Link from "next/link";
+import { IoChevronForward } from "react-icons/io5";
 
 const CategoryInfo = ({ category }: { category: WooCategory }) => {
   const {
@@ -30,7 +20,7 @@ const CategoryInfo = ({ category }: { category: WooCategory }) => {
         <h1 className="text-xl flex items-center gap-2 text-gray-700">
           {category?.name?.replace("amp;", "")} <IoChevronForward />
         </h1>
-        <div className="grid grid-cols-6 gap-3">
+        <div className="flex justify-center flex-wrap list-none gap-3">
           {[...Array(12)].map((_, idx) => (
             <li key={idx} className="w-auto animate-pulse">
               <div className="size-[6rem] rounded-full bg-gray-200"></div>
@@ -69,17 +59,17 @@ const CategoryInfo = ({ category }: { category: WooCategory }) => {
 
   // Normal UI
   return (
-    <div className="flex-1 overflow-auto flex flex-col gap-4 p-4">
+    <div className="flex-1 lg:min-w-1/2 overflow-auto flex flex-col gap-4 p-4">
       <h1 className="text-xl flex items-center gap-2">
         {category ? category.name.replace("amp;", "") : "no name"}{" "}
         <IoChevronForward />
       </h1>
-      <div className="grid grid-cols-5 gap-3">
+      <div className="flex flex-wrap jus flex-1 gap-3">
         {subCategories.map((sub, id) => (
           <Link
             key={`${id}`}
             href={`/category/?cat=${sub.id}&title=${sub.name}`} // open subcategory page
-            className="w-full py-2 flex items-center cursor-pointer flex-col gap-2 h-fit min-h-40 rounded-lg bg-gray-50 hover:bg-gray-100 transition"
+            className="size-[6rem] aspect-square py-2 flex items-center cursor-pointer flex-col gap-2 h-fit min-h-40 rounded-lg hover:bg-gray-50 transition"
           >
             {sub.image?.src ? (
               <img
@@ -107,62 +97,4 @@ const CategoryInfo = ({ category }: { category: WooCategory }) => {
   );
 };
 
-const CategoryInfoSkeleton = () => {
-  return (
-    <div className="flex-1 animate-pulse p-8">
-      <h1 className="w-16 h-4 bg-gray-200"></h1>
-    </div>
-  );
-};
-const AllCategoryModal = () => {
-  const { activeCategory, setActiveCategory, queryData } = useCategory();
-  const [showPopup, setShowPopup] = useState(false);
-  const title =
-    queryData.catTitle.length > 20
-      ? `${queryData.catTitle.slice(0,20)}...`
-      : queryData.catTitle;
-
-  // Lock scroll when popup is visible
-  useLockBodyScroll(showPopup);
-  return (
-    <Link
-      href={"/category"}
-      className="text-[(16/1280 * 100vw)] flex-1 h-full leading-[100%] tracking-[0%] font-display"
-    >
-      <Tooltip>
-        <TooltipTrigger className="flex text-nowrap h-[5rem] items-center gap-2">
-          {queryData.catTitle !== "General"
-            ? title.toLowerCase()
-            : "All Categories"}{" "}
-          <FaChevronUp className="text-[16px] transform rotate-180" />
-        </TooltipTrigger>
-
-        <TooltipContent
-          data-fullwidth="true"
-          hideArrow
-          side="bottom"
-          sideOffset={-4}
-          onMouseEnter={() => setShowPopup(true)}
-          onMouseLeave={() => setShowPopup(false)}
-          className="inset-0 overflow-auto flex justify-center bg-black/50 w-screen h-screen"
-        >
-          {/* Your white content area */}
-          <div className="w-[80%] h-[80%] flex rounded-lg bg-white">
-            <div className="w-[30%] h-screen overflow-scroll">
-              {/* <ParentCategories /> */}
-            </div>
-            <div className="flex-1 flex">
-              {activeCategory && Object.keys(activeCategory).length ? (
-                <CategoryInfo category={activeCategory} />
-              ) : (
-                <CategoryInfoSkeleton />
-              )}
-            </div>
-          </div>
-        </TooltipContent>
-      </Tooltip>
-    </Link>
-  );
-};
-
-export default AllCategoryModal;
+export default CategoryInfo;

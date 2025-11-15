@@ -74,7 +74,7 @@ export const FloatingNav = ({ className }: { className?: string }) => {
         }}
         transition={{ duration: 0.25, ease: "easeOut" }}
         className={cn(
-          "flex w-full sticky top-0 bg-white inset-x-0 mx-auto z-[8999] items-center justify-center shadow-md",
+          "flex w-full sticky top-0 bg-white inset-x-0 mx-auto z-[8999] items-center justify-center lg:shadow-md",
           className
         )}
       >

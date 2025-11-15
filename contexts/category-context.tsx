@@ -10,7 +10,7 @@ import {
   ReactNode,
 } from "react";
 
-export type queryType = { catId: string|number; catTitle: string };
+export type queryType = { catId: string | number; catTitle: string };
 
 type CategoryContextType = {
   categories: WooCategory[] | undefined;
@@ -31,15 +31,18 @@ const CategoryContext = createContext<CategoryContextType | undefined>(
 export const CategoryProvider = ({ children }: { children: ReactNode }) => {
   const [activeCategory, setActiveCategory] = useState<WooCategory | null>(
     null
-  )
-  const [queryData, setQueryData] = useState<queryType>({catId:0,catTitle:'General'})
+  );
+  const [queryData, setQueryData] = useState<queryType>({
+    catId: 0,
+    catTitle: "General",
+  });
 
   const {
     isLoading,
     data: categories,
     isError,
     error,
-  } = useParentCategories({ id: queryData.catId });
+  } = useParentCategories({ id: queryData.catId, cache: false });
 
   useEffect(() => {
     if (categories && categories.length > 0) {
@@ -57,7 +60,7 @@ export const CategoryProvider = ({ children }: { children: ReactNode }) => {
         activeCategory,
         setActiveCategory,
         queryData,
-        setQueryData
+        setQueryData,
       }}
     >
       {children}
