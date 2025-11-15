@@ -1,13 +1,12 @@
 "use client";
 
 import React, { useEffect } from "react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { FaChevronRight } from "react-icons/fa6";
-
 import VerticalCategory from "./VerticalCategory";
 import { useCategory } from "@/contexts/category-context";
+import Link from "next/link";
 import { WooCategory } from "@/types";
+import { FaChevronRight } from "react-icons/fa6";
+import { useSideBar } from "@/contexts/sidebar-context";
 
 type Props = {
   openPopupWithDelay: (category: WooCategory) => void;
@@ -18,29 +17,14 @@ const ParentCategories = ({
   openPopupWithDelay,
   closePopupWithDelay,
 }: Props) => {
-  const router = useRouter();
   const { categories, isLoading, isError, error } = useCategory();
 
-  /**
-   * Redirect back if categories is empty when finished loading.
-   * Must be done using useEffect — safe for production.
-   */
   useEffect(() => {
-    if (!isLoading && !categories?.length) {
-      router.back();
-    }
-  }, [isLoading, categories, router]);
-
-  /**
-   * When categories load successfully, automatically open popup
-   */
-  useEffect(() => {
-    if (categories?.length) {
+    if (categories) {
       openPopupWithDelay(categories[0]);
     }
-  }, [categories, openPopupWithDelay]);
+  }, [categories]);
 
-  // === Loading State ===
   if (isLoading) {
     return (
       <div className="text-center py-8 text-gray-500">
@@ -49,7 +33,6 @@ const ParentCategories = ({
     );
   }
 
-  // === Error State ===
   if (isError) {
     return (
       <div className="text-center text-red-500 py-8">
@@ -58,9 +41,8 @@ const ParentCategories = ({
     );
   }
 
-  // === While redirecting back (avoid UI flash) ===
   if (!categories?.length) {
-    return null;
+    return <div className=""></div>;
   }
 
   return (
