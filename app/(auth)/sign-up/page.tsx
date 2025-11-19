@@ -6,6 +6,13 @@ import { useState } from "react";
 import { z } from "zod";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 
+type FieldErrors = {
+  email: string;
+  username: string;
+  password: string;
+  confirmPassword: string;
+};
+
 const registerSchema = z
   .object({
     email: z.string().email("Enter a valid email"),
@@ -33,7 +40,7 @@ export default function RegisterPage() {
   const [showConfirmPass, setShowConfirmPass] = useState(false);
 
   // Field errors
-  const [fieldErrors, setFieldErrors] = useState({
+  const [fieldErrors, setFieldErrors] = useState<FieldErrors>({
     email: "",
     username: "",
     password: "",
@@ -44,6 +51,7 @@ export default function RegisterPage() {
     e.preventDefault();
     setError(null);
     setSuccess(false);
+
     setFieldErrors({
       email: "",
       username: "",
@@ -64,7 +72,7 @@ export default function RegisterPage() {
     const validated = registerSchema.safeParse(body);
 
     if (!validated.success) {
-      const newErrors: any = {
+      const newErrors: FieldErrors = {
         email: "",
         username: "",
         password: "",
@@ -72,7 +80,10 @@ export default function RegisterPage() {
       };
 
       validated.error.issues.forEach((issue) => {
-        newErrors[issue.path[0]] = issue.message;
+        const field = issue.path[0];
+        if (field in newErrors) {
+          newErrors[field as keyof FieldErrors] = issue.message;
+        }
       });
 
       setFieldErrors(newErrors);
@@ -104,8 +115,12 @@ export default function RegisterPage() {
         window.location.href = "/login?registered=1";
         return;
       }
-    } catch (err: any) {
-      setError(err.message || "Something went wrong");
+    } catch (err) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError("Something went wrong");
+      }
     } finally {
       setLoading(false);
     }

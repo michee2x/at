@@ -174,7 +174,7 @@ export default function LoginPage() {
 
         {/* SIGN UP NAV */}
         <p className="text-sm mt-10 text-muted text-center">
-          Don't have an account?{" "}
+          Don&apos;t have an account?{" "}
           <Link className="text-primary hover:underline" href="/sign-up">
             Sign up
           </Link>

@@ -3,6 +3,26 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { WooClient } from "../../../lib/wooClient";
 
+// ------------------------------
+// TYPES
+// ------------------------------
+
+interface WooCustomerPayload {
+  email: string;
+  first_name?: string;
+  last_name?: string;
+  username: string;
+  password: string;
+}
+
+interface WooError {
+  message?: string;
+}
+
+// ------------------------------
+// ZOD SCHEMA
+// ------------------------------
+
 const registerSchema = z.object({
   email: z.string().email(),
   firstName: z.string().optional(),
@@ -11,13 +31,16 @@ const registerSchema = z.object({
   password: z.string().min(8),
 });
 
+// ------------------------------
+// POST ROUTE
+// ------------------------------
+
 export async function POST(req: Request) {
   try {
     const body = await req.json();
     const parsed = registerSchema.parse(body);
 
-    // Prepare payload for WooCommerce customer creation
-    const payload = {
+    const payload: WooCustomerPayload = {
       email: parsed.email,
       first_name: parsed.firstName,
       last_name: parsed.lastName,
@@ -27,10 +50,19 @@ export async function POST(req: Request) {
 
     const created = await WooClient.createCustomer(payload);
 
-    // Return created customer object
-    return NextResponse.json({ success: true, customer: created }, { status: 201 });
-  } catch (err: any) {
-    console.error("Register error:", err);
-    return NextResponse.json({ success: false, message: err.message || "Error" }, { status: 400 });
+    return NextResponse.json(
+      { success: true, customer: created },
+      { status: 201 }
+    );
+
+  } catch (err: unknown) {
+    const errorObj = err as WooError;
+
+    console.error("Register error:", errorObj);
+
+    return NextResponse.json(
+      { success: false, message: errorObj.message || "Error" },
+      { status: 400 }
+    );
   }
 }
