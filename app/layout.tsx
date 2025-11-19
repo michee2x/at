@@ -1,14 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Red_Hat_Display, Poppins } from "next/font/google";
 import "./globals.css";
-import NavBar from "@/components/navbar";
-import Footer from "@/components/desktop-footer";
 import Providers from "./Providers";
-import MobileFooter from "@/components/mobile-footer";
-import dynamic from "next/dynamic";
-import { FloatingNav } from "@/components/ui/floating-navbar";
-import CartToastContainer from "@/components/cart/CartToastContainer";
-import SidebarWrapper from "@/components/SidebarWrapper";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -51,15 +44,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${redHatDisplay.variable} ${poppins.variable} antialiased`}
       >
-        <Providers>
-          <main data-theme="light" className="w-full h-auto relative">
-            <SidebarWrapper /> {/* CLIENT ONLY, SAFE */}
-            <FloatingNav />
-            {children}
-            <Footer />
-            <MobileFooter />
-          </main>
-        </Providers>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

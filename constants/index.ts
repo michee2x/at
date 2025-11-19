@@ -398,3 +398,68 @@ export const cleared: Params = {
   per_page: 24,
   page: 1,
 };
+
+const michee = {
+    "success": true,
+    "customer": {
+        "id": 6,
+        "date_created": "2025-11-19T13:49:42",
+        "date_created_gmt": "2025-11-19T12:49:42",
+        "date_modified": "2025-11-19T13:49:43",
+        "date_modified_gmt": "2025-11-19T12:49:43",
+        "email": "michee2x@gmail.com",
+        "first_name": "",
+        "last_name": "",
+        "role": "customer",
+        "username": "Mickey",
+        "billing": {
+            "first_name": "",
+            "last_name": "",
+            "company": "",
+            "address_1": "",
+            "address_2": "",
+            "city": "",
+            "postcode": "",
+            "country": "",
+            "state": "",
+            "email": "",
+            "phone": ""
+        },
+        "shipping": {
+            "first_name": "",
+            "last_name": "",
+            "company": "",
+            "address_1": "",
+            "address_2": "",
+            "city": "",
+            "postcode": "",
+            "country": "",
+            "state": "",
+            "phone": ""
+        },
+        "is_paying_customer": false,
+        "avatar_url": "https://secure.gravatar.com/avatar/c80baa933285b7e5849dc72b35ef28ba62dcd9c6df631041f56e47b8809744e6?s=96&d=mm&r=g",
+        "meta_data": [],
+        "_links": {
+            "self": [
+                {
+                    "href": "https://atlaze.com/wp-json/wc/v3/customers/6",
+                    "targetHints": {
+                        "allow": [
+                            "GET",
+                            "POST",
+                            "PUT",
+                            "PATCH",
+                            "DELETE"
+                        ]
+                    }
+                }
+            ],
+            "collection": [
+                {
+                    "href": "https://atlaze.com/wp-json/wc/v3/customers"
+                }
+            ]
+        }
+    }
+}
