@@ -1,5 +1,7 @@
 "use client";
 
+export const dynamic = "force-dynamic"; // <- this prevents prerendering
+
 import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { z } from "zod";
@@ -8,6 +10,7 @@ import Image from "next/image";
 import GoogleLoginButton from "@/components/buttons/GoogleButton";
 import Link from "next/link";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+
 
 const loginSchema = z.object({
   username: z.string().min(3, "Username must be at least 3 characters."),
