@@ -7,6 +7,66 @@ const loginSchema = z.object({
   password: z.string().min(3),
 });
 
+const prodCookies = {
+  cookies: {
+    sessionToken: {
+      name: "__Secure-next-auth.session-token",
+      options: {
+        httpOnly: true,
+        sameSite: "lax",
+        path: "/",
+        secure: true,
+      },
+    },
+    callbackUrl: {
+      name: "__Secure-next-auth.callback-url",
+      options: {
+        sameSite: "lax",
+        path: "/",
+        secure: true,
+      },
+    },
+    csrfToken: {
+      name: "__Host-next-auth.csrf-token",
+      options: {
+        httpOnly: true,
+        sameSite: "lax",
+        path: "/",
+        secure: true,
+      },
+    },
+    pkceCodeVerifier: {
+      name: "next-auth.pkce.code_verifier",
+      options: {
+        httpOnly: true,
+        sameSite: "lax",
+        path: "/",
+        secure: true,
+        maxAge: 900,
+      },
+    },
+    state: {
+      name: "next-auth.state",
+      options: {
+        httpOnly: true,
+        sameSite: "lax",
+        path: "/",
+        secure: true,
+        maxAge: 900,
+      },
+    },
+    nonce: {
+      name: "next-auth.nonce",
+      options: {
+        httpOnly: true,
+        sameSite: "lax",
+        path: "/",
+        secure: true,
+      },
+    },
+  },
+};
+
 export const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
@@ -18,6 +78,7 @@ export const authOptions: NextAuthOptions = {
       async authorize(credentials) {
         const parsed = loginSchema.safeParse(credentials);
         if (!parsed.success) return null;
+
         const { username, password } = parsed.data;
 
         const res = await fetch(
@@ -28,6 +89,7 @@ export const authOptions: NextAuthOptions = {
             body: JSON.stringify({ username, password }),
           }
         );
+
         const data = await res.json();
         if (!res.ok || !data.token) return null;
 
@@ -35,14 +97,16 @@ export const authOptions: NextAuthOptions = {
           id: data.id,
           name: data.user_display_name,
           email: data.user_email,
-          token: data.token, // custom field
+          token: data.token,
         };
       },
     }),
   ],
+
   session: {
     strategy: "jwt",
   },
+
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
@@ -61,75 +125,12 @@ export const authOptions: NextAuthOptions = {
       return session;
     },
   },
+
   pages: {
     signIn: "/login",
   },
-  cookies: {
-  sessionToken: {
-    name:
-      process.env.NODE_ENV === "production"
-        ? "__Secure-next-auth.session-token"
-        : "next-auth.session-token",
-    options: {
-      httpOnly: true,
-      sameSite: "lax",
-      path: "/",
-      secure: process.env.NODE_ENV === "production",
-    },
-  },
-  callbackUrl: {
-    name:
-      process.env.NODE_ENV === "production"
-        ? "__Secure-next-auth.callback-url"
-        : "next-auth.callback-url",
-    options: {
-      sameSite: "lax",
-      path: "/",
-      secure: process.env.NODE_ENV === "production",
-    },
-  },
-  csrfToken: {
-    name:
-      process.env.NODE_ENV === "production"
-        ? "__Host-next-auth.csrf-token"
-        : "next-auth.csrf-token",
-    options: {
-      httpOnly: true,
-      sameSite: "lax",
-      path: "/",
-      secure: process.env.NODE_ENV === "production",
-    },
-  },
-  pkceCodeVerifier: {
-    name: "next-auth.pkce.code_verifier",
-    options: {
-      httpOnly: true,
-      sameSite: "lax",
-      path: "/",
-      secure: process.env.NODE_ENV === "production",
-      maxAge: 900,
-    },
-  },
-  state: {
-    name: "next-auth.state",
-    options: {
-      httpOnly: true,
-      sameSite: "lax",
-      path: "/",
-      secure: process.env.NODE_ENV === "production",
-      maxAge: 900,
-    },
-  },
-  nonce: {
-    name: "next-auth.nonce",
-    options: {
-      httpOnly: true,
-      sameSite: "lax",
-      path: "/",
-      secure: process.env.NODE_ENV === "production",
-    },
-  },
-},
+
+  ...(process.env.NODE_ENV === "production" ? prodCookies : {}),
 };
 
 const handler = NextAuth(authOptions);
