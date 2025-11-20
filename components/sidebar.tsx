@@ -126,15 +126,15 @@ const Sidebar = () => {
               <div className="w-2/3 items-center gap-2 flex h-full">
                 {session?.user?.image ? (
                   <Image
-                    src={session.user.image}
-                    alt={session.user.name ?? "User"}
+                    src={session?.user.image}
+                    alt={session?.user.name ?? "User"}
                     width={48}
                     height={48}
                     className="rounded-full object-cover"
                   />
                 ) : (
                   <div className="w-12 aspect-square h-12 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold">
-                    {getInitials(session.user?.name)}
+                    {getInitials(session?.user?.name)}
                   </div>
                 )}
                 <div className="flex w-full h-full flex-col place-content-between">
