@@ -30,6 +30,10 @@ export const authOptions: NextAuthOptions = {
           }
         );
 
+        console.log("WORDPRESS TOKEN URL:", `${process.env.WC_API_URL}/wp-json/jwt-auth/v1/token`);
+        console.log("STATUS:", res.status);
+
+
         const data = await res.json();
         if (!res.ok || !data.token) return null;
 
