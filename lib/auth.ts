@@ -1,6 +1,6 @@
-import { getServerSession } from "next-auth";
-import { authOptions } from "../app/api/auth/[...nextauth]/route"; // adjust path if needed
+// lib/auth.ts
+import { getServerSession } from "next-auth/next";
 
 export async function getSession() {
-  return await getServerSession(authOptions);
+  return await getServerSession(); // automatically uses your [...nextauth]/route.ts
 }
