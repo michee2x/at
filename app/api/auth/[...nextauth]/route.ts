@@ -22,7 +22,7 @@ export const authOptions: NextAuthOptions = {
         const { username, password } = parsed.data;
 
         const res = await fetch(
-          `${process.env.WC_API_URL}/wp-json/jwt-auth/v1/token`,
+          `${process.env.WC_API_URL}wp-json/jwt-auth/v1/token`,
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
