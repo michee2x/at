@@ -2,14 +2,23 @@
 
 import { useSideBar } from "@/contexts/sidebar-context";
 import Image from "next/image";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { IoMenuSharp } from "react-icons/io5";
 import AlgoliaSearch from "./AlgoliaSearch";
-import { useSession, signIn } from "next-auth/react";
+import { useAuth } from "@/contexts/auth-context"; // Import the auth context
+import { signIn } from "next-auth/react";
+
+// Skeleton loader for the image
+const SkeletonImage = () => (
+  <div className="animate-pulse">
+    <div className="w-8 h-8 rounded-full bg-gray-300"></div>
+  </div>
+);
 
 const NavBar = ({ showCategories }: { showCategories?: boolean }) => {
   const { setShowSideBar } = useSideBar();
-  const { data: session } = useSession();
+  const { session, isLoading } = useAuth(); // Access session from context
+  const [imageLoaded, setImageLoaded] = useState(false); // Track if the image has loaded
 
   const getInitials = (name?: string) => {
     if (!name) return "";
@@ -18,12 +27,17 @@ const NavBar = ({ showCategories }: { showCategories?: boolean }) => {
     return (parts[0][0] + parts[1][0]).toUpperCase();
   };
 
+  useEffect(() => {
+    if (session?.user?.image) {
+      setImageLoaded(true); // Mark image as loaded if session user has an image
+    }
+  }, [session]);
+
   return (
-    <div className="w-full border-b-[1.5px] border-gray-300 z-50 flex flex-col">
-      {/* TOP BAR */}
-      <div className="w-full gap-2 h-[100px] lg:h-[125px] flex flex-col">
-        <div className="lg:min-h-[44px] h-[50px] lg:pt-6 flex justify-between items-center px-4 w-full">
-          <div className="flex text-nowrap h-[5rem] items-center gap-2">
+    <div className="w-full border-b-[1.5px] pt-2 lg:pt-0 border-gray-300 z-50 flex flex-col">
+      <div className="w-full gap-2 h-[95px] lg:h-[125px] flex flex-col">
+        <div className="lg:min-h-[44px] h-[30px] lg:pt-6 flex justify-between items-center px-4 w-full">
+          <div className="flex text-nowrap lg:h-[5rem] items-center gap-2">
             All Categories
           </div>
 
@@ -40,9 +54,12 @@ const NavBar = ({ showCategories }: { showCategories?: boolean }) => {
 
             {/* User / Sign In */}
             <li className="text-[calc(12/1280*100vw)] h-full w-fit px-4 flex items-center justify-center text-[#2B2B2B] cursor-pointer">
-              {session?.user ? (
+              {isLoading ? (
+                <SkeletonImage />
+              ) : session?.user ? (
                 <div className="flex items-center gap-2">
-                  {session.user.image ? (
+                  {/* Display user's profile image or initials */}
+                  {session.user.image && imageLoaded ? (
                     <Image
                       src={session.user.image}
                       alt={session.user.name ?? "User"}
@@ -55,7 +72,6 @@ const NavBar = ({ showCategories }: { showCategories?: boolean }) => {
                       {getInitials(session.user.name)}
                     </div>
                   )}
-                  <span>{session.user.name?.split(" ")[0]}</span>
                 </div>
               ) : (
                 <span onClick={() => signIn()}>Sign In</span>
@@ -76,7 +92,7 @@ const NavBar = ({ showCategories }: { showCategories?: boolean }) => {
               </span>
 
               <div className="w-fit flex items-center gap-0.5">
-                <div className="relative w-12 h-12">
+                <div className="relative size-8">
                   <Image
                     className="object-cover"
                     fill

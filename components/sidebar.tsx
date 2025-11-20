@@ -21,16 +21,15 @@ import CategoryInfo from "./CategoryInfo";
 import { useSearchParams } from "next/navigation";
 import { queryType, useCategory } from "@/contexts/category-context";
 import LogoutButton from "./buttons/LogoutButton";
+import { useAuth } from "@/contexts/auth-context"; // Import the auth context
 
 const Sidebar = () => {
   const { queryData, setQueryData } = useCategory();
-  //Get the search params and store in variables
   const searchParams = useSearchParams();
   const title = searchParams.get("title");
   const category = searchParams.get("cat");
   const [activeInput, setActiveInput] = useState(false);
 
-  // ⭐ NEW STATES
   const [hoveredCategory, setHoveredCategory] = useState<WooCategory | null>(
     null
   );
@@ -41,7 +40,10 @@ const Sidebar = () => {
 
   const { showSideBar, setShowSideBar } = useSideBar();
 
-  //Set context catId to category id if it changes
+  // ⭐ Use AuthContext to get the session data
+  const { session, isLoading } = useAuth();
+
+  // Set context catId to category id if it changes
   useEffect(() => {
     const catId = category ?? 0;
     const catTitle = title ?? "General";
@@ -92,6 +94,14 @@ const Sidebar = () => {
     setIsPopupOpen(true);
   };
 
+  // Function to get user initials
+  const getInitials = (name?: string) => {
+    if (!name) return "";
+    const parts = name.trim().split(" ");
+    if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+    return (parts[0][0] + parts[1][0]).toUpperCase();
+  };
+
   return (
     <div className="lg:flex z-50">
       <nav
@@ -101,7 +111,7 @@ const Sidebar = () => {
       >
         {/* HEADER + PROFILE */}
         <div className={`w-full px-2 lg:px-4 p-4`}>
-          {/* PROFILE (unchanged) */}
+          {/* PROFILE */}
           <div className="w-full mt-4 lg:mt-0 min-h-16 lg:min-h-28 flex flex-col place-content-between">
             <div className="w-full flex items-center h-auto">
               <span
@@ -114,28 +124,36 @@ const Sidebar = () => {
 
             <div className="w-full flex h-auto">
               <div className="w-2/3 items-center gap-2 flex h-full">
-                <img
-                  src="/0fe7f6ba74b472666313b2290f18bc2b474b5ded.png"
-                  alt="profilepic"
-                  className="min-w-12 min-h-12 flex-1 rounded-full object-cover"
-                />
+                {session?.user?.image ? (
+                  <Image
+                    src={session.user.image}
+                    alt={session.user.name ?? "User"}
+                    width={48}
+                    height={48}
+                    className="rounded-full object-cover"
+                  />
+                ) : (
+                  <div className="w-12 aspect-square h-12 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold">
+                    {getInitials(session.user?.name)}
+                  </div>
+                )}
                 <div className="flex w-full h-full flex-col place-content-between">
                   <span className="text-[#343A40] text-[18px] font-[500]">
-                    Michael Israel
+                    {session?.user?.name ?? "Guest"}
                   </span>
                   <span className="text-[#6C757D] text-[12px] font-[400]">
-                    michee2x@gmail.com
+                    {session?.user?.email ?? "No email"}
                   </span>
                 </div>
               </div>
 
-              <div className="flex-1 text-xl text-black pr-2 flex items-center justify-end">
+              <div className="flex-1 text-xl text-black pr-2 flex mt-1 items-start lg:mt-2 justify-end">
                 <FiEdit />
               </div>
             </div>
           </div>
 
-          {/* INPUT BOX (unchanged) */}
+          {/* INPUT BOX */}
           <div
             onMouseEnter={() => setActiveInput(true)}
             onMouseLeave={() => setActiveInput(false)}
@@ -176,7 +194,7 @@ const Sidebar = () => {
         }`}
       >
         <div className="w-full h-full relative">
-          {/* ⭐ CATEGORY POPUP ⭐ */}
+          {/* CATEGORY POPUP */}
           <div
             onMouseEnter={keepPopupOpen}
             onMouseLeave={closePopupWithDelay}
@@ -186,7 +204,6 @@ const Sidebar = () => {
                 : "opacity-0 -translate-y-[100vh]"
             } h-[527px] mt-16`}
           >
-            {/* your popup content unchanged */}
             <div className="w-full rounded-xl bg-white gap-10 h-full flex">
               {hoveredCategory && Object.keys(hoveredCategory).length ? (
                 <CategoryInfo category={hoveredCategory} />
@@ -213,19 +230,6 @@ const Sidebar = () => {
                 </div>
               </div>
             </div>
-          </div>
-
-          {/* SEARCH POPUP (unchanged) */}
-          <div
-            onMouseEnter={() => setActiveInput(true)}
-            onMouseLeave={() => setActiveInput(false)}
-            className={`w-[450px] z-50 absolute rounded-xl transition-all duration-300 ml-[23%] ${
-              activeInput && !showSideBar
-                ? "bg-white opacity-100 translate-y-0"
-                : "opacity-0 -translate-y-[100vh]"
-            } h-[471px]`}
-          >
-            {/* unchanged search popup */}
           </div>
         </div>
       </div>

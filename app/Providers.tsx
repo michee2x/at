@@ -10,32 +10,36 @@ import { CartProvider } from "@/contexts/CartContext";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { SessionProvider } from "next-auth/react";
+import { AuthProvider } from "@/contexts/auth-context";
 
 const Providers = ({ children }: { children: ReactNode }) => {
   const [client] = useState(() => new QueryClient());
   return (
     <QueryClientProvider client={client}>
-      <SidebarProvider>
-        <FilterProvider>
-          <SearchProvider>
-            <CartProvider>
-              <SessionProvider>
-                <CategoryProvider>{children}</CategoryProvider>
-              </SessionProvider>
-              <ToastContainer
-                position="top-right"
-                autoClose={4000}
-                hideProgressBar
-                newestOnTop
-                closeOnClick
-                draggable
-                pauseOnHover
-                theme="light"
-              />
-            </CartProvider>
-          </SearchProvider>
-        </FilterProvider>
-      </SidebarProvider>
+      <SessionProvider>
+        <AuthProvider>
+          <SidebarProvider>
+            <FilterProvider>
+              <SearchProvider>
+                <CartProvider>
+                  <CategoryProvider>{children}</CategoryProvider>
+
+                  <ToastContainer
+                    position="top-right"
+                    autoClose={4000}
+                    hideProgressBar
+                    newestOnTop
+                    closeOnClick
+                    draggable
+                    pauseOnHover
+                    theme="light"
+                  />
+                </CartProvider>
+              </SearchProvider>
+            </FilterProvider>
+          </SidebarProvider>
+        </AuthProvider>
+      </SessionProvider>
     </QueryClientProvider>
   );
 };

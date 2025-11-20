@@ -7,7 +7,7 @@ export default async function DashboardPage() {
   const session = await getServerSession();
 
   return (
-    <div className="p-8">
+    <div className="p-8 w-full min-h-screen">
       <h1 className="text-2xl font-bold mb-4">Dashboard</h1>
 
       {session?.user ? (
