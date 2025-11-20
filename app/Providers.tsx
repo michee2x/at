@@ -9,6 +9,7 @@ import { useState } from "react";
 import { CartProvider } from "@/contexts/CartContext";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { SessionProvider } from "next-auth/react";
 
 const Providers = ({ children }: { children: ReactNode }) => {
   const [client] = useState(() => new QueryClient());
@@ -18,7 +19,9 @@ const Providers = ({ children }: { children: ReactNode }) => {
         <FilterProvider>
           <SearchProvider>
             <CartProvider>
-              <CategoryProvider>{children}</CategoryProvider>
+              <SessionProvider>
+                <CategoryProvider>{children}</CategoryProvider>
+              </SessionProvider>
               <ToastContainer
                 position="top-right"
                 autoClose={4000}

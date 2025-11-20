@@ -1,55 +1,67 @@
 "use client";
+
 import { useSideBar } from "@/contexts/sidebar-context";
 import Image from "next/image";
-import React, { useState } from "react";
-import { CiCircleInfo } from "react-icons/ci";
+import React from "react";
 import { IoMenuSharp } from "react-icons/io5";
-import AlgoliaSearch, { ProductHit } from "./AlgoliaSearch";
+import AlgoliaSearch from "./AlgoliaSearch";
 import { usePathname } from "next/navigation";
-import AllCategoryModal from "./AllCategoryModal";
-import { FaChevronUp } from "react-icons/fa6";
+import { useSession, signIn } from "next-auth/react";
 
 const NavBar = ({ showCategories }: { showCategories?: boolean }) => {
   const pathname = usePathname();
   const { setShowSideBar } = useSideBar();
-
-  const pages = ["search"] as const;
-
-  const status = Object.fromEntries(
-    pages.map((page) => [page, pathname?.includes(page)])
-  );
-
-  // Usage:
-  const { search } = status;
+  const { data: session } = useSession();
 
   return (
     <div
       className={`w-full border-b-[1.5px] border-gray-300 z-50 h-auto flex flex-col`}
     >
+      {/* TOP BAR */}
       <div className="w-full gap-2 h-[100px] z-20 flex flex-col lg:h-[125px]">
         <div className="lg:min-h-[44px] h-[50px] lg:pt-6 flex justify-between items-center px-4 w-full">
           <div className="flex text-nowrap h-[5rem] items-center gap-2">
             All Categories
           </div>
 
+          {/* TOP MENU */}
           <ul className="lg:flex hidden h-[50%] w-fit">
-            {["Find a Store", "Help", "Become a Seller", "Sign In"].map(
-              (text, idx) => {
-                return (
-                  <li
-                    className={`text-[calc(12/1280*100vw)] h-full w-fit px-4 flex items-center justify-center ${
-                      idx === 3 ? "" : "border-r-[1.5px]"
-                    } text-[#2B2B2B]`}
-                    key={text}
-                  >
-                    {text}
-                  </li>
-                );
-              }
-            )}
+            {/* Find a Store */}
+            <li className="text-[calc(12/1280*100vw)] h-full w-fit px-4 flex items-center justify-center border-right-[1.5px] text-[#2B2B2B] border-r-[1.5px]">
+              Find a Store
+            </li>
+
+            {/* Help */}
+            <li className="text-[calc(12/1280*100vw)] h-full w-fit px-4 flex items-center justify-center border-right-[1.5px] text-[#2B2B2B] border-r-[1.5px]">
+              Help
+            </li>
+
+            {/* Become a Seller */}
+            <li className="text-[calc(12/1280*100vw)] h-full w-fit px-4 flex items-center justify-center border-right-[1.5px] text-[#2B2B2B] border-r-[1.5px]">
+              Become a Seller
+            </li>
+
+            {/* 🔥 Sign In OR User Icon */}
+            <li className="text-[calc(12/1280*100vw)] h-full w-fit px-4 flex items-center justify-center text-[#2B2B2B] cursor-pointer">
+              {session ? (
+                <div className="flex items-center gap-2">
+                  <Image
+                    src="/icons/user.png"
+                    width={22}
+                    height={22}
+                    alt="user"
+                    className="rounded-full"
+                  />
+                  <span>{session.user?.name?.split(" ")[0]}</span>
+                </div>
+              ) : (
+                <span onClick={() => signIn()}>Sign In</span>
+              )}
+            </li>
           </ul>
         </div>
 
+        {/* SEARCH + LOGO */}
         <div className="w-full px-4 mb-2 lg:px-[30px] flex justify-center items-center flex-1">
           <div className="w-full relative flex justify-center items-center h-full">
             <div className="flex w-1/3 flex-1 absolute left-0 -translate-y-1/2 top-1/2 gap-2.5 items-center">
@@ -75,10 +87,12 @@ const NavBar = ({ showCategories }: { showCategories?: boolean }) => {
               </div>
             </div>
 
+            {/* SEARCH BOX */}
             <div className="w-auto hidden lg:block">
               <AlgoliaSearch />
             </div>
 
+            {/* RIGHT ICONS */}
             <div className="flex absolute right-0 -translate-y-1/2 top-1/2 items-center gap-3.5">
               <div className="flex gap-2 items-center">
                 <Image
@@ -95,6 +109,7 @@ const NavBar = ({ showCategories }: { showCategories?: boolean }) => {
                   Naira
                 </span>
               </div>
+
               {[
                 "/home/vector icons/Vector.png",
                 "/home/vector icons/Vector (1).png",
@@ -115,6 +130,8 @@ const NavBar = ({ showCategories }: { showCategories?: boolean }) => {
           </div>
         </div>
       </div>
+
+      {/* BLACK NAV */}
       <div className="w-full hidden px-4 list-none lg:flex h-12 items-center justify-between bg-black">
         {[
           "TODAY'S DEALS",
