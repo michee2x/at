@@ -1,21 +1,15 @@
-import NextAuth, { NextAuthOptions, Session, User } from "next-auth";
+import NextAuth, { Session } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
 import { z } from "zod";
 
+// Zod schema for credentials
 const loginSchema = z.object({
   username: z.string().min(3),
   password: z.string().min(3),
 });
 
-// Extend the token type
-interface CustomToken extends Record<string, any> {
-  jwt?: string;
-  google?: boolean;
-  name?: string;
-  email?: string;
-}
-
+// Extend session with custom fields
 interface CustomSession extends Session {
   wpToken?: string;
   google?: boolean;
@@ -27,19 +21,13 @@ interface CustomSession extends Session {
 
 const handler = NextAuth({
   providers: [
-    // Google auth
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
     }),
-
-    // WordPress JWT / Credentials login
     CredentialsProvider({
       name: "WordPress",
-      credentials: {
-        username: {},
-        password: {},
-      },
+      credentials: { username: {}, password: {} },
       async authorize(credentials) {
         const parsed = loginSchema.safeParse(credentials);
         if (!parsed.success) return null;
@@ -56,12 +44,6 @@ const handler = NextAuth({
             }
           );
 
-          console.log(
-            "WORDPRESS TOKEN URL:",
-            `${process.env.WC_API_URL}/wp-json/jwt-auth/v1/token`
-          );
-          console.log("STATUS:", res.status);
-
           const data = await res.json();
           if (!res.ok || !data.token) return null;
 
@@ -69,56 +51,48 @@ const handler = NextAuth({
             id: data.id,
             name: data.user_display_name,
             email: data.user_email,
-            token: data.token, // custom field
+            token: data.token,
           };
-        } catch (e) {
-          console.error("WordPress login error:", e);
+        } catch {
           return null;
         }
       },
     }),
   ],
 
-  session: {
-    strategy: "jwt",
-  },
+  session: { strategy: "jwt" },
 
   callbacks: {
-  async jwt({ token, user, account }) {
-    const t = token as CustomToken;
+    // JWT callback
+    async jwt({ token, user, account }) {
+      // Google login
+      if (account?.provider === "google") token["google"] = true;
 
-    if (account?.provider === "google") {
-      t.google = true;
-    }
+      // WordPress login
+      if (user?.token) {
+        token["jwt"] = user.token;
+        token["name"] = user.name ?? undefined; // coerce null -> undefined
+        token["email"] = user.email ?? undefined;
+      }
 
-    if (user?.token) {
-      t.jwt = user.token;
-      t.name = user.name ?? undefined; // coerce null -> undefined
-      t.email = user.email ?? undefined; // coerce null -> undefined
-    }
+      return token; // still of type JWT, safe for TS
+    },
 
-    return t;
+    // Session callback
+    async session({ session, token }): Promise<CustomSession> {
+      const s = session as CustomSession;
+
+      s.user = s.user || {};
+      s.wpToken = token["jwt"] as string | undefined;
+      s.google = token["google"] as boolean | undefined;
+      s.user.name = (token.name as string | undefined) ?? undefined;
+      s.user.email = (token.email as string | undefined) ?? undefined;
+
+      return s;
+    },
   },
 
-  async session({ session, token }) {
-    const s = session as CustomSession;
-    const t = token as CustomToken;
-
-    s.user = s.user || {};
-    if (t.jwt) s.wpToken = t.jwt;
-    if (t.google) s.google = true;
-    if (t.name) s.user.name = t.name;
-    if (t.email) s.user.email = t.email;
-
-    return s;
-  },
-},
-
-
-  pages: {
-    signIn: "/login",
-  },
-
+  pages: { signIn: "/login" },
   secret: process.env.NEXTAUTH_SECRET,
 });
 

@@ -5,20 +5,23 @@ import Image from "next/image";
 import React from "react";
 import { IoMenuSharp } from "react-icons/io5";
 import AlgoliaSearch from "./AlgoliaSearch";
-import { usePathname } from "next/navigation";
 import { useSession, signIn } from "next-auth/react";
 
 const NavBar = ({ showCategories }: { showCategories?: boolean }) => {
-  const pathname = usePathname();
   const { setShowSideBar } = useSideBar();
   const { data: session } = useSession();
 
+  const getInitials = (name?: string) => {
+    if (!name) return "";
+    const parts = name.trim().split(" ");
+    if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+    return (parts[0][0] + parts[1][0]).toUpperCase();
+  };
+
   return (
-    <div
-      className={`w-full border-b-[1.5px] border-gray-300 z-50 h-auto flex flex-col`}
-    >
+    <div className="w-full border-b-[1.5px] border-gray-300 z-50 flex flex-col">
       {/* TOP BAR */}
-      <div className="w-full gap-2 h-[100px] z-20 flex flex-col lg:h-[125px]">
+      <div className="w-full gap-2 h-[100px] lg:h-[125px] flex flex-col">
         <div className="lg:min-h-[44px] h-[50px] lg:pt-6 flex justify-between items-center px-4 w-full">
           <div className="flex text-nowrap h-[5rem] items-center gap-2">
             All Categories
@@ -26,33 +29,33 @@ const NavBar = ({ showCategories }: { showCategories?: boolean }) => {
 
           {/* TOP MENU */}
           <ul className="lg:flex hidden h-[50%] w-fit">
-            {/* Find a Store */}
-            <li className="text-[calc(12/1280*100vw)] h-full w-fit px-4 flex items-center justify-center border-right-[1.5px] text-[#2B2B2B] border-r-[1.5px]">
-              Find a Store
-            </li>
+            {["Find a Store", "Help", "Become a Seller"].map((item) => (
+              <li
+                key={item}
+                className="text-[calc(12/1280*100vw)] h-full w-fit px-4 flex items-center justify-center border-r-[1.5px] text-[#2B2B2B]"
+              >
+                {item}
+              </li>
+            ))}
 
-            {/* Help */}
-            <li className="text-[calc(12/1280*100vw)] h-full w-fit px-4 flex items-center justify-center border-right-[1.5px] text-[#2B2B2B] border-r-[1.5px]">
-              Help
-            </li>
-
-            {/* Become a Seller */}
-            <li className="text-[calc(12/1280*100vw)] h-full w-fit px-4 flex items-center justify-center border-right-[1.5px] text-[#2B2B2B] border-r-[1.5px]">
-              Become a Seller
-            </li>
-
-            {/* 🔥 Sign In OR User Icon */}
+            {/* User / Sign In */}
             <li className="text-[calc(12/1280*100vw)] h-full w-fit px-4 flex items-center justify-center text-[#2B2B2B] cursor-pointer">
-              {session ? (
+              {session?.user ? (
                 <div className="flex items-center gap-2">
-                  <Image
-                    src="/icons/user.png"
-                    width={22}
-                    height={22}
-                    alt="user"
-                    className="rounded-full"
-                  />
-                  <span>{session.user?.name?.split(" ")[0]}</span>
+                  {session.user.image ? (
+                    <Image
+                      src={session.user.image}
+                      alt={session.user.name ?? "User"}
+                      width={32}
+                      height={32}
+                      className="rounded-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold">
+                      {getInitials(session.user.name)}
+                    </div>
+                  )}
+                  <span>{session.user.name?.split(" ")[0]}</span>
                 </div>
               ) : (
                 <span onClick={() => signIn()}>Sign In</span>
@@ -73,7 +76,7 @@ const NavBar = ({ showCategories }: { showCategories?: boolean }) => {
               </span>
 
               <div className="w-fit flex items-center gap-0.5">
-                <div className="lg:size-[2rem] size-[1.8rem] relative">
+                <div className="relative w-12 h-12">
                   <Image
                     className="object-cover"
                     fill
@@ -81,7 +84,7 @@ const NavBar = ({ showCategories }: { showCategories?: boolean }) => {
                     src="/logo/Untitled_design_20251108_095010_0000__1_-removebg-preview.png"
                   />
                 </div>
-                <h1 className="h-full aspect-square font-display text-[calc(18/1280 * 100vw)] tracking-[0%] leading-[100%] text-2xl italic text-[#2B2B2B] flex items-center justify-center">
+                <h1 className="h-full aspect-square font-display text-2xl italic text-[#2B2B2B] flex items-center justify-center">
                   atlaze
                 </h1>
               </div>
@@ -90,42 +93,6 @@ const NavBar = ({ showCategories }: { showCategories?: boolean }) => {
             {/* SEARCH BOX */}
             <div className="w-auto hidden lg:block">
               <AlgoliaSearch />
-            </div>
-
-            {/* RIGHT ICONS */}
-            <div className="flex absolute right-0 -translate-y-1/2 top-1/2 items-center gap-3.5">
-              <div className="flex gap-2 items-center">
-                <Image
-                  src="/home/hero/Nigeria.png"
-                  className="object-cover z-0"
-                  alt="nigeria logo"
-                  width={24}
-                  height={24}
-                />
-                <span className="leading-[24px] hidden lg:flex tracking-[-0.5%] text-[16px] text-[#0E0F0C] ">
-                  NGN
-                </span>
-                <span className="text-[14px] hidden lg:flex leading-[22px] tracking-[1%] text-[#454745]">
-                  Naira
-                </span>
-              </div>
-
-              {[
-                "/home/vector icons/Vector.png",
-                "/home/vector icons/Vector (1).png",
-                "/home/vector icons/Vector (2).png",
-              ].map((src, idx) => {
-                return (
-                  <Image
-                    width={19}
-                    height={14.5}
-                    src={src}
-                    alt="love icon"
-                    key={src}
-                    className={`${idx === 0 ? "hidden" : "flex"}`}
-                  />
-                );
-              })}
             </div>
           </div>
         </div>
@@ -141,13 +108,11 @@ const NavBar = ({ showCategories }: { showCategories?: boolean }) => {
           "BEST SELLERS",
           "NEW ARRIVALS",
           "COMING SOON",
-        ].map((e) => {
-          return (
-            <li key={e} className="text-[#FFFFFF] text-[14px]">
-              {e}
-            </li>
-          );
-        })}
+        ].map((e) => (
+          <li key={e} className="text-[#FFFFFF] text-[14px]">
+            {e}
+          </li>
+        ))}
       </div>
     </div>
   );

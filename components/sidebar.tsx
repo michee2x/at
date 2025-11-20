@@ -20,6 +20,7 @@ import { WooCategory } from "@/types";
 import CategoryInfo from "./CategoryInfo";
 import { useSearchParams } from "next/navigation";
 import { queryType, useCategory } from "@/contexts/category-context";
+import LogoutButton from "./buttons/LogoutButton";
 
 const Sidebar = () => {
   const { queryData, setQueryData } = useCategory();
@@ -164,12 +165,7 @@ const Sidebar = () => {
         </div>
 
         {/* LOGOUT */}
-        <div className="w-full h-auto px-4 py-6 absolute lg:relative bottom-0 text-[#2B2B2B] hover:text-[#D68A36] flex items-center gap-1">
-          <span className="text-[18px] lg:text-[19px]">
-            <MdLogout />
-          </span>
-          <span className="text-[15px] lg:text-[16px]">Log out</span>
-        </div>
+        <LogoutButton />
       </nav>
 
       {/* BACKDROP */}
