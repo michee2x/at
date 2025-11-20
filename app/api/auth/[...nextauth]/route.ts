@@ -131,7 +131,7 @@ export const authOptions: NextAuthOptions = {
     signIn: "/login",
   },
 
-  ...(true ? prodCookies : {}),
+  ...(process.env.NODE_ENV === "production" ? prodCookies : {}),
 };
 
 console.log("THIS IS THE AUTHOPTIONS: ",authOptions)
