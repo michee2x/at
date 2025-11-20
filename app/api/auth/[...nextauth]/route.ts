@@ -9,63 +9,64 @@ const loginSchema = z.object({
 
 const prodCookies = {
   cookies: {
-    sessionToken: {
-      name: "__Secure-next-auth.session-token",
-      options: {
-        httpOnly: true,
-        sameSite: "lax",
-        path: "/",
-        secure: true,
-      },
-    },
-    callbackUrl: {
-      name: "__Secure-next-auth.callback-url",
-      options: {
-        sameSite: "lax",
-        path: "/",
-        secure: true,
-      },
-    },
-    csrfToken: {
-      name: "__Host-next-auth.csrf-token",
-      options: {
-        httpOnly: true,
-        sameSite: "lax",
-        path: "/",
-        secure: true,
-      },
-    },
-    pkceCodeVerifier: {
-      name: "next-auth.pkce.code_verifier",
-      options: {
-        httpOnly: true,
-        sameSite: "lax",
-        path: "/",
-        secure: true,
-        maxAge: 900,
-      },
-    },
-    state: {
-      name: "next-auth.state",
-      options: {
-        httpOnly: true,
-        sameSite: "lax",
-        path: "/",
-        secure: true,
-        maxAge: 900,
-      },
-    },
-    nonce: {
-      name: "next-auth.nonce",
-      options: {
-        httpOnly: true,
-        sameSite: "lax",
-        path: "/",
-        secure: true,
-      },
+  sessionToken: {
+    name: `__Secure-next-auth.session-token`,
+    options: {
+      httpOnly: true,
+      sameSite: 'lax',
+      path: '/',
+      secure: process.env.NODE_ENV === "production"
+    }
+  },
+  callbackUrl: {
+    name: `__Secure-next-auth.callback-url`,
+    options: {
+      sameSite: 'lax',
+      path: '/',
+      secure: process.env.NODE_ENV === "production"
+    }
+  },
+  csrfToken: {
+    name: `__Host-next-auth.csrf-token`,
+    options: {
+      httpOnly: true,
+      sameSite: 'lax',
+      path: '/',
+      secure: process.env.NODE_ENV === "production"
+    }
+  },
+  pkceCodeVerifier: {
+    name: `next-auth.pkce.code_verifier`,
+    options: {
+      httpOnly: true,
+      sameSite: 'lax',
+      path: '/',
+      secure: process.env.NODE_ENV === "production",
+      maxAge: 900
+    }
+  },
+  state: {
+    name: `next-auth.state`,
+    options: {
+      httpOnly: true,
+      sameSite: "lax",
+      path: "/",
+      secure: process.env.NODE_ENV === "production",
+      maxAge: 900
     },
   },
+  nonce: {
+    name: `next-auth.nonce`,
+    options: {
+      httpOnly: true,
+      sameSite: "lax",
+      path: "/",
+      secure: process.env.NODE_ENV === "production",
+    },
+  },
+}
 };
+
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -130,8 +131,10 @@ export const authOptions: NextAuthOptions = {
     signIn: "/login",
   },
 
-  ...(process.env.NODE_ENV === "production" ? prodCookies : {}),
+  ...(true ? prodCookies : {}),
 };
+
+console.log("THIS IS THE AUTHOPTIONS: ",authOptions)
 
 const handler = NextAuth(authOptions);
 
