@@ -1,10 +1,10 @@
 "use client";
-import { CartProducts, useCart } from "@/contexts/CartContext";
+import { CartItemType, useCart } from "@/contexts/CartContext";
 import Image from "next/image";
 import { RiDeleteBin6Line } from "react-icons/ri";
 
 type CartToastProps = {
-  product: CartProducts;
+  product: CartItemType;
 };
 
 export default function CartToast({ product }: CartToastProps) {
@@ -12,7 +12,7 @@ export default function CartToast({ product }: CartToastProps) {
 
   return (
     <div className="rounded-xl w-full p-3 lg:w-[393px]">
-      <div className="flex gap-3 items-center">
+      {/* <div className="flex gap-3 items-center">
         <div className="size-[50px] bg-white rounded-full overflow-hidden border border-black index-10 relative">
           <Image
             src={product.images?.[0]?.src || "/placeholder.png"}
@@ -54,7 +54,7 @@ export default function CartToast({ product }: CartToastProps) {
             </button>
           </div>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 }
