@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint",
     "test": "jest",
-    "test:watch": "jest --watch"
+    "test:watch": "jest --watch",
+    "dev:https": "node dev-https.ts"
   },
   "dependencies": {
     "@algolia/autocomplete-core": "^1.19.4",
@@ -33,6 +34,7 @@
     "motion": "^12.23.24",
     "next": "15.5.4",
     "next-auth": "^4.24.13",
+    "node-fetch": "^3.3.2",
     "query-string": "^9.3.1",
     "react": "19.1.0",
     "react-dom": "19.1.0",
@@ -61,6 +63,7 @@
     "jest": "^30.2.0",
     "tailwindcss": "^4",
     "ts-jest": "^29.4.5",
+    "ts-node": "^10.9.2",
     "typescript": "^5"
   }
 }

@@ -5,6 +5,8 @@ import Link from "next/link";
 import { useState } from "react";
 import { z } from "zod";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { signIn } from "next-auth/react"; // Import signIn from next-auth
+import GoogleLoginButton from "@/components/buttons/GoogleButton";
 
 type FieldErrors = {
   email: string;
@@ -126,6 +128,11 @@ export default function RegisterPage() {
     }
   }
 
+  // Google login handler
+  const handleGoogleSignUp = () => {
+    signIn("google", { callbackUrl: "/dashboard" }); // Redirect to your dashboard or desired page after login
+  };
+
   return (
     <div className="w-screen mx-auto p-4 lg:p-0 font-poppins lg:pr-10 h-screen lg:gap-10 flex items-center justify-center bg-gray-100 text-gray-900">
       <div className="flex-1 lg:flex hidden relative h-full w-full bg-blue-600">
@@ -195,14 +202,12 @@ export default function RegisterPage() {
               fieldErrors.password ? "border-red-500" : "border-gray-300"
             }`}
           />
-
           <span
             onClick={() => setShowPass(!showPass)}
             className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-gray-500 hover:text-gray-800 transition p-2"
           >
             {showPass ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
           </span>
-
           {fieldErrors.password && (
             <p className="text-red-500 text-sm mt-1">{fieldErrors.password}</p>
           )}
@@ -218,14 +223,12 @@ export default function RegisterPage() {
               fieldErrors.confirmPassword ? "border-red-500" : "border-gray-300"
             }`}
           />
-
           <span
             onClick={() => setShowConfirmPass(!showConfirmPass)}
             className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-gray-500 hover:text-gray-800 transition p-2"
           >
             {showConfirmPass ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
           </span>
-
           {fieldErrors.confirmPassword && (
             <p className="text-red-500 text-sm mt-1">
               {fieldErrors.confirmPassword}
@@ -261,6 +264,11 @@ export default function RegisterPage() {
             login
           </Link>
         </p>
+
+        {/* Google Sign Up Button */}
+        <div className="mt-4 w-full">
+          <GoogleLoginButton type="signup" />
+        </div>
       </form>
     </div>
   );

@@ -1,38 +1,44 @@
 "use client";
 
-export const dynamic = "force-dynamic"; // <- this prevents prerendering
-
-import { useState } from "react";
-import { signIn } from "next-auth/react";
+import { useState, useEffect } from "react";
+import { signIn, useSession } from "next-auth/react";
 import { z } from "zod";
 import { useSearchParams } from "next/navigation";
 import Image from "next/image";
 import GoogleLoginButton from "@/components/buttons/GoogleButton";
 import Link from "next/link";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { toast } from "react-toastify"; // Import react-toastify
 
-
+// Zod schema for credentials
 const loginSchema = z.object({
   username: z.string().min(3, "Username must be at least 3 characters."),
   password: z.string().min(3, "Password must be at least 3 characters."),
 });
 
-export default function  ClientPage() {
-  const [error, setError] = useState("");
+export default function ClientPage() {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-
   const [fieldErrors, setFieldErrors] = useState({
     username: "",
     password: "",
   });
+
+  // Get session data
+  const { data: session } = useSession();
+
+  // If there is an active session, redirect to dashboard
+  useEffect(() => {
+    if (session) {
+      window.location.href = "/dashboard"; // Redirect to dashboard if logged in
+    }
+  }, [session]);
 
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") || "/dashboard";
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    setError("");
     setLoading(true);
     setFieldErrors({ username: "", password: "" });
 
@@ -45,29 +51,35 @@ export default function  ClientPage() {
       setLoading(false);
 
       const newErrors = { username: "", password: "" };
-
       validated.error.issues.forEach((issue) => {
         if (issue.path[0] === "username") newErrors.username = issue.message;
         if (issue.path[0] === "password") newErrors.password = issue.message;
       });
 
       setFieldErrors(newErrors);
-      setError("Please fix the errors below.");
+      toast.error("Please fix the errors below."); // Show toast notification
       return;
     }
 
-    await signIn("credentials", {
+    const res = await signIn("credentials", {
       username,
       password,
-      redirect: true,
-      callbackUrl,
+      redirect: false, // Change redirect to false so it doesn't redirect
     });
 
     setLoading(false);
+
+    if (res?.error) {
+      // If login fails, show the error in a toast
+      toast.error(res.error);
+    } else if (res?.url) {
+      // Redirect on success (if needed)
+      window.location.href = res.url;
+    }
   }
 
   return (
-    <div className="w-screen mx-auto p-4 lg:p-0 font-poppins lg:pr-10 h-screen lg:gap-10 flex items-center justify-center bg-gray-100 text-gray-900">
+    <div className="w-screen mx-auto p-4 lg:p-0 font-poppins lg:pr-10 h-screen lg:gap-10 flex lg:items-center justify-center bg-gray-100 text-gray-900">
       {/* LEFT IMAGE (large screens only) */}
       <div className="hidden lg:flex flex-1 relative h-full w-full bg-blue-600">
         <Image
@@ -80,7 +92,7 @@ export default function  ClientPage() {
 
       {/* LOGIN FORM */}
       <form
-        className="w-full max-w-md flex flex-col items-center bg-white p-8 rounded-lg border border-gray-300 shadow-sm"
+        className="w-full mt-12 lg:mt-0 max-w-md flex flex-col items-center bg-white p-8 rounded-lg border border-gray-300 shadow-sm"
         onSubmit={handleSubmit}
       >
         {/* Logo */}
@@ -136,8 +148,7 @@ export default function  ClientPage() {
           {/* EYE ICON */}
           <span
             onClick={() => setShowPassword(!showPassword)}
-            className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer
-                       text-gray-500 hover:text-gray-800 transition p-2"
+            className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-gray-500 hover:text-gray-800 transition p-2"
           >
             {showPassword ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
           </span>
@@ -156,8 +167,6 @@ export default function  ClientPage() {
             Forgot password?
           </Link>
         </div>
-
-        {error && <p className="text-red-500 text-sm mb-3">{error}</p>}
 
         {/* SUBMIT BUTTON */}
         <button

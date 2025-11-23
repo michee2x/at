@@ -1,5 +1,5 @@
 import { signIn } from "next-auth/react";
-const GoogleLoginButton = () => {
+const GoogleLoginButton = ({type = "login"}:{type?: "login" | "signup"}) => {
   return (
     <div className="relative flex flex-col">
       <button
@@ -68,7 +68,7 @@ const GoogleLoginButton = () => {
         </span>
 
         {/* Text */}
-        <span>Login with Google</span>
+        <span>{type === "login" ? "Login" : "Signup"} with Google</span>
       </button>
     </div>
   );

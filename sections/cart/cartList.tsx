@@ -1,17 +1,30 @@
-'use client'
-import React from 'react'
-import CartItem from './cartItem';
-import { useCart } from '@/contexts/CartContext';
+"use client";
 
-const CartList = () => {
-    const {cart}=useCart()
+import React from "react";
+import { useCart } from "@/contexts/CartContext";
+import CartItem from "./cartItem";
+import CartItemSkeleton from "@/components/skeletons/CartItemSkeleton";
+
+export default function CartList() {
+  const { cart, loading } = useCart();
+
+  if (loading) {
+    return (
+      <div className="flex flex-col gap-5">
+        {[1, 2, 3].map((n) => (
+          <CartItemSkeleton key={n} />
+        ))}
+      </div>
+    );
+  }
+
+  if (!cart?.items?.length) return <p>Your cart is empty.</p>;
+
   return (
-    <div className="flex-1 flex flex-col lg:gap-5">
-      {cart.map((item, idx) => (
-        <CartItem product={item} key={`${idx}`} />
+    <div className="flex flex-col gap-5">
+      {cart.items.map((item, idx) => (
+        <CartItem item={item} key={idx} />
       ))}
     </div>
   );
 }
-
-export default CartList

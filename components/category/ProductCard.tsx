@@ -1,3 +1,4 @@
+// /components/product/ProductCard.tsx
 "use client";
 
 import Image from "next/image";
@@ -5,16 +6,29 @@ import { Ratings } from "../Ratings";
 import { WooProduct } from "@/types";
 import { GoPlus } from "react-icons/go";
 import { DrawerTrigger } from "../ui/drawer";
-import { useCart } from "@/contexts/CartContext";
 import { toast } from "react-toastify";
-import CartToast from "@/sections/cart/CartToast";
+import { useState } from "react";
+import { useCart } from "@/contexts/CartContext";
 
 export function ProductCard({ product }: { product: WooProduct }) {
   const { addToCart } = useCart();
-  const handleAddToCart = () => {
-    const item = { ...product, quantity: 1 };
-    addToCart(item);
+  const [isAdding, setIsAdding] = useState(false);
+
+  const handleAddToCart = async () => {
+    if (isAdding) return;
+    setIsAdding(true);
+
+    try {
+      console.log("ProductCard | add to cart clicked:", product.id);
+      await addToCart(product.id, 1);
+    } catch (err) {
+      console.error("ProductCard | addToCart error:", err);
+      toast.error("Failed to add to cart");
+    } finally {
+      setIsAdding(false);
+    }
   };
+
   return (
     <div className="border border-gray-200 pb-2 font-poppins bg-white rounded-xl flex flex-col">
       <DrawerTrigger>
@@ -23,13 +37,19 @@ export function ProductCard({ product }: { product: WooProduct }) {
             src={product.images?.[0]?.src || "/placeholder.png"}
             alt={product.name}
             fill
-            className="object-cover index-10"
+            className="object-cover"
           />
         </div>
         <div className="px-3 w-full overflow-hidden h-auto">
           <div className="lg:text-[15px] text-[13px] flex flex-col font-medium text-black mb-1">
-            <h2 className="text-start hidden">{`${product.name.slice(0, 19)}...`}</h2>
-            <h2 className="text-start lg:hidden">{`${product.name.slice(0, 16)}...`}</h2>
+            <h2 className="text-start hidden">{`${product.name.slice(
+              0,
+              19
+            )}...`}</h2>
+            <h2 className="text-start lg:hidden">{`${product.name.slice(
+              0,
+              16
+            )}...`}</h2>
             <span className="flex justify-start -ml-2">
               <Ratings rating={3.2} />
             </span>
@@ -56,12 +76,14 @@ export function ProductCard({ product }: { product: WooProduct }) {
           </div>
         </div>
       </DrawerTrigger>
+
       <button
         onClick={handleAddToCart}
-        className="lg:mt-5 mt-2 w-[97%] mx-auto text-[10px] bg-[#6A00EF] text-white py-[6px] rounded-[24px] hover:bg-purple-700 items-center gap-1 justify-center flex transition"
+        disabled={isAdding}
+        className="lg:mt-5 mt-2 w-[97%] mx-auto text-[10px] bg-[#6A00EF] text-white py-[6px] rounded-[24px] hover:bg-purple-700 disabled:opacity-70 disabled:cursor-not-allowed items-center gap-1 justify-center flex transition"
       >
         <GoPlus className="text-2xl" />
-        Add to Cart
+        {isAdding ? "Adding..." : "Add to Cart"}
       </button>
     </div>
   );
