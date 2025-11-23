@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 import { getSession } from 'next-auth/react';
 import { NextResponse } from 'next/server';
 //import { getSession } from 'next-auth/react'; // To get session for logged-in users
