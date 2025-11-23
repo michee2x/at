@@ -140,7 +140,7 @@ export default function CartToastContainer() {
               href="/cart"
               className="bg-[#2B2B2B] h-[48px] hover:bg-[#1A1A1A] text-white rounded-[8px] py-[6px] px-[12px] text-sm font-medium flex justify-center gap-2.5 items-center"
             >
-              <p className="lg:text-[16px] text-[14px]">
+              {/* <p className="lg:text-[16px] text-[14px]">
                 <span className="mr-1.5">View Cart</span>
                 <span>
                   (Total: ₦
@@ -154,8 +154,8 @@ export default function CartToastContainer() {
                     ).toLocaleString()}
                   )
                 </span>
-              </p>
-              <div className="indicator">
+              </p> */}
+              {/* <div className="indicator">
                 <span className="indicator-item text-[12px] lg:text-[14px] p-2 aspect-square text-white bg-[#ED473D] rounded-full badge badge-secondary">
                   {cart &&
                     cart.reduce((sum, item) => {
@@ -166,7 +166,7 @@ export default function CartToastContainer() {
                 <div className="grid text-white text-2xl place-items-center">
                   <BsBucket />
                 </div>
-              </div>
+              </div> */}
             </Link>
           </motion.div>
         )}
