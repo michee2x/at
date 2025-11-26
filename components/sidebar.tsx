@@ -95,12 +95,13 @@ const Sidebar = () => {
   };
 
   // Function to get user initials
-  const getInitials = (name?: string) => {
-    if (!name) return "";
-    const parts = name.trim().split(" ");
-    if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
-    return (parts[0][0] + parts[1][0]).toUpperCase();
-  };
+const getInitials = (name: string | null | undefined): string => {
+  if (!name) return "";
+  const parts = name.trim().split(" ");
+  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+  return (parts[0][0] + parts[1][0]).toUpperCase();
+};
+
 
   return (
     <div className="lg:flex z-50">
