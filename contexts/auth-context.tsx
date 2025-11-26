@@ -1,6 +1,8 @@
-import React, { createContext, useContext, ReactNode } from "react";
+import React, { createContext, useContext, ReactNode, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import type { Session } from "next-auth";
+import { useCart } from "@/hooks/useCart";
+import { toNumber } from "@/utils/to-number";
 
 interface AuthContextType {
   session: Session | null;
@@ -11,6 +13,19 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const { data: session, status } = useSession();
+  console.log("this is the user id: ", session)
+  
+  useEffect(() => {
+    if (session?.user && session.wpToken) {
+      const userId = toNumber(session.user.id);
+      const token = session.wpToken;
+      const cartStore = useCart.getState();
+
+      cartStore.setUser(userId, token);
+      cartStore.loadCart(); // ✅ merge guest cart automatically after login
+    }
+  }, [session]);
+
 
   return (
     <AuthContext.Provider

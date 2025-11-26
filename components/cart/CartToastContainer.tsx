@@ -7,7 +7,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import CartToast from "@/sections/cart/CartToast";
 import Link from "next/link";
 import { BsBucket } from "react-icons/bs";
-import { useCart } from "@/contexts/CartContext";
+import { useCart } from "@/hooks/useCart";
+import { WooProductImage, WooProductToCartItem } from "@/types";
 
 /**
  * Event-driven CartToastContainer
@@ -17,11 +18,12 @@ import { useCart } from "@/contexts/CartContext";
  */
 
 type ToastPayload = {
+  id: number;
   slug: string;
   name: string;
   price: number;
   quantity: number;
-  image?: string | null;
+  image?: WooProductImage[];
   time?: number;
 };
 
@@ -87,11 +89,6 @@ export default function CartToastContainer() {
     }, LEAVE_HIDE_MS);
   };
 
-  const total = toasts.reduce(
-    (sum, t) => sum + Number(t.payload.price) * (t.payload.quantity ?? 1),
-    0
-  );
-
   if (toasts.length === 0) return null;
 
   return (
@@ -113,14 +110,15 @@ export default function CartToastContainer() {
             onMouseLeave={() => handleLeave(t.id)}
           >
             <CartToast
-              product={
+              item={
                 {
+                  id: t.payload.id,
                   slug: t.payload.slug,
                   name: t.payload.name,
-                  price: t.payload.price,
+                  price: String(t.payload.price), // convert number → string
                   quantity: t.payload.quantity,
-                  images: t.payload.image ? [{ src: t.payload.image }] : [],
-                } as any
+                  images: t.payload.image ? t.payload.image : [],
+                } as WooProductToCartItem
               }
             />
           </motion.div>
@@ -140,33 +138,20 @@ export default function CartToastContainer() {
               href="/cart"
               className="bg-[#2B2B2B] h-[48px] hover:bg-[#1A1A1A] text-white rounded-[8px] py-[6px] px-[12px] text-sm font-medium flex justify-center gap-2.5 items-center"
             >
-              {/* <p className="lg:text-[16px] text-[14px]">
+              <p className="lg:text-[16px] text-[14px]">
                 <span className="mr-1.5">View Cart</span>
                 <span>
-                  (Total: ₦
-                  {cart &&
-                    Number(
-                      cart.reduce((sum, item) => {
-                        const price = Number(item.price) || 0;
-                        const qty = Number(item.quantity) || 1;
-                        return sum + price * qty;
-                      }, 0)
-                    ).toLocaleString()}
-                  )
+                  (Total: ₦{cart && Number(cart.total).toLocaleString()})
                 </span>
-              </p> */}
-              {/* <div className="indicator">
+              </p>
+              <div className="indicator">
                 <span className="indicator-item text-[12px] lg:text-[14px] p-2 aspect-square text-white bg-[#ED473D] rounded-full badge badge-secondary">
-                  {cart &&
-                    cart.reduce((sum, item) => {
-                      const itemQuantity = item.quantity || 0;
-                      return sum + itemQuantity;
-                    }, 0)}
+                  {cart.items.length}
                 </span>
                 <div className="grid text-white text-2xl place-items-center">
                   <BsBucket />
                 </div>
-              </div> */}
+              </div>
             </Link>
           </motion.div>
         )}

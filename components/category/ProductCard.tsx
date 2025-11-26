@@ -8,19 +8,50 @@ import { GoPlus } from "react-icons/go";
 import { DrawerTrigger } from "../ui/drawer";
 import { toast } from "react-toastify";
 import { useState } from "react";
-import { useCart } from "@/contexts/CartContext";
+import { useCart } from "@/hooks/useCart";
 
 export function ProductCard({ product }: { product: WooProduct }) {
-  const { addToCart } = useCart();
-  const [isAdding, setIsAdding] = useState(false);
+  const {isLoading, addItem, cart} = useCart();
 
+  // const { addToCart } = useCart();
+  const [isAdding, setIsAdding] = useState(false);
   const handleAddToCart = async () => {
     if (isAdding) return;
     setIsAdding(true);
 
     try {
       console.log("ProductCard | add to cart clicked:", product.id);
-      await addToCart(product.id, 1);
+
+      const status = await addItem({ ...product, quantity: 1 });
+      console.log("ProductCard | addItem status:", status);
+
+      // Get fresh cart from the store
+      const updatedCart = useCart.getState().cart;
+
+      const addedItem = updatedCart.items.find(
+        (item) => item.id === product.id
+      );
+      console.log("ProductCard | addedToCart item:", addedItem);
+
+      if (addedItem) {
+        //toast.success("Added to cart");
+        const toastPayload = {
+          id: addedItem.id,
+          slug: addedItem.slug,
+          name: addedItem.name,
+          price: Number(addedItem.price),
+          quantity: addedItem.quantity,
+          image: addedItem.images || null,
+          time: Date.now(),
+        };
+
+        // Dispatch a custom event so the toast layer only reacts to explicit user actions
+        if (typeof window !== "undefined") {
+          window.dispatchEvent(
+            new CustomEvent("cart:add", { detail: toastPayload })
+          );
+        }
+      }
     } catch (err) {
       console.error("ProductCard | addToCart error:", err);
       toast.error("Failed to add to cart");
@@ -28,6 +59,8 @@ export function ProductCard({ product }: { product: WooProduct }) {
       setIsAdding(false);
     }
   };
+
+
 
   return (
     <div className="border border-gray-200 pb-2 font-poppins bg-white rounded-xl flex flex-col">

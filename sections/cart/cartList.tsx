@@ -1,14 +1,14 @@
 "use client";
 
 import React from "react";
-import { useCart } from "@/contexts/CartContext";
 import CartItem from "./cartItem";
 import CartItemSkeleton from "@/components/skeletons/CartItemSkeleton";
+import { useCart } from "@/hooks/useCart";
 
 export default function CartList() {
-  const { cart, loading } = useCart();
+  const { cart, isLoading } = useCart();
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="flex flex-col gap-5">
         {[1, 2, 3].map((n) => (

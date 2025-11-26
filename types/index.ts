@@ -203,3 +203,25 @@ export interface WooProduct {
   global_unique_id: string;
   _links: WooProductLinks;
 }
+
+
+
+
+export interface Cart {
+  items: WooProductToCartItem[];
+  total: number;
+  updatedAt?: string;
+}
+
+export type WooProductToCartItem = Pick<
+  WooProduct,
+  | 'id'
+  | 'name'
+  | 'slug'
+  | 'price'
+  | 'images'
+  | 'permalink'
+  // add whatever you actually need
+> & {
+  quantity: number;
+};

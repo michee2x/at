@@ -7,23 +7,25 @@ import { FiPlus } from "react-icons/fi";
 import { AiOutlineMinus } from "react-icons/ai";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { DialogTrigger } from "@/components/ui/dialog";
-import { CartItemType, useCart } from "@/contexts/CartContext";
+import { useCart } from "@/hooks/useCart";
+import { WooProductToCartItem } from "@/types";
 
 interface CartItemProps {
-  item: CartItemType
+  item: WooProductToCartItem;
 }
 
 export default function CartItem({ item }: CartItemProps) {
-  const { setItemQuantity, removeFromCart, setItemToDelete } = useCart();
+  const setItemToDelete = useCart((state) => state.setItemToDelete);
+  const updateQuantity = useCart((state) => state.updateQuantity);
 
   const decrease = () => {
-    const newQty = Math.max(0, item.quantity - 1);
-    setItemQuantity(item.key, newQty);
+    if (item.quantity > 1) {
+      updateQuantity(item.id, item.quantity - 1);
+    }
   };
 
   const increase = () => {
-    const newQty = item.quantity + 1;
-    setItemQuantity(item.key, newQty);
+    updateQuantity(item.id, item.quantity + 1);
   };
 
   return (
@@ -40,7 +42,7 @@ export default function CartItem({ item }: CartItemProps) {
       <div className="flex-1">
         <div className="flex text-[16px] lg:text-[18px] items-center justify-between">
           <h1>{item.name}</h1>
-          <h1>₦{Number(item.totals?.total || 0).toLocaleString()}</h1>
+          <h1>₦{Number(item.quantity || 0).toLocaleString()}</h1>
         </div>
 
         <span className="text-[14px] text-[#6C757D]">WooCommerce Product</span>

@@ -14,6 +14,7 @@ import { AuthProvider } from "@/contexts/auth-context";
 
 const Providers = ({ children }: { children: ReactNode }) => {
   const [client] = useState(() => new QueryClient());
+
   return (
     <QueryClientProvider client={client}>
       <SessionProvider>

@@ -1,16 +1,16 @@
+// next-auth.d.ts
 import NextAuth, { DefaultSession } from "next-auth";
 
 declare module "next-auth" {
   interface Session {
-    wpToken?: string;
-    user?: {
-      name?: string;
-      email?: string;
-    } & DefaultSession["user"];
+    wpToken?: string; // your WP token
+    user: {
+      id: string;       // <-- add this
+    } & DefaultSession["user"]; // keep name, email, image
   }
 
   interface User {
-    token?: string; // the WP token returned from authorize()
+    token?: string; // WP token returned from authorize()
   }
 }
 

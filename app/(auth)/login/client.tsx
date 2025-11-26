@@ -9,6 +9,7 @@ import GoogleLoginButton from "@/components/buttons/GoogleButton";
 import Link from "next/link";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { toast } from "react-toastify"; // Import react-toastify
+import FacebookLoginButton from "@/components/buttons/FacebookLoginButton";
 
 // Zod schema for credentials
 const loginSchema = z.object({
@@ -115,8 +116,9 @@ export default function ClientPage() {
         </h1>
 
         {/* Google Button */}
-        <div className="my-6 w-full">
+        <div className="my-6 flex flex-col gap-4 w-full">
           <GoogleLoginButton />
+          <FacebookLoginButton />
         </div>
 
         {/* USERNAME FIELD */}

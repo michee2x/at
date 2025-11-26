@@ -1,11 +1,12 @@
 "use client";
 
-import { CartResponse, useCart } from "@/contexts/CartContext";
 import React, { useEffect, useState } from "react";
 import OrderSummarySkeleton from "@/components/skeletons/OrderSummarySkeleton";
+import { useCart } from "@/hooks/useCart";
+import { Cart } from "@/types";
 
 const OrderSummary = () => {
-  const { cart, loading } = useCart();
+  const { cart, isLoading } = useCart();
 
   const [orderSummary, setOrderSummary] = useState({
     subtotal: 0,
@@ -15,32 +16,36 @@ const OrderSummary = () => {
     total: 0,
   });
 
-  function computeOrderSummary(cart: CartResponse | null) {
-    if (!cart) return;
+ function computeOrderSummary(cart: Cart | null) {
+   if (!cart) return;
 
-    const subtotal = Number(cart.totals?.total_items || 0);
+   const subtotal = cart.items.reduce((sum, item) => {
+     const price = Number(item.price) || 0;
+     return sum + price * item.quantity;
+   }, 0);
 
-    const packagingFee = 2000.05;
-    const serviceFee = 500.05;
-    const deliveryFee = 2000.05;
+   const packagingFee = 2000.05;
+   const serviceFee = 500.05;
+   const deliveryFee = 2000.05;
 
-    const total = subtotal + packagingFee + serviceFee + deliveryFee;
+   const total = subtotal + packagingFee + serviceFee + deliveryFee;
 
-    setOrderSummary({
-      subtotal,
-      packagingFee,
-      serviceFee,
-      deliveryFee,
-      total,
-    });
-  }
+   setOrderSummary({
+     subtotal,
+     packagingFee,
+     serviceFee,
+     deliveryFee,
+     total,
+   });
+ }
+
 
   useEffect(() => {
     if (cart) computeOrderSummary(cart);
   }, [cart]);
 
-  // 👉 Loading skeleton
-  if (loading || !cart) return <OrderSummarySkeleton />;
+  // 👉 isLoading skeleton
+  if (isLoading || !cart) return <OrderSummarySkeleton />;
 
   return (
     <div className="w-[463px] border-[1.28px] rounded-[10.23px] p-[12.79px] border-[#F5F5F5] h-[481px]">

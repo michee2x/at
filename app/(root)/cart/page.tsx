@@ -15,12 +15,21 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { useCart } from "@/contexts/CartContext";
 import OrderSummary from "@/sections/cart/OrderSummary";
+import { useCart } from "@/hooks/useCart";
 
 export function DialogDeleteDemo() {
-  const { removeFromCart, itemToDelete } = useCart();
+  //const { removeFromCart, itemToDelete } = useCart();
+  const itemToDelete = useCart((state) => state.itemToDelete);
+  const removeItem = useCart((state) => state.removeItem);
+  const setItemToDelete = useCart((state) => state.setItemToDelete);
+
   if (!itemToDelete) return null;
+
+  const handleConfirm = async () => {
+    await removeItem(itemToDelete.id);
+    setItemToDelete(null); // reset
+  };
   return (
     <DialogContent className="sm:max-w-[425px]">
       <DialogHeader>
@@ -33,11 +42,13 @@ export function DialogDeleteDemo() {
       <div className="grid gap-4"></div>
       <DialogFooter>
         <DialogClose asChild>
-          <Button variant="outline">Cancel</Button>
+          <Button variant="outline" onClick={() => setItemToDelete(null)}>
+            Cancel
+          </Button>
         </DialogClose>
         <DialogClose asChild>
           <Button
-            onClick={() => removeFromCart(itemToDelete.key)}
+            onClick={handleConfirm}
             type="submit"
             className="bg-[#DC2626] hover:bg-[#B91C1C] text-white"
           >
@@ -50,6 +61,7 @@ export function DialogDeleteDemo() {
 }
 
 const CartPage = () => {
+
 
   return (
     <Dialog>
