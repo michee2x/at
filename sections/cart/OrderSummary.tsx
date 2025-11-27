@@ -48,7 +48,7 @@ const OrderSummary = () => {
   if (isLoading || !cart) return <OrderSummarySkeleton />;
 
   return (
-    <div className="w-[463px] border-[1.28px] rounded-[10.23px] p-[12.79px] border-[#F5F5F5] h-[481px]">
+    <div className="lg:w-[463px] w-full border-[1.28px] rounded-[10.23px] p-[12.79px] border-[#F5F5F5] h-[481px]">
       <h1 className="text-[23.02px]">Order Summary</h1>
 
       <div className="text-[#343A40] flex flex-col lg:gap-3 mt-5">

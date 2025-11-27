@@ -128,4 +128,5 @@ export class WordPressCartAPI {
       return false;
     }
   }
+  
 }

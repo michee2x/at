@@ -1,6 +1,6 @@
 export default function OrderSummarySkeleton() {
   return (
-    <div className="w-[463px] border-[1.28px] rounded-[10.23px] p-[12.79px] border-[#F5F5F5] h-[481px] animate-pulse">
+    <div className="lg:w-[463px] w-full border-[1.28px] rounded-[10.23px] p-[12.79px] border-[#F5F5F5] h-[481px] animate-pulse">
       <div className="h-6 w-40 bg-gray-300 rounded"></div>
 
       <div className="flex flex-col gap-4 mt-6">
