@@ -1,16 +1,10 @@
 import { Cart } from "@/types";
 import { toNumber } from "@/utils/to-number";
 
-// lib/wordpress-cart.ts
 const WORDPRESS_URL = 'https://atlaze.com';
 
-
-// Cart API functions
 export class WordPressCartAPI {
-  
-  /**
-   * Get user's cart from WordPress
-   */
+
   static async getUserCart(userId: number, authToken: string): Promise<Cart> {
     try {
       const response = await fetch(
@@ -19,7 +13,7 @@ export class WordPressCartAPI {
           headers: {
             'Authorization': `Bearer ${authToken}`,
           },
-          cache: 'no-store', // Always get fresh data
+          cache: 'no-store',
         }
       );
 
@@ -28,8 +22,8 @@ export class WordPressCartAPI {
       }
 
       const data = await response.json();
-      const cartData = data.atlaze_user_cart 
-        ? JSON.parse(data.atlaze_user_cart) 
+      const cartData = data.atlaze_user_cart
+        ? JSON.parse(data.atlaze_user_cart)
         : { items: [], total: 0 };
 
       return cartData;
@@ -39,12 +33,9 @@ export class WordPressCartAPI {
     }
   }
 
-  /**
-   * Update user's cart in WordPress
-   */
   static async updateUserCart(
-    userId: number, 
-    cart: Cart, 
+    userId: number,
+    cart: Cart,
     authToken: string,
     deviceInfo?: string
   ): Promise<boolean> {
@@ -75,37 +66,31 @@ export class WordPressCartAPI {
     }
   }
 
-  /**
-   * Merge guest cart with user cart after login
-   */
   static async mergeGuestCart(
     userId: number,
     guestCart: Cart,
     authToken: string
   ): Promise<Cart> {
-    // Get the user's saved cart
+
     const userCart = await this.getUserCart(userId, authToken);
 
-    // Merge logic: combine items, avoiding duplicates
     const mergedItems = [...userCart.items];
-    
+
     guestCart.items.forEach(guestItem => {
       const existingIndex = mergedItems.findIndex(
         item => item.id === guestItem.id
       );
 
       if (existingIndex >= 0) {
-        // Item exists, increase quantity
         mergedItems[existingIndex].quantity += guestItem.quantity;
       } else {
-        // New item, add it
         mergedItems.push(guestItem);
       }
     });
 
-    
+    // FIX: correct total calculation
     const total = mergedItems.reduce(
-      (sum, item) => sum + (toNumber(item.price) * item.quantity), 
+      (sum, item) => sum + (toNumber(item.price) * item.quantity),
       0
     );
 
@@ -115,15 +100,15 @@ export class WordPressCartAPI {
       updatedAt: new Date().toISOString(),
     };
 
-    // Save merged cart to WordPress
+    // After saving merged cart
+    localStorage.removeItem('atlaze-cart-storage');
+
+
     await this.updateUserCart(userId, mergedCart, authToken);
 
     return mergedCart;
   }
 
-  /**
-   * Clear user's cart
-   */
   static async clearCart(userId: number, authToken: string): Promise<boolean> {
     try {
       const response = await fetch(

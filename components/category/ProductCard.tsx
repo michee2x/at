@@ -22,7 +22,7 @@ export function ProductCard({ product }: { product: WooProduct }) {
     try {
       console.log("ProductCard | add to cart clicked:", product.id);
 
-      const status = await addItem({ ...product, quantity: 1 });
+      const status = await addItem({ price: product.price, quantity: 1, id: product.id, name: product.name, slug: product.slug, images: product.images });
       console.log("ProductCard | addItem status:", status);
 
       // Get fresh cart from the store

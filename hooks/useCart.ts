@@ -1,4 +1,3 @@
-// hooks/useCart.ts
 import { WordPressCartAPI } from '@/lib/wordpress-cart';
 import { Cart, WooProductToCartItem } from '@/types';
 import { toNumber } from '@/utils/to-number';
@@ -11,11 +10,10 @@ interface CartStore {
   authToken: string | null;
   isLoading: boolean;
 
-  itemToDelete: WooProductToCartItem | null;               // <-- NEW
+  itemToDelete: WooProductToCartItem | null;
 
-  setItemToDelete: (itemId: WooProductToCartItem | null) => void;   // <-- NEW
+  setItemToDelete: (itemId: WooProductToCartItem | null) => void;
 
-  // Actions
   setUser: (userId: number, authToken: string) => void;
   loadCart: () => Promise<void>;
   addItem: (item: WooProductToCartItem) => Promise<boolean | undefined>;
@@ -24,7 +22,6 @@ interface CartStore {
   clearCart: () => Promise<void>;
   syncCart: () => Promise<void>;
 }
-
 
 export const useCart = create<CartStore>()(
   persist(
@@ -38,33 +35,28 @@ export const useCart = create<CartStore>()(
 
       setItemToDelete: (item) => set({ itemToDelete: item }),
 
-
       setUser: (userId, authToken) => {
         set({ userId, authToken });
       },
 
       loadCart: async () => {
         const { userId, authToken } = get();
-        
+
         if (!userId || !authToken) {
-          // Load from localStorage for guest users
           return;
         }
 
         set({ isLoading: true });
 
         try {
-          // Get guest cart before loading user cart
           const guestCart = get().cart;
-          
-          // Load user's saved cart from WordPress
+
           const userCart = await WordPressCartAPI.getUserCart(userId, authToken);
 
-          // If guest has items, merge them
           if (guestCart.items.length > 0) {
             const mergedCart = await WordPressCartAPI.mergeGuestCart(
-              userId, 
-              guestCart, 
+              userId,
+              guestCart,
               authToken
             );
             set({ cart: mergedCart });
@@ -80,7 +72,7 @@ export const useCart = create<CartStore>()(
 
       addItem: async (item) => {
         const { cart, userId, authToken } = get();
-        
+
         const existingIndex = cart.items.findIndex(i => i.id === item.id);
         let newItems;
 
@@ -91,21 +83,25 @@ export const useCart = create<CartStore>()(
           newItems = [...cart.items, item];
         }
 
-        const total = newItems.reduce((sum, i) => sum + (toNumber(item.price) * i.quantity), 0);
+        // FIXED: correct total calculation
+        const total = newItems.reduce(
+          (sum, i) => sum + (toNumber(i.price) * i.quantity),
+          0
+        );
+
         const newCart = { items: newItems, total };
 
         set({ cart: newCart });
 
-        // Sync to WordPress if user is logged in
         if (userId && authToken) {
           const result = await WordPressCartAPI.updateUserCart(userId, newCart, authToken);
-          return result;  // <---- 🔥 Important
+          return result;
         }
       },
 
       removeItem: async (itemId) => {
         const { cart, userId, authToken } = get();
-        
+
         const newItems = cart.items.filter(i => i.id !== itemId);
         const total = newItems.reduce((sum, i) => sum + (toNumber(i.price) * i.quantity), 0);
         const newCart = { items: newItems, total };
@@ -119,10 +115,11 @@ export const useCart = create<CartStore>()(
 
       updateQuantity: async (itemId, quantity) => {
         const { cart, userId, authToken } = get();
-        
-        const newItems = cart.items.map(i => 
+
+        const newItems = cart.items.map(i =>
           i.id === itemId ? { ...i, quantity } : i
         );
+
         const total = newItems.reduce((sum, i) => sum + (toNumber(i.price) * i.quantity), 0);
         const newCart = { items: newItems, total };
 
@@ -135,7 +132,7 @@ export const useCart = create<CartStore>()(
 
       clearCart: async () => {
         const { userId, authToken } = get();
-        
+
         set({ cart: { items: [], total: 0 } });
 
         if (userId && authToken) {
@@ -145,17 +142,16 @@ export const useCart = create<CartStore>()(
 
       syncCart: async () => {
         const { cart, userId, authToken } = get();
-        
+
         if (userId && authToken) {
           await WordPressCartAPI.updateUserCart(userId, cart, authToken);
         }
       },
     }),
     {
-      name: 'atlaze-cart-storage', // localStorage key
+      name: 'atlaze-cart-storage',
       partialize: (state) => ({ 
-        cart: state.cart,
-        // Don't persist userId and authToken here - handle separately
+        cart: state.userId ? { items: [], total: 0 } : state.cart,
       }),
     }
   )

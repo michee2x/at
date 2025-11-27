@@ -13,6 +13,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const { data: session, status } = useSession();
+     const { loadCart, userId, authToken, cart } = useCart();
   console.log("this is the user id: ", session)
   
   useEffect(() => {
@@ -25,6 +26,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       cartStore.loadCart(); // ✅ merge guest cart automatically after login
     }
   }, [session]);
+
 
 
   return (
