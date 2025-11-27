@@ -258,31 +258,6 @@ function ProductHeader({ product }: { product: WooProduct }) {
   );
 }
 
-function ImageGallery({ product }: { product: WooProduct }) {
-  const images = product.images ?? [];
-  const [first = { src: null }, second = { src: null }, third = { src: null }] = images;
-
-  // If external image domains are blocked by next.config.js, images will break.
-  // Make sure to add the domain(s) to next.config.js images.domains
-  return (
-    <div className="space-y-4">
-      <div className="w-full relative min-h-[50vh] lg:min-h-[70vh] flex items-center justify-center">
-        {first.src ? (
-          <ProductImageZoomWrapper
-            src={first.src}
-            alt={first.alt ?? `${product.name} image`}
-            gallery={images.slice(0, 6)}
-          />
-        ) : (
-          <div className="h-48 w-full bg-gray-100 rounded-md flex items-center justify-center">
-            No image
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
-
 function SizeChart() {
   // If product carries size attributes in the future, parse them here.
   return (

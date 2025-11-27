@@ -144,6 +144,8 @@ export interface WooProduct {
   brands: WooTerm[];
   tags: WooTerm[];
   images: WooProductImage[];
+  rating_count:number;
+  related_ids: number[];
 }
 
 
