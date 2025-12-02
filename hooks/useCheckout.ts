@@ -53,7 +53,7 @@ export const useCheckout = () => {
 
       localStorage.setItem('last-order-id', result.order.id.toString());
 
-      router.push('/order/success/:' + result.order.id);
+      router.push('/order/success/' + result.order.id);
     } catch (err) {
       const msg = err instanceof Error ? err.message : 'Unexpected error';
       setError(msg);
