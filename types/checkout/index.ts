@@ -1,3 +1,5 @@
+import { WooOrder } from "@/lib/user/types";
+
 export type Country = 'NG' | 'US' | 'GB' | string;
 
 
@@ -78,5 +80,5 @@ data?: unknown;
 
 
 export type CreateOrderResult =
-| { success: true; order: WooOrderResponse }
+| { success: true; order: WooOrder }
   | { success: false; error: string };

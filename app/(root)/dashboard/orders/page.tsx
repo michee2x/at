@@ -1,85 +1,81 @@
-// app/(root)/dashboard/orders/page.tsx
-import { redirect } from "next/navigation";
-import { getSession } from "@/lib/auth";
-import { WooClient } from "@/lib/wooClient";
+// app/orders/page.tsx
 
-type WooOrder = {
-  id: number;
-  status: string;
-  total: string;
-  currency: string;
-  date_created: string;
-};
+import { User } from "@/lib/user/User";
+import { groupOrderItems } from "@/lib/groupOrderItems";
+import { getServerSession } from "next-auth/next";
+import { AnimatedTooltip } from "@/components/ui/animated-tooltip";
+import { WooOrder } from "@/lib/user/types";
+import { toNumber } from "@/utils/to-number";
+import OrderCard from "@/components/OrderCard";
 
 export default async function OrdersPage() {
-  const session = await getSession();
-  if (!session) return redirect("/login");
-
-  // Instead of using any, we type-guard the session object
-  const wpToken =
-    typeof session === "object" &&
-    session !== null &&
-    "wpToken" in session &&
-    typeof (session as { wpToken?: string }).wpToken === "string"
-      ? (session as { wpToken: string }).wpToken
-      : undefined;
-
-  if (!wpToken) {
+  const session = await getServerSession();
+  if (!session?.user) {
     return (
-      <div className="p-8">
-        <h1 className="text-xl font-semibold">Orders</h1>
-        <p>No WooCommerce token available. Please log out and log in again.</p>
+      <div className="p-6 text-red-600">
+        You are not signed in
       </div>
     );
   }
+    
+  const customerId = toNumber(session.user.id);
 
-  let orders: WooOrder[] = [];
+  const user = new User({ id: customerId });
+
+  let orders = [];
 
   try {
-    const result = await WooClient.getOrdersForUser(wpToken);
-
-    // Ensure the response is typed correctly
-    if (Array.isArray(result)) {
-      orders = result as WooOrder[];
-    } else {
-      orders = [];
-    }
+    orders = await user.getOrders();
   } catch (err) {
-    console.error("Orders fetch error", err);
-
-    const errorMessage =
-      err instanceof Error ? err.message : "Failed to fetch orders";
-
+    console.error(err);
     return (
-      <div className="p-8">
-        <h1 className="text-xl font-semibold">Orders</h1>
-        <p className="text-red-500">{errorMessage}</p>
+      <div className="p-6 text-red-600">
+        Failed to load orders. Please try again later.
       </div>
     );
   }
 
+  if (orders.length === 0) {
+    return <div className="p-6">You have no orders yet.</div>;
+  }
+
+  console.log("this are the orders: ", orders)
+
   return (
-    <div className="p-8">
-      <h1 className="text-2xl font-bold mb-4">Your orders</h1>
-
-      {orders.length === 0 && <p>No orders found.</p>}
-
-      <ul className="space-y-4">
-        {orders.map((o) => (
-          <li key={o.id} className="p-4 border rounded bg-neutral-800">
-            <div className="flex justify-between">
-              <strong>Order #{o.id}</strong>
-              <span>{o.status}</span>
-            </div>
-
-            <div className="text-sm">
-              Total: {o.total} {o.currency}
-            </div>
-
-            <div className="text-sm">Created: {o.date_created}</div>
-          </li>
-        ))}
-      </ul>
+    <div className="container px-4 mx-auto pt-6 lg:px-6">
+      <h1 className="text-2xl font-bold mb-6">Your Orders</h1>
+      <AnimatedTooltipPreview
+        orders={orders}
+      />
     </div>
   );
 }
+
+
+export function AnimatedTooltipPreview({
+  orders
+}: {
+  orders: WooOrder[];
+}) {
+  return (
+    <div className="mb-10 px-4 lg:px-14 overflow-hidden pt-24 lg:pt-28 w-full">
+      <div className="w-full py-4 lg:px-8 mt-4 mb-2 h-auto flex justify-between">
+        <span className="text-[#343A40] text-[14px] lg:text-[21px] font-[SF Pro Display] font-[500]">
+          Your orders for this month
+        </span>
+        <span className="text-[#ED473D] text-[14px] lg:text-[16px] font-[SF Pro Display] font-[500]">
+          <span></span>
+          <span>Live Order Tracking (1)</span>
+        </span>
+      </div>
+      <div className="min-w-full lg:p-4 grid-cols-1 lg:grid-cols-3 grid gap-10 h-auto">
+        {orders.map((order, idx) => {
+          return (
+            <OrderCard key={idx} order={order} />
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+

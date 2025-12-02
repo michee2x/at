@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/dialog";
 import OrderSummary from "@/sections/cart/OrderSummary";
 import { useCart } from "@/hooks/useCart";
+import CartSummaryButton from "@/components/cart/CartSummaryButton";
 
 export function DialogDeleteDemo() {
   //const { removeFromCart, itemToDelete } = useCart();
@@ -80,9 +81,7 @@ const CartPage = () => {
             <CartList />
           </div>
         </div>
-        <div className="flex-1 mt-10 lg:mt-0 flex justify-center">
-          <OrderSummary />
-        </div>
+        <OrderSummary />
         <DialogDeleteDemo />
       </div>
     </Dialog>

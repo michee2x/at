@@ -67,47 +67,40 @@ export class WordPressCartAPI {
   }
 
   static async mergeGuestCart(
-    userId: number,
-    guestCart: Cart,
-    authToken: string
-  ): Promise<Cart> {
+  userId: number,
+  guestCart: Cart,
+  authToken: string
+): Promise<Cart> {
+  if (!guestCart.items.length) return this.getUserCart(userId, authToken);
 
-    const userCart = await this.getUserCart(userId, authToken);
+  const userCart = await this.getUserCart(userId, authToken);
+  const mergedItems = [...userCart.items];
 
-    const mergedItems = [...userCart.items];
+  guestCart.items.forEach(guestItem => {
+    const existing = mergedItems.find(item => item.id === guestItem.id);
+    if (!existing) {
+      mergedItems.push(guestItem);
+    }
+    // Do not add quantities if already exists
+  });
 
-    guestCart.items.forEach(guestItem => {
-      const existingIndex = mergedItems.findIndex(
-        item => item.id === guestItem.id
-      );
+  const total = mergedItems.reduce(
+    (sum, item) => sum + toNumber(item.price) * item.quantity,
+    0
+  );
 
-      if (existingIndex >= 0) {
-        mergedItems[existingIndex].quantity += guestItem.quantity;
-      } else {
-        mergedItems.push(guestItem);
-      }
-    });
+  const mergedCart: Cart = {
+    items: mergedItems,
+    total,
+    updatedAt: new Date().toISOString(),
+  };
 
-    // FIX: correct total calculation
-    const total = mergedItems.reduce(
-      (sum, item) => sum + (toNumber(item.price) * item.quantity),
-      0
-    );
+  await this.updateUserCart(userId, mergedCart, authToken);
+  localStorage.removeItem('atlaze-cart-storage');
 
-    const mergedCart: Cart = {
-      items: mergedItems,
-      total,
-      updatedAt: new Date().toISOString(),
-    };
+  return mergedCart;
+}
 
-    // After saving merged cart
-    localStorage.removeItem('atlaze-cart-storage');
-
-
-    await this.updateUserCart(userId, mergedCart, authToken);
-
-    return mergedCart;
-  }
 
   static async clearCart(userId: number, authToken: string): Promise<boolean> {
     try {

@@ -62,7 +62,7 @@ export default function CheckoutForm({
   });
 
   return (
-    <form onSubmit={submit} className="space-y-6 w-full px-4">
+    <form onSubmit={submit} className="space-y-6 px-4">
       <h2 className="text-lg font-semibold">
         How would you like to get your order?
       </h2>

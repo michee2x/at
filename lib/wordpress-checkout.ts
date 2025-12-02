@@ -1,5 +1,6 @@
 "use server"
 import type { OrderPayload, CreateOrderResult, WooOrderResponse, WooErrorResponse } from '@/types/checkout';
+import { WooOrder } from './user/types';
 
 const WORDPRESS_URL = 'https://atlaze.com';
 const WC_CONSUMER_KEY = process.env.WC_CONSUMER_KEY!
@@ -26,14 +27,14 @@ const res = await fetch(`${WORDPRESS_URL}/wp-json/wc/v3/orders`, {
 });
 
 
-    const json = (await res.json()) as WooOrderResponse | WooErrorResponse;
+    const json = (await res.json()) as WooOrder | WooErrorResponse;
 
     if (!res.ok) {
       const message = (json as WooErrorResponse).message ?? 'Failed to create order';
       return { success: false, error: String(message) };
     }
 
-    return { success: true, order: json as WooOrderResponse };
+    return { success: true, order: json as WooOrder };
   } catch (err) {
     const msg = err instanceof Error ? err.message : 'Network or unexpected error';
     return { success: false, error: msg };

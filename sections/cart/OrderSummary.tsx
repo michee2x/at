@@ -4,8 +4,9 @@ import React, { useEffect, useState } from "react";
 import OrderSummarySkeleton from "@/components/skeletons/OrderSummarySkeleton";
 import { useCart } from "@/hooks/useCart";
 import { Cart } from "@/types";
+import CartSummaryButton from "@/components/cart/CartSummaryButton";
 
-const OrderSummary = () => {
+const OrderSummary = ({ showCheckoutButton = true }: { showCheckoutButton?:boolean}) => {
   const { cart, isLoading } = useCart();
 
   const [orderSummary, setOrderSummary] = useState({
@@ -16,29 +17,28 @@ const OrderSummary = () => {
     total: 0,
   });
 
- function computeOrderSummary(cart: Cart | null) {
-   if (!cart) return;
+  function computeOrderSummary(cart: Cart | null) {
+    if (!cart) return;
 
-   const subtotal = cart.items.reduce((sum, item) => {
-     const price = Number(item.price) || 0;
-     return sum + price * item.quantity;
-   }, 0);
+    const subtotal = cart.items.reduce((sum, item) => {
+      const price = Number(item.price) || 0;
+      return sum + price * item.quantity;
+    }, 0);
 
-   const packagingFee = 2000.05;
-   const serviceFee = 500.05;
-   const deliveryFee = 2000.05;
+    const packagingFee = 2000.05;
+    const serviceFee = 500.05;
+    const deliveryFee = 2000.05;
 
-   const total = subtotal + packagingFee + serviceFee + deliveryFee;
+    const total = subtotal + packagingFee + serviceFee + deliveryFee;
 
-   setOrderSummary({
-     subtotal,
-     packagingFee,
-     serviceFee,
-     deliveryFee,
-     total,
-   });
- }
-
+    setOrderSummary({
+      subtotal,
+      packagingFee,
+      serviceFee,
+      deliveryFee,
+      total,
+    });
+  }
 
   useEffect(() => {
     if (cart) computeOrderSummary(cart);
@@ -84,21 +84,7 @@ const OrderSummary = () => {
         </li>
       </div>
 
-      <div className="mt-5 flex gap-3 flex-col items-center">
-        <span className="text-[15.35px] text-center font-bold">
-          You are #5,000 away from free delivery
-        </span>
-
-        <progress
-          className="progress w-full [--p:70] [&::-webkit-progress-bar]:bg-gray-200 [&::-webkit-progress-value]:bg-[#F7B232]"
-          value="70"
-          max="100"
-        ></progress>
-
-        <button className="btn text-[17px] btn-neutral py-6 mt-4 w-full rounded-lg lg:text-[20.46px] font-normal">
-          Payment Checkout
-        </button>
-      </div>
+      {showCheckoutButton && <CartSummaryButton />}
     </div>
   );
 };

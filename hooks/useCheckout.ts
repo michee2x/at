@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useCart } from './useCart';
 import { createWooOrder } from '@/lib/wordpress-checkout';
 import type { BillingInfo, CreateOrderResult } from '@/types/checkout';
+import { WooOrder } from '@/lib/user/types';
 
 export const useCheckout = () => {
   const { cart, userId, authToken, clearCart } = useCart();
@@ -50,10 +51,9 @@ export const useCheckout = () => {
 
       await clearCart();
 
-      // redirect to a success page (optional)
-      router.push('/order/success');
+      localStorage.setItem('last-order-id', result.order.id.toString());
 
-      return result;
+      router.push('/order/success/:' + result.order.id);
     } catch (err) {
       const msg = err instanceof Error ? err.message : 'Unexpected error';
       setError(msg);
