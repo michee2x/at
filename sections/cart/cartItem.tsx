@@ -9,6 +9,7 @@ import { RiDeleteBin6Line } from "react-icons/ri";
 import { DialogTrigger } from "@/components/ui/dialog";
 import { useCart } from "@/hooks/useCart";
 import { WooProductToCartItem } from "@/types";
+import { Heart, Trash2 } from "lucide-react";
 
 interface CartItemProps {
   item: WooProductToCartItem;
@@ -66,7 +67,7 @@ export default function CartItem({ item }: CartItemProps) {
           </div>
 
           <button className="btn btn-circle">
-            <CiHeart className="text-[24px]" />
+            <Heart className="text-[24px]" />
           </button>
 
           <DialogTrigger asChild>
@@ -74,7 +75,7 @@ export default function CartItem({ item }: CartItemProps) {
               onClick={() => setItemToDelete(item)}
               className="btn btn-circle"
             >
-              <RiDeleteBin6Line className="text-[20px]" />
+              <Trash2 className="text-[20px]" />
             </button>
           </DialogTrigger>
         </div>

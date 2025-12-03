@@ -43,7 +43,6 @@ export default async function OrdersPage() {
 
   return (
     <div className="container px-4 mx-auto pt-6 lg:px-6">
-      <h1 className="text-2xl font-bold mb-6">Your Orders</h1>
       <AnimatedTooltipPreview
         orders={orders}
       />
@@ -58,8 +57,8 @@ export function AnimatedTooltipPreview({
   orders: WooOrder[];
 }) {
   return (
-    <div className="mb-10 px-4 lg:px-14 overflow-hidden pt-24 lg:pt-28 w-full">
-      <div className="w-full py-4 lg:px-8 mt-4 mb-2 h-auto flex justify-between">
+    <div className="mb-10 px-4 overflow-hidden w-full">
+      <div className="w-full py-4 lg:px-8 mt-4 mb-2 h-auto flex flex-col lg:flex-row justify-between">
         <span className="text-[#343A40] text-[14px] lg:text-[21px] font-[SF Pro Display] font-[500]">
           Your orders for this month
         </span>

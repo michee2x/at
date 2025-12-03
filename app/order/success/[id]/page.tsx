@@ -45,8 +45,8 @@ export default async function OrderSuccess({
     return <div className="p-6">You have no orders yet.</div>;
   }
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-8 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-2xl mx-auto">
+    <div className="min-h-screen py-8 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-xl mt-5 lg:mt-0 mx-auto">
         {/* Header */}
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">

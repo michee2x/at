@@ -81,7 +81,9 @@ const CartPage = () => {
             <CartList />
           </div>
         </div>
-        <OrderSummary />
+        <div className="lg:w-1/2 flex lg:justify-center mt-10 lg:mt-0">
+          <OrderSummary />
+        </div>
         <DialogDeleteDemo />
       </div>
     </Dialog>

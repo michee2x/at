@@ -21,7 +21,7 @@ export default function CheckoutPage(){
         <CheckoutForm onContinue={handleContinue} loading={isPlacingOrder} />
         {error && <div className="text-sm text-red-500 mt-3">{error}</div>}
       </section>
-      <aside>
+      <aside className='w-full flex justify-center'>
         <OrderSummary showCheckoutButton={false} />
       </aside>
     </main>

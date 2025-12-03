@@ -227,7 +227,7 @@ export default function CheckoutForm({
         <button
           type="submit"
           disabled={!isValid || loading}
-          className="w-full bg-gray-200 text-gray-600 py-3 rounded disabled:opacity-60"
+          className="w-full bg-blue-600 disabled:bg-gray-200 disabled:text-gray-600 text-gray-50 py-3 rounded disabled:opacity-60"
         >
           {loading ? "Processing..." : "Continue"}
         </button>

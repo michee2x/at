@@ -96,7 +96,7 @@ export const AnimatedTooltip: React.FC<AnimatedTooltipProps> = ({ items }) => {
             )}
           </AnimatePresence>
 
-          <div className="relative bg-[#F4EDE1] !m-0 h-14 lg:h-16 w-14 lg:w-16 rounded-full border-2 border-white object-cover object-top !p-0 transition duration-500 group-hover:z-30 group-hover:scale-105">
+          <div className="relative border-2 border-black/50 overflow-hidden bg-[#F4EDE1] !m-0 h-14 lg:h-16 w-14 lg:w-16 object-cover rounded-lg object-top !p-0 transition duration-500 group-hover:z-30 group-hover:scale-105">
             <img
               onMouseMove={handleMouseMove}
               height={100}

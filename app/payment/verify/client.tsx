@@ -77,8 +77,8 @@ export default function VerifyPayment() {
 
   // Success UI
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-green-50 p-6">
-      <div className="bg-white shadow-lg rounded-2xl p-10 max-w-md w-full text-center">
+    <div className="flex font-display flex-col items-center lg:justify-center min-h-screen lg:p-6">
+      <div className=" lg:border-2 mt-10 lg:mt-0 border-gray-200 px-4 lg:shadow-lg rounded-2xl lg:p-10 max-w-md w-full text-center">
         <div className="w-40 h-40 mx-auto mb-8">
           <OrderSuccessfull />
         </div>
@@ -110,7 +110,7 @@ export default function VerifyPayment() {
 
         <a
           href="/dashboard/orders"
-          className="inline-block px-6 py-3 bg-green-600 text-white rounded-lg shadow hover:bg-green-700 transition"
+          className="inline-block px-6 py-3 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 transition"
         >
           View My Orders
         </a>
