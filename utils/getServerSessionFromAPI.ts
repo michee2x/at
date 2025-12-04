@@ -8,7 +8,7 @@ export async function getServerSessionFromAPI() {
 
   const res = await fetch(`${process.env.NEXTAUTH_URL}/api/auth/session`, {
     headers: {
-      cookie: cookieHeader ? `next-auth.session-token=${cookieHeader}` : "",
+      cookie: cookieHeader ? `${process.env.NEXTAUTH_URL === "http://localhost:3000" ? "next-auth.session-token":"__Secure-next-auth.session-token"}=${cookieHeader}` : "",
     },
     cache: "no-store",
   });
