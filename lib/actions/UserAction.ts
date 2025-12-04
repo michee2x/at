@@ -19,3 +19,8 @@ export async function getUserOrdersAction(userId: number) {
   const user = new User({ id: userId });
   return await user.getOrders();
 }
+
+export async function getUserOrderByIdAction(userId: number, orderId: number) {
+  const user = new User({ id: userId });
+  return await user.getOrderById(orderId);
+}
