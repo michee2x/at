@@ -6,7 +6,13 @@ import { useCart } from "@/hooks/useCart";
 import { Cart } from "@/types";
 import CartSummaryButton from "@/components/cart/CartSummaryButton";
 
-const OrderSummary = ({ showCheckoutButton = true }: { showCheckoutButton?:boolean}) => {
+export default function OrderSummary({
+  showCheckoutButton = true,
+  deliveryMethod = "deliver",
+}: {
+  showCheckoutButton?: boolean;
+  deliveryMethod?: "deliver" | "pickup";
+}) {
   const { cart, isLoading } = useCart();
 
   const [orderSummary, setOrderSummary] = useState({
@@ -26,8 +32,8 @@ const OrderSummary = ({ showCheckoutButton = true }: { showCheckoutButton?:boole
     }, 0);
 
     const packagingFee = 2000.05;
-    const serviceFee = 500.05;
-    const deliveryFee = 2000.05;
+    const serviceFee = deliveryMethod === "pickup" ? 0 : 500.05;
+    const deliveryFee = deliveryMethod === "pickup" ? 0 : 2000.05;
 
     const total = subtotal + packagingFee + serviceFee + deliveryFee;
 
@@ -42,43 +48,27 @@ const OrderSummary = ({ showCheckoutButton = true }: { showCheckoutButton?:boole
 
   useEffect(() => {
     if (cart) computeOrderSummary(cart);
-  }, [cart]);
+  }, [cart, deliveryMethod]);
 
-  // 👉 isLoading skeleton
   if (isLoading || !cart) return <OrderSummarySkeleton />;
 
   return (
-    <div className="lg:w-[463px] w-full border-[1.28px] rounded-[10.23px] p-[12.79px] border-[#F5F5F5] h-[481px]">
+    <div className="lg:w-[463px] w-full border-[1.28px] rounded-[10.23px] p-[12.79px]">
       <h1 className="text-[23.02px]">Order Summary</h1>
 
       <div className="text-[#343A40] flex flex-col lg:gap-3 mt-5">
-        {[
-          {
-            name: "Sub Total",
-            value: `#${orderSummary.subtotal.toLocaleString()}`,
-          },
-          {
-            name: "Packaging Fee",
-            value: `#${orderSummary.packagingFee.toLocaleString()}`,
-          },
-          {
-            name: "Service Fee",
-            value: `#${orderSummary.serviceFee.toLocaleString()}`,
-          },
-          {
-            name: "Delivery Fee",
-            value: `#${orderSummary.deliveryFee.toLocaleString()}`,
-          },
-        ].map(({ name, value }) => (
-          <li
-            key={name}
-            className="flex h-[55px] border-[#EFEFEF] border-y-[1.28px] py-[15.35px] px-[2.56px] justify-between items-center"
-          >
-            <h3 className="lg:text-[20.46px] text-[17px]">{name}</h3>
-            <span className="lg:text-[17.91px] text-[14px]">{value}</span>
-          </li>
-        ))}
-        <li className="flex h-[55px] border-[#EFEFEF] border-y-[1.28px] py-[15.35px] px-[2.56px] justify-between items-center text-[18px] lg:text-[23.02px]">
+        <SummaryRow name="Sub Total" value={orderSummary.subtotal} />
+        <SummaryRow name="Packaging Fee" value={orderSummary.packagingFee} />
+
+        {deliveryMethod !== "pickup" && (
+          <SummaryRow name="Service Fee" value={orderSummary.serviceFee} />
+        )}
+
+        {deliveryMethod !== "pickup" && (
+          <SummaryRow name="Delivery Fee" value={orderSummary.deliveryFee} />
+        )}
+
+        <li className="flex h-[55px] border-y-[1.28px] border-[#EFEFEF] py-[15.35px] justify-between items-center text-[18px] lg:text-[23.02px]">
           <h3>Total Fee</h3>
           <span>#{orderSummary.total.toLocaleString()}</span>
         </li>
@@ -87,6 +77,15 @@ const OrderSummary = ({ showCheckoutButton = true }: { showCheckoutButton?:boole
       {showCheckoutButton && <CartSummaryButton />}
     </div>
   );
-};
+}
 
-export default OrderSummary;
+function SummaryRow({ name, value }: { name: string; value: number }) {
+  return (
+    <li className="flex h-[55px] border-y-[1.28px] border-[#EFEFEF] py-[15.35px] justify-between items-center">
+      <h3 className="lg:text-[20.46px] text-[17px]">{name}</h3>
+      <span className="lg:text-[17.91px] text-[14px]">
+        #{value.toLocaleString()}
+      </span>
+    </li>
+  );
+}

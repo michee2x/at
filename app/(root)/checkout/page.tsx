@@ -1,29 +1,43 @@
-'use client';
+import React from "react";
+import type { BillingInfo } from "@/types/checkout";
+import { toNumber } from "@/utils/to-number";
+import { getUserDetailsAction } from "@/lib/actions/UserAction";
+import { getServerSessionFromAPI } from "@/utils/getServerSessionFromAPI";
+import { CheckoutClientWrapper } from "@/components/checkout/CheckoutClientWrapper";
 
-import React from 'react';
-import CheckoutForm from '@/components/checkout/CheckoutForm';
-import OrderSummary from '@/sections/cart/OrderSummary';
-import { useCheckout } from '@/hooks/useCheckout';
-import type { BillingInfo } from '@/types/checkout';
+export default async function CheckoutPage() {
+  // 1️⃣ Get session on server
+   const session = await getServerSessionFromAPI();
+ 
+   if (!session?.user) {
+     return <div className="p-6 text-red-600">You are not signed in</div>;
+   }
+ 
+   const customerId = toNumber(session.user.id);
 
-export default function CheckoutPage(){
-  const { isPlacingOrder, error, placeOrder} = useCheckout();
+  let defaultBilling: BillingInfo | undefined = undefined;
 
-  const handleContinue = async (values: BillingInfo & { deliveryMethod?: 'deliver' | 'pickup' }) => {
-    // you might show a confirmation modal or move to a payment step
-    // here we directly place the order
-    await placeOrder(values);
-  };
+  // 2️⃣ Fetch user billing on server
+  if (customerId) {
+    const user = await getUserDetailsAction(customerId);
+
+    if (user?.billing) {
+      defaultBilling = {
+        firstName: user.billing.first_name || "",
+        lastName: user.billing.last_name || "",
+        addressLine1: user.billing.address_1 || "",
+        addressLine2: user.billing.address_2 || "",
+        email: user.billing.email || "",
+        phone: user.billing.phone || "",
+        saveToProfile: false,
+        preferredAddress: true,
+      };
+    }
+  }
 
   return (
-    <main className="container font-display mx-auto py-8 grid grid-cols-1 md:grid-cols-2 gap-8">
-      <section className="w-full">
-        <CheckoutForm onContinue={handleContinue} loading={isPlacingOrder} />
-        {error && <div className="text-sm text-red-500 mt-3">{error}</div>}
-      </section>
-      <aside className='w-full flex justify-center'>
-        <OrderSummary showCheckoutButton={false} />
-      </aside>
+    <main className="mt-[20px] px-4 lg:px-[70px] min-h-[100vh]">
+      <CheckoutClientWrapper defaultBilling={defaultBilling} />
     </main>
   );
 }

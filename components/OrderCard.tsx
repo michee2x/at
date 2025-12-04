@@ -29,7 +29,10 @@ const OrderCard = ({ order }: { order: WooOrder | null }) => {
           )}
         </div>
         {order.status === "pending" && (
-          <Link href={`/order/success/${order.id}`} className="relative w-fit cursor-pointer text-[#F7B232] h-auto rounded-full border-2 border-white object-cover flex gap-1 items-center text-[16px] transition duration-500 hover:z-30 hover:scale-105">
+          <Link
+            href={`/order/success/${order.id}`}
+            className="relative w-fit cursor-pointer text-[#F7B232] h-auto rounded-full border-2 border-white object-cover flex gap-1 items-center text-[16px] transition duration-500 hover:z-30 hover:scale-105"
+          >
             <ClockArrowDown />
             <span>pending</span>
           </Link>
@@ -64,8 +67,9 @@ const OrderCard = ({ order }: { order: WooOrder | null }) => {
         <span className="text-[#343A40] text-[14.12px] lg:text-[15.24px] font-[500] font-[SF Pro Display]">
           #{order.total}
         </span>
-        <span className="text-[#343A40] text-[14.12px] lg:text-[15.24px] font-[500] font-[SF Pro Display]">
-          {order?.billing.address_2}
+        <span className="text-[#343A40] flex justify-end w-fit text-[14.12px] lg:text-[15.24px] font-[500] font-[SF Pro Display]">
+          {order?.billing.address_2.length > 26 ? `${order?.billing.address_2.slice(0, 26)}...` : order?.billing.address_2 ? order?.billing.address_2 :
+            "N/A"}
         </span>
       </div>
     </div>

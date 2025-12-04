@@ -1,5 +1,7 @@
 // lib/user/User.ts
+import { UserBillingInfo } from "@/types/checkout";
 import { WooOrder, UserOptions } from "./types";
+import { Customer } from "@/types";
 
 export class User {
   private id: number;
@@ -8,7 +10,7 @@ export class User {
   private consumerSecret: string;
 
   constructor(options: UserOptions) {
-    this.id = options.id || 8; // Default to user ID 8 for testing
+    this.id = options.id;
     this.wpUrl = process.env.WORDPRESS_URL! || "https://atlaze.com";
     this.consumerKey = process.env.WC_CONSUMER_KEY!;
     this.consumerSecret = process.env.WC_CONSUMER_SECRET!;
@@ -65,6 +67,48 @@ export class User {
       throw new Error(`Failed to load order with ID ${orderId}`);
     }
 
+    return res.json();
+  }
+
+  /**
+   * Update user details
+   */
+  async updateUser(data: UserBillingInfo): Promise<void> {
+    const url = `${this.wpUrl}/wp-json/wc/v3/customers/${this.id}`;
+    const res = await fetch(url, {
+      method: "PUT",
+      headers: {
+        Authorization: this.authHeader,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({billing: data}),
+      cache: "no-store",
+    });
+    if (!res.ok) {
+      console.error("User update error:", await res.text());
+      throw new Error("Failed to update user details");
+    }
+
+    return res.json();
+  }
+
+  /**
+   * Fetch user details
+   */
+  async getUserDetails(): Promise<Customer> {
+    const url = `${this.wpUrl}/wp-json/wc/v3/customers/${this.id}`;
+    const res = await fetch(url, {
+      method: "GET",
+      headers: {
+        Authorization: this.authHeader,
+        "Content-Type": "application/json",
+      },
+      cache: "no-store",
+    });
+    if (!res.ok) {
+      console.error("User fetch error:", await res.text());
+      throw new Error("Failed to fetch user details");
+    }
     return res.json();
   }
 }

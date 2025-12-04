@@ -23,11 +23,24 @@ export interface BillingInfo {
 firstName: string;
 lastName: string;
 addressLine2?: string;
+addressLine1?: string;
 saveToProfile?: boolean;
 preferredAddress?: boolean;
 email: string;
 phone: string;
+city?: string;
+state?: string;
+postcode?: string;
+country?: Country;
+deliveryMethod?: "deliver" | "pickup";
 }
+
+export type UserBillingInfo = Omit<BillingInfo, "addressLine1" | "addressLine2" | "firstName" | "lastName"> & {
+  first_name: string;
+  last_name: string;
+address_1?: string;
+address_2?: string;
+};
 
 
 export interface OrderLineItem {

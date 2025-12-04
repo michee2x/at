@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import type { BillingInfo } from "@/types/checkout";
@@ -8,13 +8,16 @@ import {
   checkoutSchema,
   type CheckoutSchema,
 } from "@/lib/schemas/checkout-form";
+import { useCheckout } from "@/hooks/useCheckout";
 
 interface CheckoutFormProps {
   defaultValues?: BillingInfo;
+  deliveryMethod: "deliver" | "pickup";
+  setDeliveryMethod: (m: "deliver" | "pickup") => void;
+  loading: boolean;
   onContinue: (
     values: BillingInfo & { deliveryMethod: "deliver" | "pickup" }
-  ) => Promise<void> | void;
-  loading?: boolean;
+  ) => void;
 }
 
 const FieldLabel: React.FC<{ children: React.ReactNode }> = ({ children }) => (
@@ -29,11 +32,13 @@ export default function CheckoutForm({
   defaultValues,
   onContinue,
   loading = false,
+  deliveryMethod,
+  setDeliveryMethod
 }: CheckoutFormProps) {
   const { register, handleSubmit, formState, watch } = useForm<CheckoutSchema>({
     resolver: zodResolver(checkoutSchema),
     defaultValues: {
-      deliveryMethod: "deliver",
+      deliveryMethod: deliveryMethod ?? "deliver",
       firstName: defaultValues?.firstName ?? "",
       lastName: defaultValues?.lastName ?? "",
       addressLine2: defaultValues?.addressLine2 ?? "",
@@ -61,13 +66,21 @@ export default function CheckoutForm({
     });
   });
 
+useEffect(() => {
+  if (setDeliveryMethod) {
+    setDeliveryMethod(selectedDelivery);
+  }
+}, [selectedDelivery]);
+
+
   return (
-    <form onSubmit={submit} className="space-y-6 px-4">
+    <form onSubmit={submit} className="space-y-6">
       <h2 className="text-lg font-semibold">
         How would you like to get your order?
       </h2>
 
       <div className="flex gap-3">
+        {/* Deliver */}
         <label
           className={`flex-1 border rounded-lg p-4 cursor-pointer ${
             selectedDelivery === "deliver" ? "ring-2 ring-black" : ""
@@ -89,6 +102,7 @@ export default function CheckoutForm({
           </div>
         </label>
 
+        {/* Pickup */}
         <label
           className={`flex-1 border rounded-lg p-4 cursor-pointer ${
             selectedDelivery === "pickup" ? "ring-2 ring-black" : ""
@@ -235,3 +249,26 @@ export default function CheckoutForm({
     </form>
   );
 }
+
+//   defaultBilling,
+// }: {
+//   defaultBilling: BillingInfo | undefined;
+// }) => {
+//   const { isPlacingOrder, error, placeOrder } = useCheckout();
+//   const handleContinue = async (
+//     values: BillingInfo & { deliveryMethod?: "deliver" | "pickup" }
+//   ) => {
+//     await placeOrder(values);
+//   };
+//   return (
+//     <section className="w-full">
+//       <CheckoutForm
+//         onContinue={handleContinue}
+//         loading={isPlacingOrder}
+//         defaultValues={defaultBilling}
+//       />
+
+//       {error && <div className="text-sm text-red-500 mt-3">{error}</div>}
+//     </section>
+//   );
+// };

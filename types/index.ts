@@ -168,3 +168,40 @@ export type WooProductToCartItem = Pick<
 > & {
   quantity: number;
 };
+
+export type Customer = {
+  id: number;
+  email: string;
+  username: string;
+  role: string;
+
+  first_name?: string;
+  last_name?: string;
+
+  billing: {
+    first_name: string;
+    last_name: string;
+    address_1: string;
+    address_2: string;
+    city: string;
+    phone: string;
+    email: string;
+  };
+
+  shipping: {
+    first_name: string;
+    last_name: string;
+    address_1: string;
+    address_2: string;
+    city: string;
+    phone: string;
+  };
+
+  avatar_url: string;
+
+  meta_data?: Array<{
+    id: number;
+    key: string;
+    value: string;
+  }>;
+};

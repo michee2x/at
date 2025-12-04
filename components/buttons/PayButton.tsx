@@ -29,7 +29,7 @@ const PayButton = ({orderDetails}:{orderDetails: WooOrder}) => {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             orderId: orderDetails.id,
-            amount: parseFloat(orderDetails.total) * 100, // Convert to kobo
+            amount: Math.round(parseFloat(orderDetails.total) * 100), // Convert to kobo
             email: orderDetails.billing.email,
             currency: orderDetails.currency,
           }),

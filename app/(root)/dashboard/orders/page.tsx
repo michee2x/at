@@ -1,31 +1,28 @@
 // app/orders/page.tsx
-
 import { User } from "@/lib/user/User";
-import { groupOrderItems } from "@/lib/groupOrderItems";
-import { getServerSession } from "next-auth/next";
-import { AnimatedTooltip } from "@/components/ui/animated-tooltip";
+import { getUserOrdersAction } from "@/lib/actions/UserAction";
 import { WooOrder } from "@/lib/user/types";
 import { toNumber } from "@/utils/to-number";
 import OrderCard from "@/components/OrderCard";
+import { AnimatedTooltip } from "@/components/ui/animated-tooltip";
+import { getServerSessionFromAPI } from "@/utils/getServerSessionFromAPI";
+
 
 export default async function OrdersPage() {
-  const session = await getServerSession();
+  const session = await getServerSessionFromAPI();
+
   if (!session?.user) {
-    return (
-      <div className="p-6 text-red-600">
-        You are not signed in
-      </div>
-    );
+    return <div className="p-6 text-red-600">You are not signed in</div>;
   }
-    
+
+  console.log("this is the session user: ", session);
+
   const customerId = toNumber(session.user.id);
 
-  const user = new User({ id: customerId });
-
-  let orders = [];
+  let orders: WooOrder[] = [];
 
   try {
-    orders = await user.getOrders();
+    orders = await getUserOrdersAction(customerId);
   } catch (err) {
     console.error(err);
     return (
@@ -39,25 +36,18 @@ export default async function OrdersPage() {
     return <div className="p-6">You have no orders yet.</div>;
   }
 
-  console.log("this are the orders: ", orders)
+  console.log("these are the orders: ", orders);
 
   return (
     <div className="container px-4 mx-auto pt-6 lg:px-6">
-      <AnimatedTooltipPreview
-        orders={orders}
-      />
+      <AnimatedTooltipPreview orders={orders} />
     </div>
   );
 }
 
-
-export function AnimatedTooltipPreview({
-  orders
-}: {
-  orders: WooOrder[];
-}) {
+export function AnimatedTooltipPreview({ orders }: { orders: WooOrder[] }) {
   return (
-    <div className="mb-10 px-4 overflow-hidden w-full">
+    <div className="mb-10 font-poppins px-4 w-full">
       <div className="w-full py-4 lg:px-8 mt-4 mb-2 h-auto flex flex-col lg:flex-row justify-between">
         <span className="text-[#343A40] text-[14px] lg:text-[21px] font-[SF Pro Display] font-[500]">
           Your orders for this month
@@ -68,13 +58,10 @@ export function AnimatedTooltipPreview({
         </span>
       </div>
       <div className="min-w-full lg:p-4 grid-cols-1 lg:grid-cols-3 grid gap-10 h-auto">
-        {orders.map((order, idx) => {
-          return (
-            <OrderCard key={idx} order={order} />
-          );
-        })}
+        {orders.map((order, idx) => (
+          <OrderCard key={idx} order={order} />
+        ))}
       </div>
     </div>
   );
 }
-

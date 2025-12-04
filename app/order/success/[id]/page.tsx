@@ -81,11 +81,11 @@ export default async function OrderSuccess({
                 {orderDetails.billing.email}
               </span>
             </div>
-            <div className="flex justify-between items-center pt-3 border-t border-gray-200">
+            <div className="flex flex-wrap justify-between items-center pt-3 border-t border-gray-200">
               <span className="text-lg font-semibold text-gray-900">
                 Total Amount:
               </span>
-              <span className="text-2xl font-bold text-indigo-600">
+              <span className="text-2xl text-nowrap font-bold text-indigo-600">
                 {orderDetails.currency}{" "}
                 {parseFloat(orderDetails.total).toLocaleString()}
               </span>
