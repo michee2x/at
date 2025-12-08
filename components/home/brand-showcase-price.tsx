@@ -30,7 +30,7 @@ const BrandShowCasePrice = ({
     >
       <div className="w-full lg:px-3 lg:flex-1 h-auto flex items-center justify-center">
         <div className="flex-1 grid grid-cols-2 md:grid-cols-2 xl:grid-cols-3 gap-2.5 xl:flex lg:h-full lg:flex-col lg:place-content-between">
-          {[product.slice(0, 3), product.slice(0, 3)].map((arr, idx) => {
+          {[product.slice(0, 3), product.slice(3, 6)].map((arr, idx) => {
             return (
               <div
                 key={`${idx}`}

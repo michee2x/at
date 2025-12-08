@@ -1,20 +1,19 @@
 import { NextResponse } from "next/server";
 
 export async function GET(req: Request) {
-const {searchParams} = new URL(req.url);
-const {parent} = Object.fromEntries(searchParams.entries());
-// if(parent === "0"){
-// console.log("REQUESET IS MADEEEEEEEEEEEEEEEEEEEEEEEEEE TO:")
-//   console.log("\n\n\n\n\n\n\n\n\n\n\n\n\n\nREQUESET IS MADEEEEEEEEEEEEEEEEEEEEEEEEEE TO:", parent,"\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
-// }
-  const url = `${process.env.WC_API_URL || "https://atlaze.com/"}wp-json/wc/v3/products/categories?parent=${parent}`;
+  const { searchParams } = new URL(req.url);
+  const parent = searchParams.get("parent") || "0"; // default to 0
 
-  //https://atlaze.com/wp-json/wc/v3/products/categories?parent=118
-  //https://atlaze.com/wp-json/wc/v3/products/categories?per_page=100&parent=47
+  const url = `https://atlaze.com/wp-json/wc/v3/products/categories?parent=${parent}`;
   const key = process.env.WC_CONSUMER_KEY!;
   const secret = process.env.WC_CONSUMER_SECRET!;
 
   try {
+    console.log("Fetching Categories from WooCommerce API:", url);
+    if (!key || !secret) {
+      throw new Error(`Missing WooCommerce API credentials`);
+    }
+
     const res = await fetch(url, {
       headers: {
         Authorization:

@@ -5,16 +5,6 @@ import Link from "next/link";
 import React, { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import { FiEdit } from "react-icons/fi";
-import { MdRefresh, MdLogout } from "react-icons/md";
-import { GiClothes, GiComb } from "react-icons/gi";
-import { LuPalette } from "react-icons/lu";
-import { PiPlugBold, PiBaby } from "react-icons/pi";
-import { RiPaintBrushLine } from "react-icons/ri";
-import { IoDiamondOutline } from "react-icons/io5";
-import { LiaToolsSolid } from "react-icons/lia";
-import { PiBooksDuotone } from "react-icons/pi";
-import { MdQueueMusic } from "react-icons/md";
-import { GoArrowUpRight } from "react-icons/go";
 import ParentCategories from "./ParentCategories";
 import { WooCategory } from "@/types";
 import CategoryInfo from "./CategoryInfo";
@@ -50,20 +40,6 @@ const Sidebar = () => {
     const update: queryType = { ...queryData, catId, catTitle };
     setQueryData(update);
   }, [category]);
-
-  const navItems = [
-    { src: <GiClothes />, navText: "FASHION" },
-    { src: <GiComb />, navText: "BEAUTY & WELLNESS" },
-    { src: <LuPalette />, navText: "ART & CRAFTS" },
-    { src: <PiPlugBold />, navText: "ELECTRONICS" },
-    { src: <RiPaintBrushLine />, navText: "HOME & LIVING" },
-    { src: <RiPaintBrushLine />, navText: "FOOD & DRINKS" },
-    { src: <IoDiamondOutline />, navText: "JEWELLRIES" },
-    { src: <LiaToolsSolid />, navText: "INDUSTRIAL SUPPLIES" },
-    { src: <PiBaby />, navText: "BABY & TODDLER" },
-    { src: <PiBooksDuotone />, navText: "BOOKS" },
-    { src: <MdQueueMusic />, navText: "MUSICAL INSTRUMENTS" },
-  ];
 
   // ⭐ When hovering nav
   const openPopupWithDelay = (category: WooCategory) => {
@@ -152,6 +128,8 @@ const getInitials = (name: string | null | undefined): string => {
                 <FiEdit />
               </div>
             </div>
+            {/* LOGOUT */}
+            {/* <LogoutButton /> */}
           </div>
 
           {/* INPUT BOX */}
@@ -182,9 +160,6 @@ const getInitials = (name: string | null | undefined): string => {
             />
           </div>
         </div>
-
-        {/* LOGOUT */}
-        <LogoutButton />
       </nav>
 
       {/* BACKDROP */}

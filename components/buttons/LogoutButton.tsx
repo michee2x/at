@@ -12,7 +12,7 @@ const LogoutButton = () => {
   return (
     <div
       onClick={handleLogout}
-      className="w-full h-auto px-4 py-6 absolute lg:relative bottom-2 text-[#2B2B2B] hover:text-[#D68A36] flex items-center gap-1 cursor-pointer"
+      className="w-full h-auto px-4 pt-6 bottom-2 text-[#2B2B2B] hover:text-[#D68A36] flex items-center gap-1 cursor-pointer"
     >
       <span className="text-[18px] lg:text-[19px]">
         <MdLogout />

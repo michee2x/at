@@ -10,10 +10,9 @@ html,
 body {
   overflow-x: hidden;
 } */
-
+ 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  color-scheme: light;
 }
 
 /* override radix inline transforms for your full-width tooltip */
@@ -46,20 +45,6 @@ body {
 .helvetic {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
-
-/* .scrollcat {
-  display: inline-flex;
-  overflow-x: scroll;
-  scrollbar-width: none;
-
-  @media (prefers-reduced-motion: no-preference) {
-    scroll-behavior: smooth;
-  }
-
-  &::-webkit-scrollbar {
-    display: none;
-  }
-} */
 
 body {
   background: var(--background);

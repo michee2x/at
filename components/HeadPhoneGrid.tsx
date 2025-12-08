@@ -1,12 +1,17 @@
 "use client";
-import { useProducts } from "@/hooks/useProducts";
+import { useProducts } from "@/hooks/wc/useProducts";
 import HeadphoneCard from "./HeadPhoneCard"
+import { WooProduct } from "@/types";
 
 export default function HeadphoneGrid() {
-  const { products, loading, error } = useProducts({
-    category: 51,
-    perPage: 12
-  });
+    const { data, isLoading, error } = useProducts({
+      per_page: 12,
+      category: 51,
+    });
+  
+      const products: WooProduct[] = Array.isArray(data)
+          ? data
+          : (data?.products as WooProduct[]) ?? [];
   console.log("this are the headphones: ", products);
   return (
     <div className=" w-full mt-16 lg:min-h-screen px-2 flex flex-col items-center py-10">
@@ -39,7 +44,7 @@ export default function HeadphoneGrid() {
           <h1>off | Wishlist now</h1>
         </div>
       </h1>
-      {loading ? (
+      {isLoading ? (
         <div className="grid w-full lg:flex justify-between h-auto grid-cols-2 gap-2 mb-3 animate-pulse">
           {[...Array(6)].map((_, i) => (
             <div

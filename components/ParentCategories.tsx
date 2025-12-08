@@ -54,12 +54,12 @@ const ParentCategories = ({
           href={`/category/?cat=${c.id}&title=${c.name}`}
           onMouseEnter={() => openPopupWithDelay(c)}
           onMouseLeave={closePopupWithDelay}
-          className="w-full text-[#2B2B2B] hover:text-[#9747FF] cursor-pointer h-auto flex items-center justify-between"
+          className="w-full text-[#2B2B2B] capitalize hover:text-[#9747FF] cursor-pointer h-auto flex items-center justify-between"
         >
           <span className="text-[15px] lg:text-[16px]">
             {c.name?.length > 20
-              ? `${c.name.slice(0, 20).replace("amp;", "").toUpperCase()}...`
-              : c.name.replace("amp;", "").toUpperCase()}
+              ? `${c.name.slice(0, 20).replace("amp;", "").toLowerCase()}...`
+              : c.name.replace("amp;", "").toLowerCase()}
           </span>
           <FaChevronRight className="text-xl" />
         </Link>

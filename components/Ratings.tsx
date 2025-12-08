@@ -9,7 +9,7 @@ export function Ratings({ rating = 0 }: { rating?: number }) {
   const totalHalves = Math.round(safeRating * 2); // e.g. 4.5 → 9
 
   return (
-    <div className="rating rating-xs lg:rating-sm rating-half">
+    <div className="rating rating-xs rating-half">
       <input type="radio" name={`rating-${rating}`} className="rating-hidden" />
 
       {Array.from({ length: 10 }).map((_, i) => {

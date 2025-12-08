@@ -1,40 +1,53 @@
-"use client"
+"use client";
 
+import { cn } from "@/lib/utils";
 import { WooProduct } from "@/types";
+import truncate from "truncate-html";
 
-export function ProductDescription({ product, shorten = false }: { product: WooProduct, shorten?:boolean }) {
+interface ProductDescriptionProps {
+  product: WooProduct;
+  shorten?: boolean;
+  title?: string;
+  showTitle?: boolean;
+  sliceLength?: number;
+  className?: string;
+}
+
+export function ProductDescription({
+  product,
+  shorten = false,
+  title = "Details",
+  showTitle = true,
+  sliceLength = 401,
+  className,
+}: ProductDescriptionProps) {
+  // Choose which description to use
+  const rawDescription = product.short_description || product.description || "";
+
+  // Truncate HTML safely if shorten is true
+  const content = shorten
+    ? truncate(rawDescription, sliceLength, { ellipsis: "..." })
+    : rawDescription;
+
   return (
-    <section className="mt-8 lg:pt-10 px-2 p-5" itemProp="description">
-      <h2 className="lg:text-3xl text-xl mb-6 font-semibold">Details</h2>
+    <section
+      className={cn("mt-8 lg:pt-10 px-2 p-5", className)}
+      itemProp="description"
+    >
+      {showTitle && (
+        <h2 className="lg:text-3xl text-xl mb-6 font-semibold">{title}</h2>
+      )}
       <div className="mt-2 prose max-w-none">
-        {/* short_description often contains HTML; if so, it's safer to sanitize.
-            Here we simply render as HTML. If product.short_description is untrusted,
-            sanitize before using dangerouslySetInnerHTML. */}
-        {product.short_description ? (
+        {content ? (
           <div
             dangerouslySetInnerHTML={{
-              __html: shorten
-                ? `${product.short_description.slice(0, 401)}...`
-                : product.short_description,
-            }}
-          />
-        ) : product.description ? (
-          <div
-            dangerouslySetInnerHTML={{
-              __html: shorten
-                ? `${product.description.slice(0, 401)}...`
-                : product.description,
+              __html: content,
             }}
           />
         ) : (
           <p>No description available.</p>
         )}
       </div>
-
-      {/* <p className="mt-4">Colour Shown: Fleet/...</p>
-      <p>Style: DV7421-001</p>
-      <p className="mt-4">Declaration of Importer: Direct import by the individual customer</p>
-      <p>Marketed by: Nike Global Trading B.V. Singapore Branch</p> */}
     </section>
   );
 }

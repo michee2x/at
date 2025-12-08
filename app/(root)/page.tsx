@@ -25,48 +25,6 @@ export default function Home() {
           Africa
         </h1>
 
-        <div className="w-full hidden h-auto lg:order-2">
-          <div className="w-full pl-4 h-auto">
-            <ul className="list-none w-full gap-[16px] scrollcat lg:justify-center items-center mt-5 flex">
-              {categories && categories?.length > 0 ? (
-                categories?.map((cat, idx) => {
-                  return (
-                    <Link
-                      key={cat?.name}
-                      className={`px-[6px] flex-nowrap lg:px-[8px] flex items-center justify-center ${
-                        idx !== 0 ? "border-[#C4C4C4]" : "border-[#9747FF]"
-                      } py-[12px] lg:py-[16px] border-[1px] rounded-[24px] w-fit h-[39px] `}
-                      href="/"
-                    >
-                      <span
-                        className={`font-poppins ${
-                          idx !== 0 ? "text-[#222222]" : "text-[#9747FF]"
-                        }  tracking-[-0.7%] text-nowrap leading-[100%] align-middle text-center text-[12px] lg:text-[15px]`}
-                      >
-                        {cat?.name?.replace("amp;", "")}
-                      </span>
-                    </Link>
-                  );
-                })
-              ) : (
-                <CategoryButton />
-              )}
-            </ul>
-          </div>
-
-          <div className="w-full mt-8 h-auto px-4">
-            <CategoryCarousel />
-          </div>
-        </div>
-
-        {/* <CategoryList
-          banner="/home/section%20three/6939971f273e65575e37ad7fdf4efc69b5aec528%20(1).png"
-          bannerText="EXPLORE THE BEST OF AFRICAN FASHION"
-          reverseVertically={true}
-          category={22}
-          className="lg:order-3"
-        /> */}
-
         <ProductList
           banner="/home/section%20three/6939971f273e65575e37ad7fdf4efc69b5aec528%20(1).png"
           bannerText="EXPLORE THE BEST OF AFRICAN FASHION"
@@ -80,7 +38,7 @@ export default function Home() {
           bannerText="BEAUTY PRODUCTS MADE FOR THE AFRICAN WOMAN"
           reverseVertically={true}
           reverseHorizontally={true}
-          category={21}
+          category={100}
           className="lg:order-6 mt-16"
           newProduct={true}
         />

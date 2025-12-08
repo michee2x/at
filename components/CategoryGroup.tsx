@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa6";
+import Link from "next/link";
 
 interface CategoryImage {
   id?: number;
@@ -77,9 +78,12 @@ export default function CategoryGroup({
         ) : (
           <div className="grid grid-cols-2 gap-2 mb-3">
             {items.map((item, idx) => (
-              <div
+              <Link
                 key={`${item.id}-${idx}`}
                 className="flex flex-col items-start space-y-1"
+                href={`/category/?cat=${item.id}&title=${item.name}`}
+                target="_blank"
+                rel="noopener noreferrer"
               >
                 <div className="relative w-full aspect-square rounded-lg overflow-hidden">
                   <Image
@@ -95,7 +99,7 @@ export default function CategoryGroup({
                     ? `${item.name.replace("amp;", "")?.slice(0, 19)}...`
                     : item.name.replace("amp;", "")}
                 </p>
-              </div>
+              </Link>
             ))}
           </div>
         )}

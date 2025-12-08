@@ -134,6 +134,7 @@ export interface WooProduct {
   id: number;
   name: string;
   slug: string;
+  permalink?: string;
   description: string;
   short_description: string;
   sku: string;
@@ -144,7 +145,11 @@ export interface WooProduct {
   brands: WooTerm[];
   tags: WooTerm[];
   images: WooProductImage[];
-  rating_count:number;
+  rating_count: number;
+  average_rating?: string;      // added for rating display
+  total_sales?: number;        // added for "purchased" count
+  stock_status?: "instock" | "outofstock" | "onbackorder"; // added
+  meta_data?: { key: string; value: any }[]; // for video thumbnails etc
   related_ids: number[];
 }
 

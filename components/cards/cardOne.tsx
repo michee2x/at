@@ -2,6 +2,8 @@ import { WooProduct } from "@/types";
 import Image from "next/image";
 import React from "react";
 import { GoArrowUpRight } from "react-icons/go";
+import { ProductDescription } from "../category/productDesc";
+import Link from "next/link";
 
 const CardOne = ({
   data,
@@ -13,8 +15,11 @@ const CardOne = ({
   newproduct?: boolean;
 }) => {
   return (
-    <div
-      className={`carousel-item lg:w-[230px] ${
+    <Link
+      target="_blank"
+      rel="noopener noreferrer"
+      href={`/product/${data.slug}`}
+      className={`carousel-item cursor-pointer lg:w-[230px] ${
         fillViewport ? "w-full" : "w-[240px]"
       } h-[300px] lg:h-fit gap-[4px] flex flex-col`}
     >
@@ -45,9 +50,15 @@ const CardOne = ({
         </div>
       </div>
       <span className="text-[12px] text-black/50 font-poppins">
-        Made to cater for the finest african hair to nurture your roots and
-        scalps. Best for all hair types...
+        <ProductDescription
+          className="mt-0 p-0 lg:pt-0"
+          sliceLength={60}
+          showTitle={false}
+          shorten
+          product={data}
+        />
       </span>
+
       <div className="flex items-center gap-2">
         <div className="w-[14.5px] relative h-[14.5px] lg:w-[20px] lg:h-[20px]">
           <Image
@@ -61,7 +72,7 @@ const CardOne = ({
           {data?.price}
         </span>
       </div>
-    </div>
+    </Link>
   );
 };
 

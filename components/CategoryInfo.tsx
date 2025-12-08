@@ -82,13 +82,13 @@ const CategoryInfo = ({ category }: { category: WooCategory }) => {
                 no image
               </div>
             )}
-            <span className="text-xs text-center text-wrap items-center justify-center p-1 text-black/80 sm:text-sm line-clamp-2">
+            <span className="text-xs capitalize text-center text-wrap items-center justify-center p-1 text-black/80 sm:text-sm line-clamp-2">
               {sub.name?.length > 20
                 ? `${sub.name
                     .slice(0, 20)
                     .toLowerCase()
                     .replace("amp;", "")}...`
-                : sub.name.toLowerCase().replace("amp;", "")}
+                : sub.name.replace("amp;", "")}
             </span>
           </Link>
         ))}

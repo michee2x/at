@@ -42,7 +42,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${redHatDisplay.variable} ${poppins.variable} antialiased`}
+        className={`${geistSans.variable} scheme-light light ${geistMono.variable} ${redHatDisplay.variable} ${poppins.variable} antialiased`}
       >
         <Providers>{children}</Providers>
       </body>

@@ -76,13 +76,15 @@ async function fetchProduct(productSlug: string): Promise<WooProduct> {
 export async function generateMetadata({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }): Promise<Metadata> {
   try {
-    const product = await fetchProduct(params.id);
+    const { id } = await params;
+    const product = await fetchProduct(id);
 
     const title = product.name ? `${product.name}` : "Product | Atlaze";
-    const description = product.short_description || product.description || "Product on Atlaze";
+    const description =
+      product.short_description || product.description || "Product on Atlaze";
     const image = product.images?.[0]?.src ?? null;
 
     return {
@@ -103,8 +105,9 @@ export async function generateMetadata({
 /* -------------------------
    Page (server component)
    ------------------------- */
-export default async function ProductPage({ params }: { params: { id: string } }) {
-  const slug = params.id;
+export default async function ProductPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  const slug = id;
 
   let product: WooProduct | null = null;
   try {
