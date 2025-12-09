@@ -13,6 +13,8 @@ import { ProductDescription } from "@/components/category/productDesc";
 import ProductMediaGallery from "@/components/ProductMediaGallery";
 import ProductSuggestionList from "@/components/productdetails/suggestionCard";
 
+export const revalidate = 3600; // Revalidate this page every hour
+
 //https://atlaze.com/wp-json/wc/v3/products?slug=noise-buds-n1
 //https://atlaze.com/wp-json/wc/v3/products?slug=noise-buds-n1
 /**
@@ -54,9 +56,7 @@ async function fetchProduct(productSlug: string): Promise<WooProduct> {
     headers: {
       Authorization: authHeader,
       "Content-Type": "application/json",
-    },
-    // Optional: ISR (Incremental Static Regeneration)
-    next: { revalidate: 3600 },
+    }
   });
 
   if (res.status === 404) throw new Error("Not found");
@@ -139,7 +139,7 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
           <li>/</li>
           <li>
             <Link
-              href={`/category?cat=${product?.categories[0]?.id}`}
+              href={`/categories?cat=${product?.categories[0]?.id}`}
               target="_blank"
               rel="noopener noreferrer"
               className="hover:text-[#ab23e0] text-[#cb47ff] cursor-pointer hover:underline"
@@ -309,9 +309,9 @@ async function ProductSuggestion({ relatedIds }: { relatedIds?: number[] }) {
 
   // Fetch all related products in parallel
   const productPromises = relatedIds.map(async (id) => {
+    
     const res = await fetch(
-      `${base}/products/${id}?consumer_key=${key}&consumer_secret=${secret}`,
-      { next: { revalidate: 3600 } }
+      `${base}/products/${id}?consumer_key=${key}&consumer_secret=${secret}`
     );
 
     if (!res.ok) return null;

@@ -129,6 +129,31 @@ export interface WooTerm {
   description?: string;
 }
 
+export type WooProductMetaValue =
+  | string
+  | number
+  | WooMinMaxMeta
+  | WooWholesaleMeta
+  | number[];
+
+export interface WooMinMaxMeta {
+  min_quantity: string;
+  max_quantity: string;
+}
+
+export interface WooWholesaleMeta {
+  enable_wholesale: string;
+  price: string;
+  quantity: string;
+}
+
+export interface WooProductMeta {
+  id?: number;
+  key: string;
+  value: WooProductMetaValue;
+}
+
+
 // Main Product
 export interface WooProduct {
   id: number;
@@ -149,7 +174,7 @@ export interface WooProduct {
   average_rating?: string;      // added for rating display
   total_sales?: number;        // added for "purchased" count
   stock_status?: "instock" | "outofstock" | "onbackorder"; // added
-  meta_data?: { key: string; value: any }[]; // for video thumbnails etc
+  meta_data?: WooProductMeta[]; // for video thumbnails etc
   related_ids: number[];
 }
 

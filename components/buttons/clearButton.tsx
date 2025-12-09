@@ -28,7 +28,7 @@ const ClearButton: React.FC<ClearButtonProps> = ({
 
   return (
     <Button
-      className={cn("w-full hover:bg-white",className)}
+      className={cn("w-full hover:bg-white dark:bg-white",className)}
       variant="outline"
       onClick={handleClear}
     >

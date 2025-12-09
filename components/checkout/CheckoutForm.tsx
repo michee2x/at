@@ -9,6 +9,7 @@ import {
   type CheckoutSchema,
 } from "@/lib/schemas/checkout-form";
 import { useCheckout } from "@/hooks/useCheckout";
+import { Mail, Phone } from "lucide-react";
 
 interface CheckoutFormProps {
   defaultValues?: BillingInfo;
@@ -33,7 +34,7 @@ export default function CheckoutForm({
   onContinue,
   loading = false,
   deliveryMethod,
-  setDeliveryMethod
+  setDeliveryMethod,
 }: CheckoutFormProps) {
   const { register, handleSubmit, formState, watch } = useForm<CheckoutSchema>({
     resolver: zodResolver(checkoutSchema),
@@ -66,24 +67,31 @@ export default function CheckoutForm({
     });
   });
 
-useEffect(() => {
-  if (setDeliveryMethod) {
-    setDeliveryMethod(selectedDelivery);
-  }
-}, [selectedDelivery]);
+  useEffect(() => {
+    if (setDeliveryMethod) {
+      setDeliveryMethod(selectedDelivery);
+    }
+  }, [selectedDelivery]);
 
+  const inputBaseClasses =
+    "w-full border rounded-lg px-3 py-2 text-sm transition-all outline-none focus:ring-2 focus:ring-blue-400";
 
   return (
-    <form onSubmit={submit} className="space-y-6">
-      <h2 className="text-lg font-semibold">
+    <form
+      onSubmit={submit}
+      className="space-y-8 bg-white p-6 rounded-lg shadow-md"
+    >
+      <h2 className="text-xl font-semibold mb-4">
         How would you like to get your order?
       </h2>
 
-      <div className="flex gap-3">
+      <div className="flex gap-4">
         {/* Deliver */}
         <label
-          className={`flex-1 border rounded-lg p-4 cursor-pointer ${
-            selectedDelivery === "deliver" ? "ring-2 ring-black" : ""
+          className={`flex-1 border rounded-lg p-4 cursor-pointer transition-all ${
+            selectedDelivery === "deliver"
+              ? "ring-2 ring-blue-600"
+              : "hover:ring-1 hover:ring-gray-300"
           }`}
         >
           <div className="flex items-center gap-3">
@@ -91,7 +99,7 @@ useEffect(() => {
               type="radio"
               value="deliver"
               {...register("deliveryMethod")}
-              className="w-4 h-4"
+              className="w-4 h-4 accent-blue-600"
             />
             <div>
               <div className="font-medium">Deliver It</div>
@@ -104,8 +112,10 @@ useEffect(() => {
 
         {/* Pickup */}
         <label
-          className={`flex-1 border rounded-lg p-4 cursor-pointer ${
-            selectedDelivery === "pickup" ? "ring-2 ring-black" : ""
+          className={`flex-1 border rounded-lg p-4 cursor-pointer transition-all ${
+            selectedDelivery === "pickup"
+              ? "ring-2 ring-blue-600"
+              : "hover:ring-1 hover:ring-gray-300"
           }`}
         >
           <div className="flex items-center gap-3">
@@ -113,7 +123,7 @@ useEffect(() => {
               type="radio"
               value="pickup"
               {...register("deliveryMethod")}
-              className="w-4 h-4"
+              className="w-4 h-4 accent-blue-600"
             />
             <div>
               <div className="font-medium">Pickup</div>
@@ -123,17 +133,17 @@ useEffect(() => {
         </label>
       </div>
 
-      <hr />
+      <hr className="my-6" />
 
       <div>
         <FieldLabel>Enter your name and address:</FieldLabel>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <input
               {...register("firstName")}
               placeholder="First Name"
-              className={`w-full border rounded px-3 py-2 text-sm ${
-                errors.firstName ? "border-red-500" : ""
+              className={`${inputBaseClasses} ${
+                errors.firstName ? "border-red-500" : "border-gray-300"
               }`}
             />
             {errors.firstName && (
@@ -147,8 +157,8 @@ useEffect(() => {
             <input
               {...register("lastName")}
               placeholder="Last Name"
-              className={`w-full border rounded px-3 py-2 text-sm ${
-                errors.lastName ? "border-red-500" : ""
+              className={`${inputBaseClasses} ${
+                errors.lastName ? "border-red-500" : "border-gray-300"
               }`}
             />
             {errors.lastName && (
@@ -162,8 +172,8 @@ useEffect(() => {
             <input
               {...register("addressLine2")}
               placeholder="Address Line 2"
-              className={`w-full border rounded px-3 py-2 text-sm ${
-                errors.addressLine2 ? "border-red-500" : ""
+              className={`${inputBaseClasses} ${
+                errors.addressLine2 ? "border-red-500" : "border-gray-300"
               }`}
             />
             {errors.addressLine2 && (
@@ -178,7 +188,7 @@ useEffect(() => {
               <input
                 {...register("saveToProfile")}
                 type="checkbox"
-                className="w-4 h-4"
+                className="w-4 h-4 accent-blue-600"
               />
               <span className="text-sm">Save this address to my profile</span>
             </label>
@@ -187,7 +197,7 @@ useEffect(() => {
               <input
                 {...register("preferredAddress")}
                 type="checkbox"
-                className="w-4 h-4"
+                className="w-4 h-4 accent-blue-600"
               />
               <span className="text-sm">Make this my preferred address</span>
             </label>
@@ -196,17 +206,20 @@ useEffect(() => {
       </div>
 
       <div>
-        <FieldLabel>What&apos;s your contact information?</FieldLabel>
-        <div className="space-y-3">
-          <div>
-            <input
-              {...register("email")}
-              placeholder="Email"
-              type="email"
-              className={`w-full border rounded px-3 py-2 text-sm ${
-                errors.email ? "border-red-500" : ""
-              }`}
-            />
+        <FieldLabel>What's your contact information?</FieldLabel>
+        <div className="space-y-4">
+          <div className="relative space-y-3">
+            <div className="relative flex items-center">
+              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
+              <input
+                {...register("email")}
+                placeholder="Email"
+                type="email"
+                className={`${inputBaseClasses} pl-10 ${
+                  errors.email ? "border-red-500" : "border-gray-300"
+                }`}
+              />
+            </div>
             <HelperText>
               A confirmation email will be sent after checkout.
             </HelperText>
@@ -218,18 +231,21 @@ useEffect(() => {
           </div>
 
           <div>
-            <input
-              {...register("phone")}
-              placeholder="Phone Number"
-              className={`w-full border rounded px-3 py-2 text-sm ${
-                errors.phone ? "border-red-500" : ""
-              }`}
-            />
+            <div className="relative flex items-center">
+              <Phone className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
+              <input
+                {...register("phone")}
+                placeholder="Phone Number"
+                className={`${inputBaseClasses} pl-10 ${
+                  errors.phone ? "border-red-500" : "border-gray-300"
+                }`}
+              />
+            </div>
             <HelperText>
               A carrier might contact you to confirm delivery.
             </HelperText>
             {errors.phone && (
-              <p className="text-xs pl-4 text-red-500 mt-1">
+              <p className="text-xs text-red-500 mt-1">
                 {errors.phone.message}
               </p>
             )}
@@ -241,7 +257,7 @@ useEffect(() => {
         <button
           type="submit"
           disabled={!isValid || loading}
-          className="w-full bg-blue-600 disabled:bg-gray-200 disabled:text-gray-600 text-gray-50 py-3 rounded disabled:opacity-60"
+          className="w-full bg-blue-600 disabled:bg-gray-200 disabled:text-gray-600 text-white py-3 rounded-lg hover:bg-blue-700 transition"
         >
           {loading ? "Processing..." : "Continue"}
         </button>
@@ -249,26 +265,3 @@ useEffect(() => {
     </form>
   );
 }
-
-//   defaultBilling,
-// }: {
-//   defaultBilling: BillingInfo | undefined;
-// }) => {
-//   const { isPlacingOrder, error, placeOrder } = useCheckout();
-//   const handleContinue = async (
-//     values: BillingInfo & { deliveryMethod?: "deliver" | "pickup" }
-//   ) => {
-//     await placeOrder(values);
-//   };
-//   return (
-//     <section className="w-full">
-//       <CheckoutForm
-//         onContinue={handleContinue}
-//         loading={isPlacingOrder}
-//         defaultValues={defaultBilling}
-//       />
-
-//       {error && <div className="text-sm text-red-500 mt-3">{error}</div>}
-//     </section>
-//   );
-// };

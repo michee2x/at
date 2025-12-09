@@ -51,7 +51,7 @@ const ParentCategories = ({
         <Link
           key={c.id}
           role="listitem"
-          href={`/category/?cat=${c.id}&title=${c.name}`}
+          href={`/categories/?cat=${c.id}&title=${c.name}`}
           onMouseEnter={() => openPopupWithDelay(c)}
           onMouseLeave={closePopupWithDelay}
           className="w-full text-[#2B2B2B] capitalize hover:text-[#9747FF] cursor-pointer h-auto flex items-center justify-between"

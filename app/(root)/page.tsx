@@ -15,7 +15,7 @@ export default function Home() {
   const { categories } = useCategory();
 
   return (
-    <div className="w-screen items-center flex-col min-h-screen relative flex justify-center">
+    <div className="w-full remove_scrollbar items-center flex-col min-h-screen relative flex justify-center">
       <Hero />
 
       <section className="w-full md:max-w-[95%] lg:max-w-full xl:max-w-[1300px] 2xl:max-w-[1440px]  xl:px-[28px] lg:px-[16px] mt-20 lg:mt-32 min-h-screen flex flex-col items-center">

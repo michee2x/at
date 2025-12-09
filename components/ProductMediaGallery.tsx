@@ -2,29 +2,8 @@
 
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import NextImage from "next/image";
+import { WooProduct } from "@/types";
 
-// --------------------
-// Types
-// --------------------
-type WooImage = {
-  id: number;
-  src: string;
-  thumbnail?: string;
-  alt?: string;
-};
-
-type MetaDatum = {
-  id?: number;
-  key: string;
-  value: string | number | boolean | null;
-};
-
-type WooProduct = {
-  id: number;
-  name: string;
-  images: WooImage[];
-  meta_data?: MetaDatum[];
-};
 
 type MediaItem =
   | {

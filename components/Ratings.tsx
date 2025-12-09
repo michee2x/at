@@ -1,35 +1,65 @@
-"use client"
+"use client";
 
-export function Ratings({ rating = 0 }: { rating?: number }) {
-  // Clamp the rating to a safe range (0–5)
+interface RatingsProps {
+  rating?: number;
+  starSize?: number; // in px
+}
+
+export function Ratings({ rating = 0, starSize = 12 }: RatingsProps) {
   const safeRating = Math.max(0, Math.min(5, rating));
-
-  // DaisyUI has 10 inputs (5 stars × 2 halves)
-  // Each half star = 0.5
-  const totalHalves = Math.round(safeRating * 2); // e.g. 4.5 → 9
+  const fullStars = Math.floor(safeRating);
+  const halfStar = safeRating % 1 >= 0.5 ? 1 : 0;
 
   return (
-    <div className="rating rating-xs rating-half">
-      <input type="radio" name={`rating-${rating}`} className="rating-hidden" />
+    <div className="flex items-center gap-1">
+      <div className="flex gap-[2px]">
+        {/* Full stars */}
+        {Array.from({ length: fullStars }).map((_, i) => (
+          <svg
+            key={`full-${i}`}
+            width={starSize}
+            height={starSize}
+            viewBox="0 0 24 24"
+            fill="#6A00EF"
+          >
+            <path d="M12 .587l3.668 7.431 8.2 1.192-5.934 5.78 1.4 8.163L12 18.896l-7.334 3.857 1.4-8.163L.132 9.21l8.2-1.192z" />
+          </svg>
+        ))}
 
-      {Array.from({ length: 10 }).map((_, i) => {
-        const value = (i + 1) / 2; // half-star values: 0.5, 1, 1.5, 2, ...
-        const isChecked = value === safeRating;
+        {/* Half star */}
+        {halfStar === 1 && (
+          <svg width={starSize} height={starSize} viewBox="0 0 24 24">
+            <defs>
+              <linearGradient id="halfGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="50%" stopColor="#6A00EF" />
+                <stop offset="50%" stopColor="#E0E0E0" />
+              </linearGradient>
+            </defs>
+            <path
+              d="M12 .587l3.668 7.431 8.2 1.192-5.934 5.78 1.4 8.163L12 18.896l-7.334 3.857 1.4-8.163L.132 9.21l8.2-1.192z"
+              fill="url(#halfGrad)"
+            />
+          </svg>
+        )}
 
-        return (
-          <input
-            key={i}
-            type="radio"
-            name={`rating-${rating}`}
-            className={`mask mt-[1px] mask-star-2 ${
-              i % 2 === 0 ? "mask-half-1" : "mask-half-2"
-            } bg-[#6A00EF]`}
-            aria-label={`${value} star`}
-            defaultChecked={isChecked || totalHalves === i + 1}
-            readOnly
-          />
-        );
-      })}
+        {/* Empty stars */}
+        {Array.from({ length: 5 - fullStars - halfStar }).map((_, i) => (
+          <svg
+            key={`empty-${i}`}
+            width={starSize}
+            height={starSize}
+            viewBox="0 0 24 24"
+            fill="#E0E0E0"
+          >
+            <path d="M12 .587l3.668 7.431 8.2 1.192-5.934 5.78 1.4 8.163L12 18.896l-7.334 3.857 1.4-8.163L.132 9.21l8.2-1.192z" />
+          </svg>
+        ))}
+      </div>
+
+      {/* Rating text */}
+      <span className="text-[10px] lg:text-[12px] text-black/50">
+        ({rating})
+      </span>
     </div>
   );
 }

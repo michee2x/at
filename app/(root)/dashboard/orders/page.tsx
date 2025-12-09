@@ -64,7 +64,7 @@ export function AnimatedTooltipPreview({ orders }: { orders: WooOrder[] }) {
   return (
     <div className="mb-10 font-poppins px-4 w-full">
       <div className="w-full py-4 lg:px-8 mt-4 mb-2 h-auto flex flex-col lg:flex-row justify-between">
-        <span className="text-[#8cbef0] text-[14px] lg:text-[21px] font-[SF Pro Display] font-[500]">
+        <span className="text-[14px] lg:text-[21px] font-[SF Pro Display] font-[500]">
           Your orders for this month
         </span>
         <span className="text-[#ED473D] text-[14px] lg:text-[16px] font-[SF Pro Display] font-[500]">

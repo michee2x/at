@@ -10,6 +10,7 @@ import { DialogTrigger } from "@/components/ui/dialog";
 import { useCart } from "@/hooks/useCart";
 import { WooProductToCartItem } from "@/types";
 import { Heart, Trash2 } from "lucide-react";
+import { toNumber } from "@/utils/to-number";
 
 interface CartItemProps {
   item: WooProductToCartItem;
@@ -43,7 +44,10 @@ export default function CartItem({ item }: CartItemProps) {
       <div className="flex-1">
         <div className="flex text-[16px] lg:text-[18px] items-center justify-between">
           <h1>{item.name}</h1>
-          <h1>₦{Number(item.quantity || 0).toLocaleString()}</h1>
+          <h1>
+            ₦
+            {Number(item.quantity * toNumber(item.price) || 0).toLocaleString()}
+          </h1>
         </div>
 
         <span className="text-[14px] text-[#6C757D]">WooCommerce Product</span>

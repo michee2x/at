@@ -68,7 +68,7 @@ const CategoryInfo = ({ category }: { category: WooCategory }) => {
         {subCategories.map((sub, id) => (
           <Link
             key={`${id}`}
-            href={`/category/?cat=${sub.id}&title=${sub.name}`} // open subcategory page
+            href={`/categories/?cat=${sub.id}&title=${sub.name}`} // open subcategory page
             className="size-[6rem] aspect-square py-2 flex items-center cursor-pointer flex-col gap-2 h-fit min-h-40 rounded-lg hover:bg-gray-50 transition"
           >
             {sub.image?.src ? (

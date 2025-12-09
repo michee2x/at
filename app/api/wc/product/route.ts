@@ -64,6 +64,27 @@ function buildQueryParams(params: QueryParams): Record<string, string> {
   }
 
 
+// Banner-specific filters
+  if (params.on_sale === "true") query["on_sale"] = "true";
+  
+  if (params.product_type) query["type"] = String(params.product_type);
+  
+  if (params.featured === "true") query["featured"] = "true";
+  
+  if (params.banner === "best-sellers") {
+    query["orderby"] = "popularity";
+    query["order"] = "desc";
+  }
+  
+  if (params.banner === "new-arrivals") {
+    query["orderby"] = "date";
+    query["order"] = "desc";
+    // Optional: filter by date range
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+    query["after"] = thirtyDaysAgo.toISOString();
+  }
+
   return query;
 }
 
