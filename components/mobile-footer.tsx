@@ -25,8 +25,8 @@ const MobileFooter: React.FC = () => {
   // Usage:
   const { category } = status;
   return (
-    <footer className={`w-full font-poppins ${category ? "hidden" : "flex"} border-t-[1px] border-gray-200 relative h-[702px] lg:hidden flex-col gap-[4rem] justify-end pb-10 items-center`}>
-      <div className="w-fit h-auto bg-bue-500 -translate-x-1/2 left-[55%] top-[10%] absolute flex flex-col gap-[1.5rem] p-4">
+    <footer className={`w-full font-poppins ${category ? "hidden" : "flex"} lg:hidden flex-col gap-4 justify-center items-center bg-white border-t-[1px] border-gray-200 p-4`}>
+      <div className="w-full max-w-xs mx-auto flex flex-col gap-4 p-2">
         {footerTexts.map((text, index) => {
           return (
             <p
@@ -42,7 +42,7 @@ const MobileFooter: React.FC = () => {
           );
         })}
       </div>
-      <p className="mt-[9rem] text-[#828EA3] text-nowrap h-[3rem] flex">
+      <p className="text-[#828EA3] text-nowrap h-[3rem] flex">
         © 2020 - 2024 ATLAZE, Inc.
       </p>
     </footer>
