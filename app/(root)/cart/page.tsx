@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import CategoryPageClient from "./client";
+import CartClient from "./client";
 
 export default function CartPage() {
   return (
@@ -10,7 +10,7 @@ export default function CartPage() {
         </div>
       }
     >
-      <CategoryPageClient />
+      <CartClient />
     </Suspense>
   );
 }

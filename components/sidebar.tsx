@@ -8,16 +8,10 @@ import { FiEdit } from "react-icons/fi";
 import ParentCategories from "./ParentCategories";
 import { WooCategory } from "@/types";
 import CategoryInfo from "./CategoryInfo";
-import { useSearchParams } from "next/navigation";
-import { queryType, useCategory } from "@/contexts/category-context";
-import LogoutButton from "./buttons/LogoutButton";
 import { useAuth } from "@/contexts/auth-context"; // Import the auth context
+import { SidebarSearchParams } from "./SidebarSearchParams";
 
 const Sidebar = () => {
-  const { queryData, setQueryData } = useCategory();
-  const searchParams = useSearchParams();
-  const title = searchParams.get("title");
-  const category = searchParams.get("cat");
   const [activeInput, setActiveInput] = useState(false);
 
   const [hoveredCategory, setHoveredCategory] = useState<WooCategory | null>(
@@ -32,14 +26,6 @@ const Sidebar = () => {
 
   // ⭐ Use AuthContext to get the session data
   const { session, isLoading } = useAuth();
-
-  // Set context catId to category id if it changes
-  useEffect(() => {
-    const catId = category ?? 0;
-    const catTitle = title ?? "General";
-    const update: queryType = { ...queryData, catId, catTitle };
-    setQueryData(update);
-  }, [category]);
 
   // ⭐ When hovering nav
   const openPopupWithDelay = (category: WooCategory) => {
@@ -71,16 +57,16 @@ const Sidebar = () => {
   };
 
   // Function to get user initials
-const getInitials = (name: string | null | undefined): string => {
-  if (!name) return "";
-  const parts = name.trim().split(" ");
-  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
-  return (parts[0][0] + parts[1][0]).toUpperCase();
-};
-
+  const getInitials = (name: string | null | undefined): string => {
+    if (!name) return "";
+    const parts = name.trim().split(" ");
+    if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+    return (parts[0][0] + parts[1][0]).toUpperCase();
+  };
 
   return (
     <div className="lg:flex z-50">
+      <SidebarSearchParams />
       <nav
         className={`lg:w-[22%] w-[75%] h-screen bg-white flex-col overflow-auto pb-16 font-poppins flex z-[9999] fixed transition-all duration-300 ${
           showSideBar ? "left-0" : "-left-[100vw]"

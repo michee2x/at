@@ -1,6 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import { Suspense } from "react";
 
 const Sidebar = dynamic(() => import("./sidebar"), {
   ssr: false,
@@ -8,5 +9,9 @@ const Sidebar = dynamic(() => import("./sidebar"), {
 });
 
 export default function SidebarWrapper() {
-  return <Sidebar />;
+  return (
+    <Suspense fallback={null}>
+      <Sidebar />
+    </Suspense>
+  );
 }
