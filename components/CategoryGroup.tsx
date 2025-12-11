@@ -81,7 +81,7 @@ export default function CategoryGroup({
               <Link
                 key={`${item.id}-${idx}`}
                 className="flex flex-col items-start space-y-1"
-                href={`/category/?cat=${item.id}&title=${item.name}`}
+                href={`/categories/?cat=${item.id}&title=${item.name}`}
                 target="_blank"
                 rel="noopener noreferrer"
               >
