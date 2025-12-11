@@ -42,7 +42,7 @@ const NavBar = ({ showCategories }: { showCategories?: boolean }) => {
         <div className="lg:min-h-[44px] h-[30px] lg:pt-6 flex justify-between items-center px-4 w-full">
           {/* All Categories → link */}
           <div className="flex text-nowrap lg:h-[5rem] items-center gap-2">
-            <Link href="/categories">
+            <Link target="_blank" rel="noopener noreferrer" href="/categories">
               <span className="cursor-pointer">All Categories</span>
             </Link>
           </div>
@@ -98,7 +98,12 @@ const NavBar = ({ showCategories }: { showCategories?: boolean }) => {
               </span>
 
               {/* Logo + Atlaze text → link to home */}
-              <Link href="/" className="w-fit flex items-center gap-0.5">
+              <Link
+                target="_blank"
+                rel="noopener noreferrer"
+                href="/"
+                className="w-fit flex items-center gap-0.5"
+              >
                 <div className="relative size-8">
                   <Image
                     className="object-cover"

@@ -16,7 +16,7 @@ export function SidebarSearchParams() {
     const catTitle = title ?? "General";
     const update: queryType = { ...queryData, catId, catTitle };
     setQueryData(update);
-  }, [category, title, queryData, setQueryData]);
+  }, [category, title]);
 
   return null;
 }

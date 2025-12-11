@@ -90,7 +90,7 @@ export default function CategoryGroup({
                     src={getImageSrc(item.image)}
                     alt={item?.name || "Category image"}
                     fill
-                    className="object-cover w-full"
+                    className="object-cover w-full transition-transform duration-300 ease-in-out hover:scale-105"
                   />
                 </div>
 

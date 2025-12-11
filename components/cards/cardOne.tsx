@@ -29,7 +29,7 @@ const CardOne = ({
             fill
             src={data?.images[0]?.src}
             alt={data?.name}
-            className="object-contain object-center"
+            className="object-contain transition-transform duration-300 ease-in-out hover:scale-105 object-center"
             sizes={data?.images[0]?.sizes}
           />
         )}

@@ -25,7 +25,11 @@ const MobileFooter: React.FC = () => {
   // Usage:
   const { category } = status;
   return (
-    <footer className={`w-full font-poppins ${category ? "hidden" : "flex"} lg:hidden flex-col gap-4 justify-center items-center bg-white border-t-[1px] border-gray-200 p-4`}>
+    <footer
+      className={`w-full font-poppins ${
+        category ? "hidden" : "flex"
+      } lg:hidden flex-col gap-4 justify-center items-center bg-white border-t-[1px] border-gray-200 p-4`}
+    >
       <div className="w-full max-w-xs mx-auto flex flex-col gap-4 p-2">
         {footerTexts.map((text, index) => {
           return (

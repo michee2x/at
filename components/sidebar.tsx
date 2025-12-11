@@ -65,7 +65,7 @@ const Sidebar = () => {
   };
 
   return (
-    <div className="lg:flex z-50">
+    <div className="lg:flex z-[9999]">
       <SidebarSearchParams />
       <nav
         className={`lg:w-[22%] w-[75%] h-screen bg-white flex-col overflow-auto pb-16 font-poppins flex z-[9999] fixed transition-all duration-300 ${
@@ -151,8 +151,8 @@ const Sidebar = () => {
       {/* BACKDROP */}
       <div
         onClick={() => setShowSideBar(false)}
-        className={`w-screen fixed transition-all duration-500 h-screen ${
-          showSideBar ? "z-[9998] bg-gray-900/40" : "-z-40 bg-transparent"
+        className={`w-screen overflow-hidden fixed transition-all duration-500 h-screen ${
+          showSideBar ? "z-[9998] bg-gray-900/40 block" : "-z-40 hidden bg-transparent"
         }`}
       >
         <div className="w-full h-full relative">

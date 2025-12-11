@@ -34,10 +34,12 @@ export default function Banner() {
     <div className="bg-black hidden text-white lg:flex items-center justify-between px-4 py-2 overflow-x-auto">
       {bannerItems.map((item) => (
         <Link
+          target="_blank"
+          rel="noopener noreferrer"
           key={item.param}
-          href={`/categories?banner=${item.param}&${item.filter}&title=${encodeURIComponent(
-            item.label
-          )}`}
+          href={`/categories?banner=${item.param}&${
+            item.filter
+          }&title=${encodeURIComponent(item.label)}`}
           className={`text-sm whitespace-nowrap px-4 py-1 transition-colors ${
             activeBanner === item.param
               ? "text-purple-400 font-semibold"
