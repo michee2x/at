@@ -18,6 +18,9 @@ export interface WooOrder {
   line_items: WooOrderItem[];
   order_key: string;
   billing: WooBilling;
+  number?: string;
+  date_created?: string;
+  payment_method_title?: string;
 }
 
 export interface UserOptions {

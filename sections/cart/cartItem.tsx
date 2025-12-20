@@ -31,57 +31,57 @@ export default function CartItem({ item }: CartItemProps) {
   };
 
   return (
-    <div className="w-full px-[8px] py-[10px] border-y-[1px] border-[#EFEFEF] flex gap-2 h-auto">
-      <div className="size-[80px] border-[2px] border-[#2B2B2B] rounded-lg overflow-hidden relative">
+    <div className="flex gap-4 lg:gap-6 py-2">
+      <div className="relative h-24 w-24 flex-shrink-0 overflow-hidden rounded-xl border border-gray-100 bg-gray-50">
         <Image
           src={item.images?.[0]?.src || "/placeholder.png"}
           alt={item.name}
           fill
-          className="object-cover"
+          className="object-cover object-center"
         />
       </div>
 
-      <div className="flex-1">
-        <div className="flex text-[16px] lg:text-[18px] items-center justify-between">
-          <h1>{item.name}</h1>
-          <h1>
-            ₦
-            {Number(item.quantity * toNumber(item.price) || 0).toLocaleString()}
-          </h1>
+      <div className="flex flex-1 flex-col justify-between">
+        <div className="flex justify-between items-start">
+          <div className="space-y-1">
+            <h3 className="font-medium text-gray-900 line-clamp-2 pr-4">{item.name}</h3>
+            <p className="text-sm text-muted-foreground">Unit Price: ₦{Number(item.price).toLocaleString()}</p>
+          </div>
+          <p className="font-bold text-gray-900 text-lg">
+            ₦{(item.quantity * toNumber(item.price)).toLocaleString()}
+          </p>
         </div>
 
-        <span className="text-[14px] text-[#6C757D]">WooCommerce Product</span>
-
-        <div className="flex text-[#6C757D] mt-1 items-center text-[14px] gap-[4rem]">
-          <div>
-            <span className="mr-3">Size</span>
-            <span>-</span>
+        <div className="flex items-center justify-between mt-4">
+          <div className="flex items-center gap-4">
+            <div className="flex items-center rounded-lg border border-gray-200 bg-white">
+              <button 
+                onClick={decrease}
+                className="p-2 hover:bg-gray-50 text-gray-600 transition-colors"
+                aria-label="Decrease quantity"
+              >
+                <AiOutlineMinus className="w-4 h-4" />
+              </button>
+              <span className="w-8 text-center text-sm font-medium">{item.quantity}</span>
+              <button 
+                onClick={increase}
+                className="p-2 hover:bg-gray-50 text-gray-600 transition-colors"
+                aria-label="Increase quantity"
+              >
+                <FiPlus className="w-4 h-4" />
+              </button>
+            </div>
+            
+            <DialogTrigger asChild>
+              <button
+                onClick={() => setItemToDelete(item)}
+                className="flex items-center gap-1 text-sm text-red-500 hover:text-red-600 font-medium transition-colors"
+              >
+                <Trash2 className="w-4 h-4" />
+                <span className="hidden sm:inline">Remove</span>
+              </button>
+            </DialogTrigger>
           </div>
-          <div>
-            <span className="mr-3">Quantity</span>
-            <span>{item.quantity}</span>
-          </div>
-        </div>
-
-        <div className="flex mt-3 gap-[10px] text-xl items-center">
-          <div className="w-[99px] text-[#343A40] flex gap-2 items-center justify-center h-[36px] py-[12px] bg-[#F5F5F5] px-[8px] rounded-[50px]">
-            <AiOutlineMinus className="cursor-pointer" onClick={decrease} />
-            <span>{item.quantity}</span>
-            <FiPlus className="cursor-pointer" onClick={increase} />
-          </div>
-
-          <button className="btn btn-circle">
-            <Heart className="text-[24px]" />
-          </button>
-
-          <DialogTrigger asChild>
-            <button
-              onClick={() => setItemToDelete(item)}
-              className="btn btn-circle"
-            >
-              <Trash2 className="text-[20px]" />
-            </button>
-          </DialogTrigger>
         </div>
       </div>
     </div>

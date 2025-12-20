@@ -8,7 +8,17 @@ import AlgoliaSearch from "./AlgoliaSearch";
 import { useAuth } from "@/contexts/auth-context";
 import { signIn } from "next-auth/react";
 import Banner from "./home/Banner";
-import Link from "next/link"; // <-- added
+import Link from "next/link";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Store, HelpCircle, ShoppingBag, LayoutDashboard, LogOut, ChevronDown, ShoppingCart } from "lucide-react";
+import { useCart } from "@/hooks/useCart";
 
 // Skeleton loader for the image
 const SkeletonImage = () => (
@@ -20,7 +30,10 @@ const SkeletonImage = () => (
 const NavBar = ({ showCategories }: { showCategories?: boolean }) => {
   const { setShowSideBar } = useSideBar();
   const { session, isLoading } = useAuth();
+  const { cart} = useCart();
   const [imageLoaded, setImageLoaded] = useState(false);
+
+  const totalItems = cart.items.reduce((sum, item) => sum + item.quantity, 0);
 
   const getInitials = (name: string | null | undefined): string => {
     if (!name) return "";
@@ -37,54 +50,7 @@ const NavBar = ({ showCategories }: { showCategories?: boolean }) => {
 
   return (
     <div className="w-full border-b-[1.5px] pt-2 lg:pt-0 border-gray-300 z-50 flex flex-col">
-      <div className="w-full gap-2 h-[95px] lg:h-[125px] flex flex-col">
-        {/* TOP BAR */}
-        <div className="lg:min-h-[44px] h-[30px] lg:pt-6 flex justify-between items-center px-4 w-full">
-          {/* All Categories → link */}
-          <div className="flex text-nowrap lg:h-[5rem] items-center gap-2">
-            <Link target="_blank" rel="noopener noreferrer" href="/categories">
-              <span className="cursor-pointer">All Categories</span>
-            </Link>
-          </div>
-
-          {/* TOP MENU RIGHT */}
-          <ul className="lg:flex hidden h-[50%] w-fit">
-            {["Find a Store", "Help", "Become a Seller"].map((item) => (
-              <li
-                key={item}
-                className="text-[calc(12/1280*100vw)] h-full w-fit px-4 flex items-center justify-center border-r-[1.5px] text-[#2B2B2B]"
-              >
-                {item}
-              </li>
-            ))}
-
-            {/* User / Sign In */}
-            <li className="text-[calc(12/1280*100vw)] h-full w-fit px-4 flex items-center justify-center text-[#2B2B2B] cursor-pointer">
-              {isLoading ? (
-                <SkeletonImage />
-              ) : session?.user ? (
-                <div className="flex items-center gap-2">
-                  {session.user.image && imageLoaded ? (
-                    <Image
-                      src={session.user.image}
-                      alt={session.user.name ?? "User"}
-                      width={32}
-                      height={32}
-                      className="rounded-full object-cover"
-                    />
-                  ) : (
-                    <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold">
-                      {getInitials(session.user.name)}
-                    </div>
-                  )}
-                </div>
-              ) : (
-                <span onClick={() => signIn()}>Sign In</span>
-              )}
-            </li>
-          </ul>
-        </div>
-
+      <div className="w-full gap-2 h-[95px] lg:h-[105px] flex flex-col">
         {/* SEARCH + LOGO AREA */}
         <div className="w-full px-4 mb-2 lg:px-[30px] flex justify-center items-center flex-1">
           <div className="w-full relative flex justify-center items-center h-full">
@@ -122,6 +88,99 @@ const NavBar = ({ showCategories }: { showCategories?: boolean }) => {
             <div className="w-auto hidden lg:block">
               <AlgoliaSearch />
             </div>
+
+            {/* User Profile Dropdown */}
+            <div className="flex absolute items-center right-0 -translate-y-1/2 top-1/2 gap-4">
+              {/* All Categories Link */}
+              <Link 
+                href="/categories" 
+                className="text-sm hidden lg:flex font-medium text-[#2B2B2B] hover:text-[#6a00f3] transition-colors cursor-pointer"
+              >
+                All Categories
+              </Link>
+
+              {/* Cart Icon with Badge */}
+              <Link 
+                href="/cart" 
+                className="relative text-[#2B2B2B] hover:text-[#6a00f3] transition-colors cursor-pointer"
+              >
+                <ShoppingCart className="w-5 h-5 lg:w-6 lg:h-6" />
+                {totalItems > 0 && (
+                  <span className="absolute -top-2 -right-2 bg-[#6a00f3] text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                    {totalItems}
+                  </span>
+                )}
+              </Link>
+
+              {isLoading ? (
+                <SkeletonImage />
+              ) : session?.user ? (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <button className="flex items-center gap-2 cursor-pointer focus:outline-none hover:opacity-80 transition-opacity">
+                      {session.user.image && imageLoaded ? (
+                        <Image
+                          src={session.user.image}
+                          alt={session.user.name ?? "User"}
+                          width={32}
+                          height={32}
+                          className="rounded-full object-cover"
+                        />
+                      ) : (
+                        <div className="w-8 h-8 text-md rounded-full bg-gray-200 flex items-center justify-center font-bold">
+                          {getInitials(session.user.name)}
+                        </div>
+                      )}
+                      <ChevronDown className="h-4 w-4 text-gray-600" />
+                    </button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-56 z-[9999]">
+                    <DropdownMenuLabel>
+                      <div className="flex flex-col space-y-1">
+                        <p className="text-sm font-medium leading-none">{session.user.name}</p>
+                        <p className="text-xs leading-none text-muted-foreground">
+                          {session.user.email}
+                        </p>
+                      </div>
+                    </DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem asChild>
+                      <Link href="/my-account" className="cursor-pointer">
+                        <LayoutDashboard className="mr-2 h-4 w-4" />
+                        <span>Dashboard</span>
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link href="/stores" className="cursor-pointer">
+                        <Store className="mr-2 h-4 w-4" />
+                        <span>Find a Store</span>
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link href="/help" className="cursor-pointer">
+                        <HelpCircle className="mr-2 h-4 w-4" />
+                        <span>Help</span>
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link href="/become-seller" className="cursor-pointer">
+                        <ShoppingBag className="mr-2 h-4 w-4" />
+                        <span>Become a Seller</span>
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem className="cursor-pointer text-red-600">
+                      <LogOut className="mr-2 h-4 w-4" />
+                      <span>Sign Out</span>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              ) : (
+                <span onClick={() => signIn()} className="text-sm font-medium text-[#2B2B2B] hover:text-[#6a00f3] transition-colors cursor-pointer">
+                  Sign In
+                </span>
+              )}
+            </div>
           </div>
         </div>
       </div>
@@ -132,4 +191,5 @@ const NavBar = ({ showCategories }: { showCategories?: boolean }) => {
   );
 };
 
-export default NavBar;
+export default NavBar
+

@@ -1,368 +1,415 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import Link from "next/link";
-import { usePathname, useSearchParams } from "next/navigation";
-import { ProductCard } from "@/components/category/ProductCard";
-import { Params, WooProduct } from "@/types";
-import { useProducts } from "@/hooks/wc/useProducts";
-import Filters from "@/components/category/sideFilter";
-import { AtlazeBrands, cleared, productBrand } from "@/constants";
 import Image from "next/image";
-import { HiAdjustmentsHorizontal, HiOutlineBookmark } from "react-icons/hi2";
-import { useFilter } from "@/contexts/filter-context";
-import ProductNotFound from "@/components/lottie/ProductNotFound";
-import Carousel from "@/components/category/carousel";
-import { useInView } from "react-intersection-observer";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import {
-  Drawer,
-  DrawerClose,
-  DrawerContent,
-  DrawerTrigger,
-} from "@/components/ui/drawer";
+import { ShoppingCart } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import { WooProduct } from "@/types";
+import { toast } from "react-toastify";
 import { Button } from "@/components/ui/button";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Input } from "@/components/ui/input";
+import { SearchParamsType } from "./page";
 import { Ratings } from "@/components/Ratings";
+import { useInView } from "react-intersection-observer";
+
+import { useCart } from "@/contexts/CartContext";
+import { useState } from "react";
+import { useCart as useZustandCart } from "@/hooks/useCart";
 import {
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
-} from "@/components/ui/hoverCard";
-import { HoverCardInfo } from "@/components/category/hovercard";
-import { ProductDescription } from "@/components/category/productDesc";
-import { ProductSkeleton } from "@/components/category/skeleton/product-skeleton";
-import { GoArrowUpRight } from "react-icons/go";
-import ClearButton from "@/components/buttons/clearButton";
-import { isCleared } from "@/utils/isCleared";
-import ProductMediaGallery from "@/components/ProductMediaGallery";
-import { LiaTimesSolid } from "react-icons/lia";
-import CartToastContainer from "@/components/cart/CartToastContainer";
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
-// -----------------------------
-// Loader
-// -----------------------------
-export function Loader({ size = 48 }: { size?: number }) {
-  return (
-    <div className="grid w-full lg:gap-x-4 gap-2 p-2 bg-zinc-200 lg:bg-inherit grid-cols-2 md:grid-cols-3 xl:grid-cols-4 min-h-[100px]">
-      {Array.from({ length: 8 }).map((_, i) => (
-        <ProductSkeleton key={i} />
-      ))}
-    </div>
-  );
+import { useFilter } from "@/contexts/filter-context";
+import { useLockBodyScroll } from "@/hooks/useLockBodyScroll";
+
+interface FilterSidebarProps {
+  searchParams: SearchParamsType;
+  brands?: string[]; // You can fetch from WooCommerce attributes
 }
 
-// -----------------------------
-// Breadcrumb
-// -----------------------------
-export function Breadcrumb() {
-  const pathname = usePathname();
-  const segments = pathname.split("/").filter(Boolean);
+export function FilterSidebar({
+  searchParams,
+  brands = [],
+}: FilterSidebarProps) {
+  const router = useRouter();
+  const params = useSearchParams();
+  const { showFilter, setShowFilter } = useFilter();
 
-  const formatName = (str: string) =>
-    decodeURIComponent(
-      str.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())
-    );
+  // Prevent background scroll when the overlay is open
+  useLockBodyScroll(showFilter);
 
-  const paths = segments.map((seg, i) => ({
-    name: formatName(seg),
-    href: "/" + segments.slice(0, i + 1).join("/"),
-  }));
+  function applyFilter(formData: FormData) {
+    const query = new URLSearchParams(params.toString());
 
-  return (
-    <nav
-      className="text-[15px] capitalize text-gray-500 mb-3"
-      aria-label="Breadcrumb"
-    >
-      <ol className="flex items-center flex-wrap gap-1">
-        <li>
-          <Link href="/" className="hover:text-[#ab23e0] text-[#cb47ff]">
-            Home
-          </Link>
-        </li>
-        {paths.map((p, idx) => (
-          <li key={idx} className="flex items-center gap-1">
-            <span>/</span>
-            {idx === paths.length - 1 ? (
-              <span className="text-gray-800 font-medium">{p.name}</span>
-            ) : (
-              <Link
-                href={p.href}
-                className="hover:text-blue-600 text-[#9747FF]"
-              >
-                {p.name}
-              </Link>
-            )}
-          </li>
-        ))}
-      </ol>
-    </nav>
-  );
-}
+    // Price range
+    const min = formData.get("min") as string;
+    const max = formData.get("max") as string;
+    if (min) query.set("min_price", min);
+    if (max) query.set("max_price", max);
 
-// -----------------------------
-// Types
-// -----------------------------
-interface CategoryMeta {
-  title?: string;
-  description?: string;
-  attributes?: { name: string; options: string[] }[];
-}
+    // Brand
+    const brand = formData.get("brand") as string;
+    if (brand) query.set("attribute:pa_brand", brand);
 
-// -----------------------------
-// Category Page
-// -----------------------------
-export default function CategoryPageClient({
-  initialParams = {},
-  categoryMeta = {},
-}: {
-  initialParams?: Params;
-  categoryMeta?: CategoryMeta;
-}) {
-  const { setShowFilter } = useFilter();
-  const { ref: loaderRef, inView } = useInView({
-    threshold: 0.1,
-    rootMargin: "200px",
-    triggerOnce: false,
-  });
+    // Sort
+    const sort = formData.get("sort") as string;
+    if (sort) query.set("orderby", sort);
 
-  //Get the search params and store in variables
-  const searchParams = useSearchParams();
-  const banner = searchParams.get("banner");
-  const title = searchParams.get("title");
-  const category = searchParams.get("cat");
-  const [params, setParams] = useState<Params>(initialParams);
-  const [local, setLocal] = useState<Params>({ ...params });
-  const [page, setPage] = useState<number>(Number(initialParams.page) || 1);
-  const [perPage, setPerPage] = useState<number>(
-    Number(initialParams.per_page) || 24
-  );
-  const [loadingMore, setLoadingMore] = useState(false);
-  const [allProducts, setAllProducts] = useState<WooProduct[]>([]);
+    // Stock status
+    const stock = formData.get("stock") as string;
+    if (stock) query.set("stock_status", stock);
 
-  const { data, isLoading, isFetching } = useProducts({
-    ...params,
-    page,
-    per_page: perPage,
-    ...(category ? { category } : {}), //fetch products from a specific caetgory else from all categories
-  });
+    // Reset to page 1
+    query.set("page", "1");
 
-  const products: WooProduct[] = Array.isArray(data)
-    ? data
-    : (data?.products as WooProduct[]) ?? [];
-  const isMobile = typeof window !== "undefined" && window.innerWidth < 1024;
-  const hasMore = products.length === perPage;
+    // Close overlay on mobile after applying
+    setShowFilter(false);
 
-  const setProductsFunc = () => {
-    setAllProducts((prev) => {
-      if (page === 1) return products;
-      const ids = new Set(prev.map((p) => p.id));
-      const newItems = products.filter((p) => !ids.has(p.id));
-      return [...prev, ...newItems];
-    });
-  };
-
-  useEffect(() => {
-    if (banner) {
-      const bannerFilters: Record<string, Params> = {
-        "todays-deals": { on_sale: "true" },
-        "weekly-deals": { on_sale: "true" },
-        "bundle-deals": { product_type: "grouped" },
-        "top-brands": { featured: "true" },
-        "best-sellers": { sort: "popularity" },
-        "new-arrivals": { sort: "latest" },
-        "coming-soon": { catalog_visibility: "hidden" },
-      };
-
-      setParams((prev) => ({ ...prev, ...bannerFilters[banner] }));
-    }
-  }, [banner]);
-
-  // Merge/append products
-  useEffect(() => {
-    if (isLoading || !products) return;
-    setProductsFunc();
-    // stop showing spinner after new data arrives
-    setLoadingMore(false);
-  }, [products, isLoading, page]);
-
-  useEffect(() => {
-    if (
-      !isMobile ||
-      !inView ||
-      loadingMore ||
-      isLoading ||
-      isFetching ||
-      !hasMore
-    )
-      return;
-
-    const timer = setTimeout(() => {
-      setLoadingMore(true);
-      setPage((prev) => prev + 1);
-    }, 300);
-
-    return () => clearTimeout(timer);
-  }, [inView, isMobile, hasMore, isLoading, isFetching, loadingMore]);
-
-  // Reset products when filters change
-  useEffect(() => {
-    setPage(1);
-    setAllProducts([]);
-    setAllProducts(products);
-  }, [JSON.stringify(params)]);
-
-  function handleFilterChange(
-    patch: Params & { _reset?: boolean; _apply?: boolean }
-  ) {
-    if (patch._reset) {
-      setParams({});
-      return;
-    }
-    if (patch._apply) {
-      return;
-    }
-    setParams((prev) => ({ ...prev, ...patch }));
+    router.push(`?${query.toString()}`);
   }
 
-  function gotoPage(n: number) {
-    setPage(n);
-  }
-  const ParamsIsEmpty = isCleared(params, cleared) || isCleared(params, {});
   return (
-    <div className=" pt-5 w-full mx-auto lg:px- pb-8">
-      <CartToastContainer />
-      <div className="flex w-full px-4 lg:px-7 2xl:px-12 flex-col gap-8">
-        <Carousel />
-        {/* <Banner /> */}
-        <Breadcrumb />
-      </div>
-      <div className="flex container mx-auto gap-6 md:gap-10">
-        <Filters
-          params={params}
-          setParams={setParams}
-          onChange={handleFilterChange}
-          availableAttributes={categoryMeta?.attributes || []}
-          stores={AtlazeBrands}
-          brands={productBrand}
-          local={local}
-          setLocal={setLocal}
-        />
+    <>
+      {/* Backdrop / Overlay for mobile */}
+      <div
+        className={`${
+          showFilter ? "fixed inset-0 z-40 bg-gray-900/40 lg:hidden" : "hidden"
+        }`}
+        onClick={() => setShowFilter(false)}
+        aria-hidden
+      />
 
-        <main className="lg:flex-1 w-screen lg:px-2 min-h-[50vh]">
-          <header
-            id="header"
-            className="text-xl lg:text-2xl sticky py-3 lg:relative top-0 bg-white z-20 border-gray-300 lg:border-0 border-b flex items-center pb-2 justify-between lg:p-0 px-4 font-semibold text-gray-900 lg:mb-6"
-          >
-            <h1 className="lg:text-3xl text-[16px] font-bold">
-              {title ?? "Category"}
-            </h1>
-            {categoryMeta?.description && (
-              <p className="text-gray-600 mt-2">{categoryMeta.description}</p>
-            )}
-            <HiAdjustmentsHorizontal
-              onClick={() => setShowFilter(true)}
-              className="text-2xl lg:hidden text-gray-700"
-            />
-          </header>
-
-          <div className="flex items-center px-2 justify-between my-4">
-            <div className="text-sm text-gray-500">
-              {!isLoading && !isFetching && `${products.length} items`}
-            </div>
-            <div className="flex items-center gap-2">
-              <label className="text-sm">Per page</label>
-              <select
-                value={perPage}
-                onChange={(e) => setPerPage(Number(e.target.value))}
-                className="p-2 border rounded"
-              >
-                {[12, 24, 36, 48].map((n) => (
-                  <option key={n} value={n}>
-                    {n}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
-
-          <div className="w-full">
-            {isLoading ? (
-              <div className="w-full lg:p-6 bg-white rounded-lg mb-4">
-                <Loader />
-              </div>
-            ) : allProducts.length > 0 ? (
-              <section className="grid grid-cols-2 lg:gap-4 sm:grid-cols-3 lg:grid-cols-5 gap-2">
-                {allProducts.map((p) => (
-                  <div key={p.id}>
-                    <ProductCard product={p} />
-                  </div>
-                ))}
-              </section>
-            ) : !isFetching && allProducts.length === 0 && !ParamsIsEmpty ? (
-              <div className="col-span-full flex h-[40vh] flex-col items-center justify-center text-center pb-16 text-gray-600">
-                <ProductNotFound />
-                <p className="text-lg font-semibold">No products found</p>
-                <p className="text-sm text-gray-500 mt-1">
-                  Try adjusting your filters or check back later...
-                </p>
-                {params && (
-                  <ClearButton
-                    className="mt-4 px-5  w-fit py-2lg:py-3 lg:px-7 rounded-md bg-purple-600 text-white hover:bg-purple-700 transition"
-                    setLocal={setLocal}
-                    setParams={setParams}
-                    onChange={handleFilterChange}
-                  />
-                )}
-              </div>
-            ) : !isFetching && allProducts.length === 0 && ParamsIsEmpty ? (
-              <div className="col-span-full flex h-[40vh] flex-col items-center justify-center text-center pb-16 text-gray-600">
-                <ProductNotFound />
-                <p className="text-lg font-semibold">
-                  No products under this category
-                </p>
-                <p className="text-sm text-gray-500 mt-1">
-                  Try checking back later...
-                </p>
-                {params && (
-                  <Button
-                    className="mt-4 px-5  w-fit py-2lg:py-3 lg:px-7 rounded-md bg-purple-600 text-white hover:bg-purple-700 transition"
-                    asChild
-                  >
-                    <a href="/category">Reset to all categories</a>
-                  </Button>
-                )}
-              </div>
-            ) : null}
-          </div>
-
-          <footer className="mt-6 flex flex-col items-center justify-between">
-            {/* <div className="text-sm hidden lg:flex text-gray-500">
-                Page {page}
-              </div> */}
+      {/* Sidebar: overlay on mobile when open, regular static sidebar on lg+ */}
+      <div
+        id="filter-sidebar"
+        className={`transition-all duration-200 ${
+          showFilter
+            ? "fixed pt-16 left-0 top-0 z-[9999] w-full h-[calc(100vh-4rem)]  p-4 bg-white overflow-auto"
+            : "hidden"
+        } lg:block lg:static lg:w-auto lg:h-auto lg:overflow-visible`}
+      >
+        <Card className="h-fit rounded-2xl p-4 space-y-6">
+          {/* Mobile header with close button */}
+          <div className="w-full lg:hidden sticky top-0 bg-white flex items-center justify-between p-3 z-30">
+            <span className="font-medium">Filters</span>
             <button
-              onClick={() => gotoPage(page + 1)}
-              disabled={!hasMore}
-              className={`px-6 hidden ${
-                perPage * page > allProducts.length ? "border-0" : ""
-              } mt-16 lg:flex py-2 w-[60vw] items-center justify-center mx-auto cursor-pointer border rounded disabled:border-gray-300 disabled:text-gray-400`}
+              type="button"
+              onClick={() => setShowFilter(false)}
+              aria-label="Close filters"
+              className="text-lg"
             >
-              {perPage * page > allProducts.length ? (
-                <span className="loading text-[#6A00EF] loading-spinner loading-xl"></span>
-              ) : (
-                "load more"
-              )}
+              ✕
             </button>
-            <div
-              ref={loaderRef}
-              className="lg:hidden flex justify-center mt-10"
-            >
-              {hasMore && (
-                <span className="loading text-[#6A00EF] loading-spinner loading-xl"></span>
+          </div>
+
+          <form action={applyFilter} className="space-y-4">
+            {/* Price Range */}
+            <div>
+              <p className="mb-2 text-sm font-medium">Price Range</p>
+              <div className="flex gap-2">
+                <Input
+                  name="min"
+                  placeholder="Min"
+                  type="number"
+                  defaultValue={searchParams.min_price || ""}
+                />
+                <Input
+                  name="max"
+                  placeholder="Max"
+                  type="number"
+                  defaultValue={searchParams.max_price || ""}
+                />
+              </div>
+            </div>
+
+            {/* Brand */}
+            {brands.length > 0 && (
+              <div>
+                <p className="mb-2 text-sm font-medium">Brand</p>
+                <Select name="brand" defaultValue={searchParams.brand || ""}>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select brand" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {brands.map((b) => (
+                      <SelectItem key={b} value={b}>
+                        {b}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
+
+            {/* Sort / Order */}
+            <div>
+              <p className="mb-2 text-sm font-medium">Sort By</p>
+              <Select name="sort" defaultValue={searchParams.orderby || ""}>
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Select" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="date">Latest</SelectItem>
+                  <SelectItem value="popularity">Popularity</SelectItem>
+                  <SelectItem value="rating">Rating</SelectItem>
+                  <SelectItem value="price">Price: Low to High</SelectItem>
+                  <SelectItem value="price-desc">Price: High to Low</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Stock Status */}
+            <div>
+              <p className="mb-2 text-sm font-medium">Stock Status</p>
+              <Select
+                name="stock"
+                defaultValue={searchParams.stock_status || ""}
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Select" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="instock">In Stock</SelectItem>
+                  <SelectItem value="outofstock">Out of Stock</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <Button type="submit" className="w-full">
+              Apply Filters
+            </Button>
+          </form>
+        </Card>
+      </div>
+    </>
+  );
+}
+
+export function ProductCard({ product }: { product: WooProduct }) {
+  const { cart, addToCart } = useCart();
+  const { updateQuantity, removeItem } = useZustandCart();
+  const [justAdded, setJustAdded] = useState(false);
+  
+  // Track image loading state to show custom loader
+  const [imageLoaded, setImageLoaded] = useState(false);
+  
+  // Lazy loading: Only render when card is in viewport
+  // This improves performance by not rendering off-screen products
+  const { ref, inView } = useInView({
+    triggerOnce: true, // Load once and stay loaded
+    threshold: 0.1, // Trigger when 10% of card is visible
+    rootMargin: '50px', // Start loading slightly before entering viewport
+  });
+
+  // current quantity for this product from cart (fast, local)
+  const currentQty = cart.find((i) => i.slug === product.slug)?.quantity ?? 0;
+
+  function handleAddToCart() {
+    // Instant optimistic add — updates local CartContext immediately
+    addToCart({ ...product, quantity: 1 });
+
+    // Also update global zustand cart so other consumers (e.g., CartToastContainer) reflect totals instantly
+    try {
+      const addItem = useZustandCart.getState()?.addItem;
+      if (addItem) {
+        // non-blocking: update store; the store sets new state synchronously before making any network calls
+        addItem({
+          id: product.id,
+          name: product.name,
+          slug: product.slug,
+          price: product.price,
+          images: product.images,
+          quantity: 1,
+        });
+      }
+    } catch (e) {
+      // swallow - don't block UX
+      console.error("Failed to sync to global cart", e);
+    }
+
+    // tiny visual feedback for the user
+    setJustAdded(true);
+    setTimeout(() => setJustAdded(false), 400);
+
+    // existing toast behavior will run via CartContext dispatch event
+  }
+
+  function handleIncrement() {
+    const newQty = currentQty + 1;
+    updateQuantity(product.id, newQty);
+    
+    // Also update local cart context
+    addToCart({ ...product, quantity: 1 });
+  }
+
+  function handleDecrement() {
+    if (currentQty <= 1) {
+      removeItem(product.id);
+      // Also remove from local cart context
+      const cartItem = cart.find((i) => i.slug === product.slug);
+      if (cartItem) {
+        addToCart({ ...product, quantity: -currentQty });
+      }
+    } else {
+      const newQty = currentQty - 1;
+      updateQuantity(product.id, newQty);
+      // Also update local cart context
+      addToCart({ ...product, quantity: -1 });
+    }
+  }
+
+  // Optimize performance by not rendering the full card if it's not in the viewport
+  if (!inView) {
+    return <div ref={ref} className="aspect-[3/4] bg-gray-50/50" />;
+  }
+
+  return (
+    <Card ref={ref} className="group p-0 rounded-none border-none shadow-sm transition hover:shadow-md overflow-hidden">
+      <CardContent className="p-0 flex flex-col h-full">
+        {/* Product Image with Custom Loading State */}
+        <div className="relative aspect-square overflow-hidden bg-gray-50">
+          {/* Custom Loading State: Pulsing Atlaze Logo */}
+          {!imageLoaded && (
+            <div className="absolute inset-0 flex items-center justify-center bg-gray-50">
+              <div className="relative w-16 h-16 animate-pulse">
+                <Image
+                  src="/logo/Untitled_design_20251108_095010_0000__1_-removebg-preview.png"
+                  alt="Loading..."
+                  fill
+                  className="object-contain grayscale opacity-30"
+                />
+              </div>
+            </div>
+          )}
+          
+          {/* Actual Product Image */}
+          <Image
+            src={product.images?.[0]?.src || "/placeholder.png"}
+            alt={product.name}
+            fill
+            className={`object-cover transition-all duration-300 ${
+              imageLoaded ? 'opacity-100' : 'opacity-0'
+            } group-hover:scale-105`}
+            onLoad={() => setImageLoaded(true)}
+            loading="lazy"
+          />
+        </div>
+
+        {/* Product details */}
+        <div className="flex flex-col flex-1 space-y-2 px-2 pb-2">
+          <div className="flex-1">
+            <h3 className="line-clamp-2 text-sm font-medium leading-tight">{product.name}</h3>
+            
+            {/* Rating */}
+            <div className="flex items-center gap-2">
+              {product.average_rating && (
+                <Ratings rating={parseFloat(product.average_rating)} starSize={14} />
+              )}
+              
+            </div>
+
+            <div className="flex justify-between mt-2 items-center">
+              {/* Price */}
+            <div className="text-base flex items-center gap-1 font-semibold text-primary">
+            <div className="w-[14.5px] relative h-[14.5px] lg:w-[20px] lg:h-[20px]">
+                    <Image
+                      src="/home/hero/Nigeria.png"
+                      alt="nigeria logo"
+                      fill
+                      className="object-cover"
+                    />
+                  </div>{Number(product.price).toLocaleString()}</div>
+            {product.total_sales !== undefined && product.total_sales > 0 && (
+                <span className="text-xs flex items-center gap-1 text-muted-foreground">({product.total_sales}) purchased</span>
               )}
             </div>
-          </footer>
-        </main>
-      </div>
+          </div>
+
+          {/* Cart Controls - Always reserve space, show on hover */}
+          <div className="min-h-[32px] flex items-end">
+            {currentQty === 0 ? (
+              <button
+                onClick={handleAddToCart}
+                disabled={product.stock_status === "outofstock"}
+                className={`h-8 bg-[#6a00f3] text-white rounded-sm w-full transition-all lg:opacity-0 lg:group-hover:opacity-100 hover:opacity-100 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-sm font-medium ${
+                  justAdded ? "scale-110 opacity-100" : ""
+                }`}
+                aria-label="Add to cart"
+              >
+                <ShoppingCart className="h-4 w-4" /> Add to cart
+              </button>
+            ) : (
+              <div className="flex items-center gap-1 bg-[#6a00f3] text-white rounded-sm justify-center h-8 px-1 w-full">
+                <Button
+                  size="icon"
+                  variant="ghost"
+                  onClick={handleDecrement}
+                  className="h-7 w-7 rounded-full hover:bg-background"
+                  aria-label="Decrease quantity"
+                >
+                  <span className="text-lg leading-none">−</span>
+                </Button>
+                <span className="min-w-[24px] text-center text-sm font-medium">
+                  {currentQty}
+                </span>
+                <Button
+                  size="icon"
+                  variant="ghost"
+                  onClick={handleIncrement}
+                  className="h-7 w-7 rounded-full hover:bg-background"
+                  aria-label="Increase quantity"
+                >
+                  <span className="text-lg leading-none">+</span>
+                </Button>
+              </div>
+            )}
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
+export function Pagination({ totalPages }: { totalPages: number }) {
+  const router = useRouter();
+  const params = useSearchParams();
+  const page = Number(params.get("page") ?? 1);
+
+  function goTo(p: number) {
+    const query = new URLSearchParams(params.toString());
+    query.set("page", p.toString());
+    router.push(`?${query.toString()}`);
+  }
+
+  if (totalPages <= 1) return null;
+
+  return (
+    <div className="flex items-center justify-center gap-2">
+      <Button
+        variant="outline"
+        size="sm"
+        disabled={page === 1}
+        onClick={() => goTo(page - 1)}
+      >
+        Prev
+      </Button>
+
+      <span className="text-sm">
+        Page {page} of {totalPages}
+      </span>
+
+      <Button
+        variant="outline"
+        size="sm"
+        disabled={page === totalPages}
+        onClick={() => goTo(page + 1)}
+      >
+        Next
+      </Button>
     </div>
   );
 }

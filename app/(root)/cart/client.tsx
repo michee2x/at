@@ -13,14 +13,12 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import OrderSummary from "@/sections/cart/OrderSummary";
 import { useCart } from "@/hooks/useCart";
-import CartSummaryButton from "@/components/cart/CartSummaryButton";
+import { Info, Truck } from "lucide-react";
 
 export function DialogDeleteDemo() {
-  //const { removeFromCart, itemToDelete } = useCart();
   const itemToDelete = useCart((state) => state.itemToDelete);
   const removeItem = useCart((state) => state.removeItem);
   const setItemToDelete = useCart((state) => state.setItemToDelete);
@@ -29,19 +27,19 @@ export function DialogDeleteDemo() {
 
   const handleConfirm = async () => {
     await removeItem(itemToDelete.id);
-    setItemToDelete(null); // reset
+    setItemToDelete(null);
   };
+  
   return (
     <DialogContent className="sm:max-w-[425px]">
       <DialogHeader>
         <DialogTitle>Remove Product</DialogTitle>
         <DialogDescription>
-          Are you sure you want to remove “{itemToDelete.name}” from your cart?.
-          This action can’t be undone.
+          Are you sure you want to remove &quot;{itemToDelete.name}&quot; from your cart?
+          This action can&apos;t be undone.
         </DialogDescription>
       </DialogHeader>
-      <div className="grid gap-4"></div>
-      <DialogFooter>
+      <DialogFooter className="gap-2 sm:gap-0">
         <DialogClose asChild>
           <Button variant="outline" onClick={() => setItemToDelete(null)}>
             Cancel
@@ -50,10 +48,9 @@ export function DialogDeleteDemo() {
         <DialogClose asChild>
           <Button
             onClick={handleConfirm}
-            type="submit"
-            className="bg-[#DC2626] hover:bg-[#B91C1C] text-white"
+            className="bg-red-600 hover:bg-red-700 text-white"
           >
-            Delete
+            Remove
           </Button>
         </DialogClose>
       </DialogFooter>
@@ -62,29 +59,43 @@ export function DialogDeleteDemo() {
 }
 
 const CartPage = () => {
-
-
   return (
     <Dialog>
-      <div className="w-screen px-2 container flex lg:flex-row flex-col mx-auto lg:px-10 pt-7 min-h-screen">
-        <div className="lg:w-1/2">
-          <div className="w-full h-[68px] bg-[#F5F5F5] p-[8px]">
-            <h1 className="text-[16px]">Free Delivery</h1>
-            <h3 className="text-[14px] mt-[3px]">
-              Applies to orders of #20 000.00 or more.{" "}
-              <span className="underline">View details</span>
-            </h3>
-          </div>
-          {/* PRODUCTS */}
-          <div className="lg:w-[90%] mt-6 flex flex-col gap-5 min-h-[20rem]">
-            <h1 className="helvetica hidden lg:flex">Your Cart</h1>
+      <div className="container mx-auto px-4 py-8 lg:py-12 min-h-screen">
+        <h1 className="text-3xl font-bold mb-8 text-gray-900">Your Cart</h1>
+        
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
+          {/* Main Cart Section */}
+          <div className="lg:col-span-8">
+            {/* Free Delivery Banner */}
+            <div className="bg-blue-50 border border-blue-100 rounded-xl p-4 mb-8 flex items-start gap-4 text-blue-900">
+              <div className="p-2 bg-blue-100 rounded-lg text-blue-600">
+                <Truck className="w-5 h-5" />
+              </div>
+              <div>
+                <h3 className="font-semibold text-sm">Free Delivery Available</h3>
+                <p className="text-sm text-blue-700 mt-1">
+                  Applies to orders of ₦20,000.00 or more. <span className="underline cursor-pointer font-medium hover:text-blue-900">View details</span>
+                </p>
+              </div>
+            </div>
+
+            {/* Cart List */}
             <CartList />
           </div>
+
+          {/* Sidebar - Order Summary */}
+          <div className="lg:col-span-4">
+            <div className="sticky top-24">
+              <OrderSummary />
+              
+              <div className="mt-6 flex items-center gap-2 text-sm text-gray-500 justify-center">
+                <Info className="w-4 h-4" />
+                <span>Secure Checkout using Paystack</span>
+              </div>
+            </div>
+          </div>
         </div>
-        <div className="lg:w-1/2 flex lg:justify-center mt-10 lg:mt-0">
-          <OrderSummary />
-        </div>
-        
       </div>
       <DialogDeleteDemo />
     </Dialog>

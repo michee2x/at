@@ -1,22 +1,46 @@
+import React from "react";
 import OrderSuccessClient from "./OrderSuccessClient";
+import { getServerSessionFromAPI } from "@/utils/getServerSessionFromAPI";
+import { getUserOrderByIdAction } from "@/lib/actions/UserAction";
+import { toNumber } from "@/utils/to-number";
+import { redirect } from "next/navigation";
 
 interface OrderSuccessPageProps {
-  params: { id: string } | Promise<{ id: string }>;
+  params: Promise<{ id: string }>;
 }
 
 export default async function OrderSuccessPage({
   params,
 }: OrderSuccessPageProps) {
-  // Await in case params is a Promise (React Promise from App Router)
   const resolvedParams = await params;
-  const id = resolvedParams?.id;
+  const idStr = resolvedParams?.id;
 
-  if (!id) {
-    console.log("Invalid order ID: ", resolvedParams);
+  if (!idStr) {
     return <div className="p-6 text-red-600">Invalid order ID</div>;
   }
 
-  console.log("Order ID: ", id);
+  const session = await getServerSessionFromAPI();
 
-  return <OrderSuccessClient orderId={id} />;
+  if (!session?.user?.id) {
+    redirect("/login");
+  }
+
+  const customerId = toNumber(session.user.id);
+  // Handle potential colon in ID as seen in previous client code
+  const orderId = Number(idStr.replace(":", ""));
+  
+  const order = await getUserOrderByIdAction(customerId, orderId);
+
+  if (!order) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-gray-900">Order not found</h1>
+          <p className="text-gray-600 mt-2">Could not locate order #{orderId}</p>
+        </div>
+      </div>
+    );
+  }
+
+  return <OrderSuccessClient initialOrder={order} />;
 }

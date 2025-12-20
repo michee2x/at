@@ -161,7 +161,7 @@ export interface WooProduct {
   slug: string;
   permalink?: string;
   description: string;
-  short_description: string;
+  short_description?: string;
   sku: string;
   price: string;
   regular_price: string;
@@ -194,6 +194,7 @@ export type WooProductToCartItem = Pick<
   | 'slug'
   | 'price'
   | 'images'
+  | "short_description"
   // add whatever you actually need
 > & {
   quantity: number;
@@ -216,6 +217,10 @@ export type Customer = {
     city: string;
     phone: string;
     email: string;
+    state?: string;
+    postcode?: string;
+    country?: string;
+    company?: string;
   };
 
   shipping: {
@@ -225,6 +230,10 @@ export type Customer = {
     address_2: string;
     city: string;
     phone: string;
+    state?: string;
+    postcode?: string;
+    country?: string;
+    company?: string;
   };
 
   avatar_url: string;

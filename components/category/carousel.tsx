@@ -15,10 +15,10 @@ export function Banner() {
         className="object-fill h-full"
       />
       <div className="lg:w-[336px] w-[136px] h-[28px] right-4 top-10 lg:h-[228px] absolute lg:top-[10%] lg:right-[19%]">
-        <Image
-          fill
-          alt="atlaze electronics category image"
-          src="/banner/Group%203.png"
+          <Image
+            fill
+            alt="atlaze electronics category image"
+            src="/banner/Group%203.png"
           className="object-cover"
         />
       </div>
@@ -42,24 +42,33 @@ export function Banner() {
 }
 export function BannerTwo() {
   return (
-    <section className="bg-purple-700 p-2 flex items-center w-full h-full">
-      {/* Left section - pumpkin + bag */}
-      <div className="lg:w-[45%] w-[35%] lg:px-10 lg:pt-5 h-full">
-        <h3 className="text-[16px] lg:text-4xl">Own the Look. Wear the Culture!</h3>
-        <p className="lg:text-[14px] hidden lg:flex font-medium font-poppins max-w-[80%] mt-2 text-white">
+    <section className="bg-gradient-to-br from-[#7c3aed] via-[#a855f7] to-[#c084fc] p-2 flex items-center w-full h-full relative overflow-hidden">
+      {/* Subtle pattern overlay */}
+      <div className="absolute inset-0 opacity-5">
+        <div className="absolute inset-0" style={{
+          backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)',
+          backgroundSize: '30px 30px'
+        }} />
+      </div>
+
+      {/* Left section - text content */}
+      <div className="lg:w-[45%] w-[35%] lg:px-10 lg:pt-5 h-full relative z-10">
+        <h3 className="text-white text-[16px] lg:text-4xl font-bold">Own the Look. Wear the Culture!</h3>
+        <p className="lg:text-[14px] hidden lg:flex font-medium font-poppins max-w-[80%] mt-2 text-white/90">
           Step into the world of African fashion — where every outfit tells a
           story, and every piece is made with pride
         </p>
 
-        <button className="lg:px-10 px-2 py-1 text-[10px] lg:py-3 lg:text-[14px] mt-4 cursor-pointer bg-white rounded-full text-black">
+        <button className="lg:px-10 px-2 py-1 text-[10px] lg:py-3 lg:text-[14px] mt-4 cursor-pointer bg-white hover:bg-white/90 transition-colors rounded-full text-purple-700 font-semibold shadow-lg">
           shop now
         </button>
       </div>
-      <div className="flex-1 h-full gap-1 lg:gap-3 flex">
+
+      <div className="flex-1 h-full gap-1 lg:gap-3 flex relative z-10">
         {/* Pumpkin */}
-        <div className="h-full overflow-hidden rounded-xl w-1/2 relative">
+        <div className="h-full overflow-hidden rounded-xl w-1/2 relative shadow-xl">
           <Image
-            src="/banner/attractive-african-female-wearing-elegant-black-dress-posing-wall.jpg" // replace with actual image path
+            src="/banner/attractive-african-female-wearing-elegant-black-dress-posing-wall.jpg"
             alt="Pumpkin"
             fill
             className="object-cover rounded-lg"
@@ -70,17 +79,17 @@ export function BannerTwo() {
           {/* Right section - candy boxes + express */}
           <div className="flex h-full flex-col w-full items-center md:items-end">
             <div className="grid grid-cols-2 w-full h-1/2 items-center gap-1 lg:gap-3">
-              <div className="relative overflow-hidden rounded-xl w-full h-full">
+              <div className="relative overflow-hidden rounded-xl w-full h-full shadow-xl">
                 <Image
-                  src="/banner/young-woman-wearing-orange-dress-with-turban-ethnic-jewelry.jpg" // replace with actual image path
+                  src="/banner/young-woman-wearing-orange-dress-with-turban-ethnic-jewelry.jpg"
                   alt="Ring Pop"
                   fill
                   className="object-cover object-top rounded-xl"
                 />
               </div>
-              <div className="relative overflow-hidden rounded-xl w-full h-full">
+              <div className="relative overflow-hidden rounded-xl w-full h-full shadow-xl">
                 <Image
-                  src="/banner/stunning-young-woman-with-voluminous-curly-hairstyle-elegant-costume-posing.jpg" // replace with actual image path
+                  src="/banner/stunning-young-woman-with-voluminous-curly-hairstyle-elegant-costume-posing.jpg"
                   alt="Twix"
                   fill
                   className="object-cover rounded-xl"
@@ -90,7 +99,7 @@ export function BannerTwo() {
 
             {/* Express Delivery */}
             <div className="w-full h-1/2 pt-2 flex justify-center">
-              <div className="bg-white hidden lg:flex h-1/2 w-full text-blue-700 font-semibold px-4 py-2 rounded-lg items-center gap-2 shadow-md">
+              <div className="bg-white hidden lg:flex h-1/2 w-full text-purple-700 font-semibold px-4 py-2 rounded-lg items-center gap-2 shadow-md">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
