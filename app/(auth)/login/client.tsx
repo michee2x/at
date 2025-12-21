@@ -31,7 +31,7 @@ export default function ClientPage() {
   // If there is an active session, redirect to dashboard
   useEffect(() => {
     if (session) {
-      window.location.href = "/dashboard"; // Redirect to dashboard if logged in
+      window.location.href = "/my-account"; // Redirect to dashboard if logged in
     }
   }, [session]);
 
