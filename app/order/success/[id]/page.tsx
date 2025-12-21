@@ -1,9 +1,10 @@
 import React from "react";
 import OrderSuccessClient from "./OrderSuccessClient";
-import { getServerSessionFromAPI } from "@/utils/getServerSessionFromAPI";
 import { getUserOrderByIdAction } from "@/lib/actions/UserAction";
 import { toNumber } from "@/utils/to-number";
 import { redirect } from "next/navigation";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
 interface OrderSuccessPageProps {
   params: Promise<{ id: string }>;
@@ -19,7 +20,7 @@ export default async function OrderSuccessPage({
     return <div className="p-6 text-red-600">Invalid order ID</div>;
   }
 
-  const session = await getServerSessionFromAPI();
+  const session = await getServerSession(authOptions);
 
   if (!session?.user?.id) {
     redirect("/login");
