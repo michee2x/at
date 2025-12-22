@@ -1,12 +1,11 @@
 "use client";
 
 import React, { useEffect } from "react";
-import VerticalCategory from "./VerticalCategory";
 import { useCategory } from "@/contexts/category-context";
 import Link from "next/link";
 import { WooCategory } from "@/types";
-import { FaChevronRight } from "react-icons/fa6";
-import { useSideBar } from "@/contexts/sidebar-context";
+import { ChevronRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 type Props = {
   openPopupWithDelay: (category: WooCategory) => void;
@@ -27,22 +26,24 @@ const ParentCategories = ({
 
   if (isLoading) {
     return (
-      <div className="text-center py-8 text-gray-500">
-        Loading categories...
+      <div className="space-y-1">
+        {[...Array(8)].map((_, idx) => (
+          <div key={idx} className="h-10 bg-gray-100 rounded-lg animate-pulse" />
+        ))}
       </div>
     );
   }
 
   if (isError) {
     return (
-      <div className="text-center text-red-500 py-8">
-        Error fetching categories: {(error as Error).message}
+      <div className="text-center text-red-500 py-4 text-sm">
+        Error loading categories
       </div>
     );
   }
 
   if (!categories?.length) {
-    return <div className=""></div>;
+    return <div className="text-center text-gray-400 py-4 text-sm">No categories</div>;
   }
 
   return (
@@ -50,18 +51,19 @@ const ParentCategories = ({
       {categories.map((c) => (
         <Link
           key={c.id}
-          role="listitem"
           href={`/categories/?cat=${c.id}&title=${c.name}`}
           onMouseEnter={() => openPopupWithDelay(c)}
           onMouseLeave={closePopupWithDelay}
-          className="w-full text-[#2B2B2B] capitalize hover:text-[#9747FF] cursor-pointer h-auto flex items-center justify-between"
         >
-          <span className="text-[15px] lg:text-[16px]">
-            {c.name?.length > 20
-              ? `${c.name.slice(0, 20).replace("amp;", "").toLowerCase()}...`
-              : c.name.replace("amp;", "").toLowerCase()}
-          </span>
-          <FaChevronRight className="text-xl" />
+          <Button
+            variant="ghost"
+            className="w-full justify-between h-10 px-3 text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors group"
+          >
+            <span className="text-sm font-medium capitalize truncate">
+              {c.name?.replace("amp;", "").toLowerCase()}
+            </span>
+            <ChevronRight className="h-4 w-4 text-gray-400 group-hover:text-gray-600 transition-colors flex-shrink-0" />
+          </Button>
         </Link>
       ))}
     </>

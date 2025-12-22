@@ -2,7 +2,7 @@
 
 import { useFilter } from "@/contexts/filter-context";
 import { Button } from "@/components/ui/button";
-import { Sliders } from "lucide-react";
+import { ListFilter } from "lucide-react";
 import { useCallback } from "react";
 
 export default function FilterToggle() {
@@ -28,7 +28,7 @@ export default function FilterToggle() {
       aria-pressed={showFilter}
       aria-label="Open filters"
     >
-      <Sliders className="h-4 w-4" />
+      <ListFilter className="h-4 w-4" />
       <span>Filters</span>
     </Button>
   );

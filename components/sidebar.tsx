@@ -2,18 +2,18 @@
 
 import { useSideBar } from "@/contexts/sidebar-context";
 import Link from "next/link";
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import Image from "next/image";
-import { FiEdit } from "react-icons/fi";
 import ParentCategories from "./ParentCategories";
 import { WooCategory } from "@/types";
 import CategoryInfo from "./CategoryInfo";
-import { useAuth } from "@/contexts/auth-context"; // Import the auth context
+import { useAuth } from "@/contexts/auth-context";
 import { SidebarSearchParams } from "./SidebarSearchParams";
+import { Button } from "@/components/ui/button";
+import { X, User } from "lucide-react";
+import { Separator } from "@/components/ui/separator";
 
 const Sidebar = () => {
-  const [activeInput, setActiveInput] = useState(false);
-
   const [hoveredCategory, setHoveredCategory] = useState<WooCategory | null>(
     null
   );
@@ -23,11 +23,8 @@ const Sidebar = () => {
   const popupTimeout = useRef<NodeJS.Timeout | null>(null);
 
   const { showSideBar, setShowSideBar } = useSideBar();
+  const { session } = useAuth();
 
-  // ⭐ Use AuthContext to get the session data
-  const { session, isLoading } = useAuth();
-
-  // ⭐ When hovering nav
   const openPopupWithDelay = (category: WooCategory) => {
     setHoveredCategory(category);
 
@@ -39,7 +36,6 @@ const Sidebar = () => {
     }, 200);
   };
 
-  // ⭐ When mouse leaves nav or popup
   const closePopupWithDelay = () => {
     if (hoverTimeout.current) clearTimeout(hoverTimeout.current);
     if (popupTimeout.current) clearTimeout(popupTimeout.current);
@@ -50,15 +46,13 @@ const Sidebar = () => {
     }, 300);
   };
 
-  // ⭐ If popup is hovered → keep open
   const keepPopupOpen = () => {
     if (popupTimeout.current) clearTimeout(popupTimeout.current);
     setIsPopupOpen(true);
   };
 
-  // Function to get user initials
   const getInitials = (name: string | null | undefined): string => {
-    if (!name) return "";
+    if (!name) return "GU";
     const parts = name.trim().split(" ");
     if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
     return (parts[0][0] + parts[1][0]).toUpperCase();
@@ -68,78 +62,75 @@ const Sidebar = () => {
     <div className="lg:flex z-[9999]">
       <SidebarSearchParams />
       <nav
-        className={`lg:w-[22%] w-[75%] h-screen bg-white flex-col overflow-auto pb-16 font-poppins flex z-[9999] fixed transition-all duration-300 ${
+        className={`lg:w-[22%] w-[75%] h-screen bg-white flex-col overflow-auto pb-16 flex z-[9999] fixed transition-all duration-300 ${
           showSideBar ? "left-0" : "-left-[100vw]"
-        } min-h-screen`}
+        } min-h-screen border-r border-gray-200`}
       >
-        {/* HEADER + PROFILE */}
-        <div className={`w-full px-2 lg:px-4 p-4`}>
-          {/* PROFILE */}
-          <div className="w-full mt-4 lg:mt-0 min-h-16 lg:min-h-28 flex flex-col place-content-between">
-            <div className="w-full flex items-center h-auto">
-              <span
-                onClick={() => setShowSideBar(false)}
-                className="text-xl hidden lg:flex text-black cursor-pointer"
-              >
-                ◀
-              </span>
-            </div>
-
-            <div className="w-full flex h-auto">
-              <div className="w-2/3 items-center gap-2 flex h-full">
-                {session?.user?.image ? (
-                  <Image
-                    src={session?.user.image}
-                    alt={session?.user.name ?? "User"}
-                    width={48}
-                    height={48}
-                    className="rounded-full object-cover"
-                  />
-                ) : (
-                  <div className="w-12 aspect-square h-12 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold">
-                    {getInitials(session?.user?.name)}
-                  </div>
-                )}
-                <div className="flex w-full h-full flex-col place-content-between">
-                  <span className="text-[#343A40] text-[18px] font-[500]">
-                    {session?.user?.name ?? "Guest"}
-                  </span>
-                  <span className="text-[#6C757D] text-[12px] font-[400]">
-                    {session?.user?.email ?? "No email"}
-                  </span>
-                </div>
+        {/* HEADER */}
+        <div className="sticky top-0 bg-white z-10 border-b border-gray-100">
+          <div className="flex items-center justify-between p-4">
+            <Link href="/" className="flex items-center gap-2">
+              <div className="relative w-8 h-8">
+                <Image
+                  className="object-cover"
+                  fill
+                  alt="atlaze-logo"
+                  src="/logo/Untitled_design_20251108_095010_0000__1_-removebg-preview.png"
+                />
               </div>
-
-              <div className="flex-1 text-xl text-black pr-2 flex mt-1 items-start lg:mt-2 justify-end">
-                <FiEdit />
-              </div>
-            </div>
-            {/* LOGOUT */}
-            {/* <LogoutButton /> */}
+              <h1 className="font-display text-xl italic text-[#2B2B2B]">
+                atlaze
+              </h1>
+            </Link>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setShowSideBar(false)}
+              className="h-8 w-8"
+            >
+              <X className="h-5 w-5" />
+            </Button>
           </div>
+        </div>
 
-          {/* INPUT BOX */}
-          <div
-            onMouseEnter={() => setActiveInput(true)}
-            onMouseLeave={() => setActiveInput(false)}
-            className="p-[1.2px] flex place-content-center mt-2 h-[43px] bg-gradient-to-r from-[#EBCC97] to-[#9747FF] rounded-lg"
+        {/* PROFILE SECTION */}
+        <div className="p-4">
+          <Link
+            href="/my-account"
+            className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors group"
           >
-            <div className="p-2 max-h-[48px] w-full bg-white flex flex-row-reverse items-center gap-3 rounded-lg">
-              <input
-                type="text"
-                className="w-[90%] border-0 bg-transparent outline-none"
-                placeholder="Virsual AI Assistant"
+            {session?.user?.image ? (
+              <Image
+                src={session.user.image}
+                alt={session.user.name ?? "User"}
+                width={48}
+                height={48}
+                className="rounded-full object-cover border-2 border-gray-200"
               />
-              <img
-                className="object-cover h-[26px]"
-                src="/d49ad3ba235d33ba9a0d6da5cd9ff0aefadb2ca5.png"
-                alt="AI logo"
-              />
+            ) : (
+              <div className="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center text-gray-700 font-semibold text-sm border-2 border-gray-300">
+                {getInitials(session?.user?.name)}
+              </div>
+            )}
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-semibold text-gray-900 truncate">
+                {session?.user?.name ?? "Guest User"}
+              </p>
+              <p className="text-xs text-gray-500 truncate">
+                {session?.user?.email ?? "Sign in to continue"}
+              </p>
             </div>
-          </div>
+          </Link>
+        </div>
 
-          {/* CATEGORY NAV */}
-          <div className="w-full flex flex-col lg:gap-5.5 gap-2.5 mt-14 h-auto">
+        <Separator className="my-2" />
+
+        {/* CATEGORIES */}
+        <div className="px-4 py-2">
+          <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3 px-2">
+            Categories
+          </h2>
+          <div className="flex flex-col gap-1">
             <ParentCategories
               closePopupWithDelay={closePopupWithDelay}
               openPopupWithDelay={openPopupWithDelay}
@@ -152,7 +143,7 @@ const Sidebar = () => {
       <div
         onClick={() => setShowSideBar(false)}
         className={`w-screen overflow-hidden fixed transition-all duration-500 h-screen ${
-          showSideBar ? "z-[9998] bg-gray-900/40 block" : "-z-40 hidden bg-transparent"
+          showSideBar ? "z-[9998] bg-black/50 block" : "-z-40 hidden bg-transparent"
         }`}
       >
         <div className="w-full h-full relative">
@@ -160,33 +151,33 @@ const Sidebar = () => {
           <div
             onMouseEnter={keepPopupOpen}
             onMouseLeave={closePopupWithDelay}
-            className={`w-[975px] hidden  absolute gap-8 rounded-xl lg:flex p-4 transition-all duration-300 ml-[25%] ${
+            className={`w-[900px] hidden absolute rounded-2xl lg:flex transition-all duration-300 ml-[25%] shadow-2xl ${
               isPopupOpen && showSideBar
                 ? "bg-white opacity-100 translate-y-0"
                 : "opacity-0 -translate-y-[100vh]"
-            } h-[527px] mt-16`}
+            } h-[550px] mt-16 border border-gray-200`}
           >
-            <div className="w-full rounded-xl bg-white gap-10 h-full flex">
+            <div className="w-full rounded-2xl bg-white h-full flex overflow-hidden">
               {hoveredCategory && Object.keys(hoveredCategory).length ? (
                 <CategoryInfo category={hoveredCategory} />
               ) : (
                 <div className="flex-1 animate-pulse p-8">
-                  <h1 className="w-16 h-4 bg-gray-200"></h1>
+                  <div className="w-32 h-6 bg-gray-200 rounded"></div>
                 </div>
               )}
 
-              <div className="flex-1 gap-4 rounded-lg p-4 flex">
-                <div className="flex-1 rounded-lg overflow-hidden relative">
+              <div className="w-[300px] p-6 bg-gray-50 border-l border-gray-200">
+                <div className="relative h-full rounded-xl overflow-hidden">
                   {hoveredCategory?.image?.src ? (
                     <Image
                       src={hoveredCategory.image.src}
                       alt={hoveredCategory.name}
-                      className="object-cover aspect-square"
+                      className="object-cover"
                       fill
                     />
                   ) : (
-                    <div className="size-full text-black/60 bg-gray-200 flex justify-center items-center text-[13px]">
-                      no image
+                    <div className="size-full bg-gray-200 flex justify-center items-center text-gray-400 text-sm">
+                      No image
                     </div>
                   )}
                 </div>

@@ -2,12 +2,21 @@ import { Suspense } from "react";
 import DashboardSidebar from "@/components/dashboard/sidebar";
 import { DashboardHeader } from "@/components/dashboard/header";
 import AtlazeLoader from "@/components/lottie/AtlazeLoader";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { redirect } from "next/navigation";
 
-export default function DashboardLayout({
+export default async function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const session = await getServerSession(authOptions);
+
+  if (!session) {
+    redirect("/login");
+  }
+
   return (
     <div className="min-h-screen bg-background">
       <DashboardHeader />

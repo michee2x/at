@@ -3,7 +3,9 @@
 import { useParentCategories } from "@/hooks/wc/useCategory";
 import { WooCategory } from "@/types";
 import Link from "next/link";
-import { IoChevronForward } from "react-icons/io5";
+import { ChevronRight } from "lucide-react";
+import { Card } from "@/components/ui/card";
+import Image from "next/image";
 
 const CategoryInfo = ({ category }: { category: WooCategory }) => {
   const {
@@ -16,17 +18,19 @@ const CategoryInfo = ({ category }: { category: WooCategory }) => {
   // Loading State
   if (isLoading) {
     return (
-      <div className="flex-1 overflow-auto flex flex-col gap-4 p-4">
-        <h1 className="text-xl flex items-center gap-2 text-gray-700">
-          {category?.name?.replace("amp;", "")} <IoChevronForward />
-        </h1>
-        <div className="flex justify-center flex-wrap list-none gap-3">
-          {[...Array(12)].map((_, idx) => (
-            <li key={idx} className="w-auto animate-pulse">
-              <div className="size-[6rem] rounded-full bg-gray-200"></div>
-              <div className="h-[7px] mr-6 mt-4 rounded-full bg-gray-200 w-2/3"></div>
-              <div className="h-[7px] mr-6 mt-2 rounded-full bg-gray-200 w-1/2"></div>
-            </li>
+      <div className="flex-1 overflow-auto p-6">
+        <div className="flex items-center gap-2 mb-6">
+          <h2 className="text-xl font-semibold text-gray-900">
+            {category?.name?.replace("amp;", "")}
+          </h2>
+          <ChevronRight className="h-5 w-5 text-gray-400" />
+        </div>
+        <div className="grid grid-cols-4 gap-4">
+          {[...Array(8)].map((_, idx) => (
+            <div key={idx} className="space-y-2">
+              <div className="aspect-square rounded-lg bg-gray-200 animate-pulse" />
+              <div className="h-4 bg-gray-200 rounded animate-pulse" />
+            </div>
           ))}
         </div>
       </div>
@@ -36,9 +40,9 @@ const CategoryInfo = ({ category }: { category: WooCategory }) => {
   // Error State
   if (isError) {
     return (
-      <div className="flex-1 p-4 flex flex-col items-center justify-center text-center text-red-500">
-        <p className="text-sm">⚠️ Failed to load subcategories.</p>
-        <p className="text-xs text-gray-500">{error?.message}</p>
+      <div className="flex-1 p-6 flex flex-col items-center justify-center text-center">
+        <p className="text-sm text-red-500">⚠️ Failed to load subcategories.</p>
+        <p className="text-xs text-gray-500 mt-1">{error?.message}</p>
       </div>
     );
   }
@@ -46,12 +50,15 @@ const CategoryInfo = ({ category }: { category: WooCategory }) => {
   // Empty / No Subcategory State
   if (!subCategories || subCategories.length === 0) {
     return (
-      <div className="flex-1 flex flex-col items-center justify-center gap-3 p-4 text-gray-600">
-        <h1 className="text-xl flex items-center gap-2">
-          {category.name.replace("amp;", "")} <IoChevronForward />
-        </h1>
-        <div className="text-center text-sm opacity-80">
-          No subcategories found for this category.
+      <div className="flex-1 p-6">
+        <div className="flex items-center gap-2 mb-6">
+          <h2 className="text-xl font-semibold text-gray-900">
+            {category.name.replace("amp;", "")}
+          </h2>
+          <ChevronRight className="h-5 w-5 text-gray-400" />
+        </div>
+        <div className="flex items-center justify-center h-64 text-gray-400 text-sm">
+          No subcategories found
         </div>
       </div>
     );
@@ -59,37 +66,40 @@ const CategoryInfo = ({ category }: { category: WooCategory }) => {
 
   // Normal UI
   return (
-    <div className="flex-1 lg:min-w-1/2 overflow-auto flex flex-col gap-4 p-4">
-      <h1 className="text-xl flex items-center gap-2">
-        {category ? category.name.replace("amp;", "") : "no name"}{" "}
-        <IoChevronForward />
-      </h1>
-      <div className="flex flex-wrap jus flex-1 gap-3">
-        {subCategories.map((sub, id) => (
+    <div className="flex-1 overflow-auto p-6">
+      <div className="flex items-center gap-2 mb-6">
+        <h2 className="text-xl font-semibold text-gray-900">
+          {category.name.replace("amp;", "")}
+        </h2>
+        <ChevronRight className="h-5 w-5 text-gray-400" />
+      </div>
+      <div className="grid grid-cols-4 gap-4">
+        {subCategories.map((sub) => (
           <Link
-            key={`${id}`}
-            href={`/categories/?cat=${sub.id}&title=${sub.name}`} // open subcategory page
-            className="size-[6rem] aspect-square py-2 flex items-center cursor-pointer flex-col gap-2 h-fit min-h-40 rounded-lg hover:bg-gray-50 transition"
+            key={sub.id}
+            href={`/categories/?cat=${sub.id}&title=${sub.name}`}
           >
-            {sub.image?.src ? (
-              <img
-                src={sub.image.src}
-                alt={sub.name}
-                className="size-[6rem] rounded-full object-cover"
-              />
-            ) : (
-              <div className="size-[6rem] rounded-full text-black/60 bg-gray-200 flex justify-center items-center text-[13px]">
-                no image
+            <Card className="group cursor-pointer hover:shadow-lg transition-all duration-200 overflow-hidden border-gray-200 p-0">
+              <div className="aspect-square relative bg-gray-100">
+                {sub.image?.src ? (
+                  <Image
+                    src={sub.image.src}
+                    alt={sub.name}
+                    fill
+                    className="object-cover group-hover:scale-105 transition-transform duration-200"
+                  />
+                ) : (
+                  <div className="size-full bg-gray-200 flex justify-center items-center text-gray-400 text-xs">
+                    No image
+                  </div>
+                )}
               </div>
-            )}
-            <span className="text-xs capitalize text-center text-wrap items-center justify-center p-1 text-black/80 sm:text-sm line-clamp-2">
-              {sub.name?.length > 20
-                ? `${sub.name
-                    .slice(0, 20)
-                    .toLowerCase()
-                    .replace("amp;", "")}...`
-                : sub.name.replace("amp;", "")}
-            </span>
+              <div className="p-3">
+                <p className="text-xs font-medium text-gray-900 capitalize line-clamp-2 leading-tight">
+                  {sub.name.replace("amp;", "").toLowerCase()}
+                </p>
+              </div>
+            </Card>
           </Link>
         ))}
       </div>

@@ -94,6 +94,10 @@ export interface QueryParams {
   sort?: string;
   store?: string;
   domain?: string;
+  vendor?: string;
+  rating?: string | number;
+  on_sale?: string | boolean;
+  featured?: string | boolean;
   [key: string]: string | number | boolean | undefined; // allow attr_* and custom keys
 }
 
@@ -195,7 +199,7 @@ export type WooProductToCartItem = Pick<
   | 'price'
   | 'images'
   | "short_description"
-  // add whatever you actually need
+// add whatever you actually need
 > & {
   quantity: number;
 };

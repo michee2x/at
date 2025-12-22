@@ -41,7 +41,7 @@ export function DashboardHeader() {
             </Button>
           </SheetTrigger>
           <SheetContent side="left" className="w-80 p-0">
-            <DashboardSidebar />
+            <DashboardSidebar onLinkClick={() => setOpen(false)} />
           </SheetContent>
         </Sheet>
         <Link

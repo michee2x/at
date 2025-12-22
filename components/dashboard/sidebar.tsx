@@ -15,6 +15,7 @@ import {
   HelpCircle,
   LogOut,
   ChevronRight,
+  LayoutDashboard,
 } from "lucide-react";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -22,6 +23,12 @@ import { Separator } from "@/components/ui/separator";
 import { signOut } from "next-auth/react";
 
 const navigationItems = [
+  {
+    id: "dashboard",
+    label: "Dashboard",
+    icon: LayoutDashboard,
+    href: "/my-account",
+  },
   {
     id: "orders",
     label: "Orders",
@@ -73,7 +80,7 @@ const navigationItems = [
   },
 ];
 
-export default function DashboardSidebar() {
+export default function DashboardSidebar({ onLinkClick }: { onLinkClick?: () => void }) {
   const pathname = usePathname();
 
   return (
@@ -81,11 +88,9 @@ export default function DashboardSidebar() {
     // Visibility on desktop/mobile is controlled by the parent layout.
     <aside className="flex flex-col h-full w-80 border-r bg-muted/30 lg:fixed lg:inset-y-0 lg:top-16">
       <div className="flex flex-col h-full">
-        <div className="p-6 lg:p-8">
-          <Link href="/my-account" className={buttonVariants({variant:"ghost"})}>
-            <h2 className="text-2xl font-bold tracking-tight">Dashboard</h2>
-          </Link>
-          <p className="text-sm text-muted-foreground mt-1">
+        <div className="p-4 lg:p-6 mb-1">
+          <h2 className="text-xl font-bold tracking-tight">Account</h2>
+          <p className="text-xs text-muted-foreground mt-0.5">
             Manage your account
           </p>
         </div>
@@ -103,7 +108,7 @@ export default function DashboardSidebar() {
               const isActive = pathname === item.href;
 
               return (
-                <Link key={item.id} href={item.href} prefetch={true}>
+                <Link key={item.id} href={item.href} prefetch={true} onClick={onLinkClick}>
                   <Button
                     variant={isActive ? "secondary" : "ghost"}
                     className={`w-full justify-start text-left h-auto py-3 px-4 ${

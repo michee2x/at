@@ -1,193 +1,19 @@
 "use client";
 
 import Image from "next/image";
-import { ShoppingCart } from "lucide-react";
+import Link from "next/link";
+import { ShoppingCart, Eye } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { WooProduct } from "@/types";
-import { toast } from "react-toastify";
 import { Button } from "@/components/ui/button";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Input } from "@/components/ui/input";
-import { SearchParamsType } from "./page";
 import { Ratings } from "@/components/Ratings";
 import { useInView } from "react-intersection-observer";
+import { useRef, useState } from "react";
 
 import { useCart } from "@/contexts/CartContext";
-import { useState } from "react";
 import { useCart as useZustandCart } from "@/hooks/useCart";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-
-import { useFilter } from "@/contexts/filter-context";
-import { useLockBodyScroll } from "@/hooks/useLockBodyScroll";
-
-interface FilterSidebarProps {
-  searchParams: SearchParamsType;
-  brands?: string[]; // You can fetch from WooCommerce attributes
-}
-
-export function FilterSidebar({
-  searchParams,
-  brands = [],
-}: FilterSidebarProps) {
-  const router = useRouter();
-  const params = useSearchParams();
-  const { showFilter, setShowFilter } = useFilter();
-
-  // Prevent background scroll when the overlay is open
-  useLockBodyScroll(showFilter);
-
-  function applyFilter(formData: FormData) {
-    const query = new URLSearchParams(params.toString());
-
-    // Price range
-    const min = formData.get("min") as string;
-    const max = formData.get("max") as string;
-    if (min) query.set("min_price", min);
-    if (max) query.set("max_price", max);
-
-    // Brand
-    const brand = formData.get("brand") as string;
-    if (brand) query.set("attribute:pa_brand", brand);
-
-    // Sort
-    const sort = formData.get("sort") as string;
-    if (sort) query.set("orderby", sort);
-
-    // Stock status
-    const stock = formData.get("stock") as string;
-    if (stock) query.set("stock_status", stock);
-
-    // Reset to page 1
-    query.set("page", "1");
-
-    // Close overlay on mobile after applying
-    setShowFilter(false);
-
-    router.push(`?${query.toString()}`);
-  }
-
-  return (
-    <>
-      {/* Backdrop / Overlay for mobile */}
-      <div
-        className={`${
-          showFilter ? "fixed inset-0 z-40 bg-gray-900/40 lg:hidden" : "hidden"
-        }`}
-        onClick={() => setShowFilter(false)}
-        aria-hidden
-      />
-
-      {/* Sidebar: overlay on mobile when open, regular static sidebar on lg+ */}
-      <div
-        id="filter-sidebar"
-        className={`transition-all duration-200 ${
-          showFilter
-            ? "fixed pt-16 left-0 top-0 z-[9999] w-full h-[calc(100vh-4rem)]  p-4 bg-white overflow-auto"
-            : "hidden"
-        } lg:block lg:static lg:w-auto lg:h-auto lg:overflow-visible`}
-      >
-        <Card className="h-fit rounded-2xl p-4 space-y-6">
-          {/* Mobile header with close button */}
-          <div className="w-full lg:hidden sticky top-0 bg-white flex items-center justify-between p-3 z-30">
-            <span className="font-medium">Filters</span>
-            <button
-              type="button"
-              onClick={() => setShowFilter(false)}
-              aria-label="Close filters"
-              className="text-lg"
-            >
-              ✕
-            </button>
-          </div>
-
-          <form action={applyFilter} className="space-y-4">
-            {/* Price Range */}
-            <div>
-              <p className="mb-2 text-sm font-medium">Price Range</p>
-              <div className="flex gap-2">
-                <Input
-                  name="min"
-                  placeholder="Min"
-                  type="number"
-                  defaultValue={searchParams.min_price || ""}
-                />
-                <Input
-                  name="max"
-                  placeholder="Max"
-                  type="number"
-                  defaultValue={searchParams.max_price || ""}
-                />
-              </div>
-            </div>
-
-            {/* Brand */}
-            {brands.length > 0 && (
-              <div>
-                <p className="mb-2 text-sm font-medium">Brand</p>
-                <Select name="brand" defaultValue={searchParams.brand || ""}>
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Select brand" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {brands.map((b) => (
-                      <SelectItem key={b} value={b}>
-                        {b}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            )}
-
-            {/* Sort / Order */}
-            <div>
-              <p className="mb-2 text-sm font-medium">Sort By</p>
-              <Select name="sort" defaultValue={searchParams.orderby || ""}>
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Select" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="date">Latest</SelectItem>
-                  <SelectItem value="popularity">Popularity</SelectItem>
-                  <SelectItem value="rating">Rating</SelectItem>
-                  <SelectItem value="price">Price: Low to High</SelectItem>
-                  <SelectItem value="price-desc">Price: High to Low</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            {/* Stock Status */}
-            <div>
-              <p className="mb-2 text-sm font-medium">Stock Status</p>
-              <Select
-                name="stock"
-                defaultValue={searchParams.stock_status || ""}
-              >
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Select" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="instock">In Stock</SelectItem>
-                  <SelectItem value="outofstock">Out of Stock</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            <Button type="submit" className="w-full">
-              Apply Filters
-            </Button>
-          </form>
-        </Card>
-      </div>
-    </>
-  );
-}
+import { QuickLookModal } from "@/components/QuickLookModal";
 
 export function ProductCard({ product }: { product: WooProduct }) {
   const { cart, addToCart } = useCart();
@@ -196,6 +22,9 @@ export function ProductCard({ product }: { product: WooProduct }) {
   
   // Track image loading state to show custom loader
   const [imageLoaded, setImageLoaded] = useState(false);
+  
+  // Quick Look Modal State
+  const [quickLookOpen, setQuickLookOpen] = useState(false);
   
   // Lazy loading: Only render when card is in viewport
   // This improves performance by not rendering off-screen products
@@ -207,6 +36,12 @@ export function ProductCard({ product }: { product: WooProduct }) {
 
   // current quantity for this product from cart (fast, local)
   const currentQty = cart.find((i) => i.slug === product.slug)?.quantity ?? 0;
+
+  // Check if product is on sale
+  const isOnSale = product.sale_price && parseFloat(product.sale_price) < parseFloat(product.regular_price);
+  const discountPercentage = isOnSale 
+    ? Math.round(((parseFloat(product.regular_price) - parseFloat(product.sale_price)) / parseFloat(product.regular_price)) * 100)
+    : 0;
 
   function handleAddToCart() {
     // Instant optimistic add — updates local CartContext immediately
@@ -264,14 +99,46 @@ export function ProductCard({ product }: { product: WooProduct }) {
 
   // Optimize performance by not rendering the full card if it's not in the viewport
   if (!inView) {
-    return <div ref={ref} className="aspect-[3/4] bg-gray-50/50" />;
+    return <div ref={ref} className="aspect-[3/4] bg-gray-50/50 rounded-xl" />;
   }
 
   return (
-    <Card ref={ref} className="group p-0 rounded-none border-none shadow-sm transition hover:shadow-md overflow-hidden">
+    <Card ref={ref} className="group p-0 rounded-xl border border-gray-200 shadow-sm hover:shadow-lg hover:border-[#6a00f3]/30 transition-all duration-300 overflow-hidden bg-white relative">
       <CardContent className="p-0 flex flex-col h-full">
         {/* Product Image with Custom Loading State */}
-        <div className="relative aspect-square overflow-hidden bg-gray-50">
+        <div className="relative aspect-square overflow-hidden bg-gray-50 group/image">
+          {/* Quick Look Button - Visible on Group Hover */}
+          {/* Subtle gradient overlay on hover */}
+          <div className="absolute inset-x-0 bottom-0 top-1/2 z-20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-t from-black/60 via-black/20 to-transparent pointer-events-none" />
+          
+          <div className="absolute bottom-3 left-3 z-30 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0">
+             <button
+                onClick={(e) => {
+                    e.preventDefault(); // Prevent navigating to product page
+                    setQuickLookOpen(true);
+                }}
+                className="bg-white hover:bg-gray-50 text-gray-900 transition-all transform hover:scale-105 shadow-sm hover:shadow-md rounded-full px-2.5 py-1 flex items-center gap-1.5 font-medium text-[11px] sm:text-xs border border-gray-200"
+                title="Quick Look"
+             >
+                <Eye className="w-3.5 h-3.5" />
+                <span>Quick Look</span>
+             </button>
+          </div>
+
+          {/* Badges */}
+          <div className="absolute top-2 left-2 z-10 flex flex-col gap-1.5">
+            {isOnSale && (
+              <span className="bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-md shadow-lg">
+                -{discountPercentage}%
+              </span>
+            )}
+            {product.stock_status === "outofstock" && (
+              <span className="bg-gray-900 text-white text-xs font-semibold px-2 py-1 rounded-md shadow-lg">
+                Out of Stock
+              </span>
+            )}
+          </div>
+
           {/* Custom Loading State: Pulsing Atlaze Logo */}
           {!imageLoaded && (
             <div className="absolute inset-0 flex items-center justify-center bg-gray-50">
@@ -287,89 +154,121 @@ export function ProductCard({ product }: { product: WooProduct }) {
           )}
           
           {/* Actual Product Image */}
-          <Image
-            src={product.images?.[0]?.src || "/placeholder.png"}
-            alt={product.name}
-            fill
-            className={`object-cover transition-all duration-300 ${
-              imageLoaded ? 'opacity-100' : 'opacity-0'
-            } group-hover:scale-105`}
-            onLoad={() => setImageLoaded(true)}
-            loading="lazy"
-          />
+          <Link href={`/product/${product.slug}`} className="block w-full h-full">
+              <Image
+                src={product.images?.[0]?.src || "/placeholder.png"}
+                alt={product.name}
+                fill
+                className={`object-cover transition-all duration-500 ${
+                  imageLoaded ? 'opacity-100' : 'opacity-0'
+                } group-hover:scale-110`}
+                onLoad={() => setImageLoaded(true)}
+                loading="lazy"
+              />
+          </Link>
         </div>
 
         {/* Product details */}
-        <div className="flex flex-col flex-1 space-y-2 px-2 pb-2">
-          <div className="flex-1">
-            <h3 className="line-clamp-2 text-sm font-medium leading-tight">{product.name}</h3>
+        <div className="flex flex-col flex-1 space-y-2.5 p-3">
+          <div className="flex-1 space-y-1.5">
+            <Link href={`/product/${product.slug}`}>
+                <h3 className="line-clamp-2 text-sm font-semibold leading-tight text-gray-900 hover:text-[#6a00f3] transition-colors">
+                {product.name}
+                </h3>
+            </Link>
             
-            {/* Rating */}
-            <div className="flex items-center gap-2">
-              {product.average_rating && (
-                <Ratings rating={parseFloat(product.average_rating)} starSize={14} />
+            {/* Rating & Sales */}
+            <div className="flex items-center justify-between gap-2">
+              {product.average_rating && parseFloat(product.average_rating) > 0 ? (
+                <div className="flex items-center gap-1">
+                  <Ratings rating={parseFloat(product.average_rating)} starSize={13} />
+                  <span className="text-xs text-gray-500 font-medium">
+                    ({product.rating_count || 0})
+                  </span>
+                </div>
+              ) : (
+                <span className="text-xs text-gray-400">No reviews</span>
               )}
               
+              {product.total_sales !== undefined && product.total_sales > 0 && (
+                <span className="text-xs text-gray-500 font-medium">
+                  {product.total_sales} sold
+                </span>
+              )}
             </div>
 
-            <div className="flex justify-between mt-2 items-center">
-              {/* Price */}
-            <div className="text-base flex items-center gap-1 font-semibold text-primary">
-            <div className="w-[14.5px] relative h-[14.5px] lg:w-[20px] lg:h-[20px]">
-                    <Image
-                      src="/home/hero/Nigeria.png"
-                      alt="nigeria logo"
-                      fill
-                      className="object-cover"
-                    />
-                  </div>{Number(product.price).toLocaleString()}</div>
-            {product.total_sales !== undefined && product.total_sales > 0 && (
-                <span className="text-xs flex items-center gap-1 text-muted-foreground">({product.total_sales}) purchased</span>
+            {/* Price */}
+            <div className="flex items-center gap-2 pt-1">
+              <div className="flex items-center gap-1 text-lg font-bold text-gray-900">
+                <div className="w-[16px] relative h-[16px] lg:w-[18px] lg:h-[18px]">
+                  <Image
+                    src="/home/hero/Nigeria.png"
+                    alt="₦"
+                    fill
+                    className="object-cover"
+                  />
+                </div>
+                <span>{Number(product.price).toLocaleString()}</span>
+              </div>
+              
+              {isOnSale && (
+                <span className="text-xs text-gray-400 line-through font-medium">
+                  ₦{Number(product.regular_price).toLocaleString()}
+                </span>
               )}
             </div>
           </div>
 
           {/* Cart Controls - Always reserve space, show on hover */}
-          <div className="min-h-[32px] flex items-end">
+          <div className="min-h-[36px] flex items-end pt-1">
             {currentQty === 0 ? (
               <button
                 onClick={handleAddToCart}
                 disabled={product.stock_status === "outofstock"}
-                className={`h-8 bg-[#6a00f3] text-white rounded-sm w-full transition-all lg:opacity-0 lg:group-hover:opacity-100 hover:opacity-100 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-sm font-medium ${
-                  justAdded ? "scale-110 opacity-100" : ""
+                className={`h-9 bg-[#6a00f3] text-white rounded-lg w-full transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-400 flex items-center justify-center gap-2 text-sm font-semibold hover:bg-[#5a00d3] ${
+                  justAdded ? "scale-105" : ""
                 }`}
                 aria-label="Add to cart"
               >
-                <ShoppingCart className="h-4 w-4" /> Add to cart
+                <ShoppingCart className="h-4 w-4" />
+                <span className="hidden sm:inline">Add to cart</span>
+                <span className="sm:hidden">Add</span>
               </button>
             ) : (
-              <div className="flex items-center gap-1 bg-[#6a00f3] text-white rounded-sm justify-center h-8 px-1 w-full">
+              <div className="flex items-center gap-1.5 bg-[#6a00f3] text-white rounded-lg justify-between h-9 px-2 w-full">
                 <Button
                   size="icon"
                   variant="ghost"
                   onClick={handleDecrement}
-                  className="h-7 w-7 rounded-full hover:bg-background"
+                  className="h-7 w-7 rounded-full hover:bg-white/20 text-white transition-colors"
                   aria-label="Decrease quantity"
                 >
-                  <span className="text-lg leading-none">−</span>
+                  <span className="text-lg leading-none font-bold">−</span>
                 </Button>
-                <span className="min-w-[24px] text-center text-sm font-medium">
+                <span className="min-w-[28px] text-center text-sm font-bold">
                   {currentQty}
                 </span>
                 <Button
                   size="icon"
                   variant="ghost"
                   onClick={handleIncrement}
-                  className="h-7 w-7 rounded-full hover:bg-background"
+                  className="h-7 w-7 rounded-full hover:bg-white/20 text-white transition-colors"
                   aria-label="Increase quantity"
                 >
-                  <span className="text-lg leading-none">+</span>
+                  <span className="text-lg leading-none font-bold">+</span>
                 </Button>
               </div>
             )}
           </div>
         </div>
       </CardContent>
+
+      {/* Render Modal outside of card content flow but logically connected */}
+      <QuickLookModal 
+        isOpen={quickLookOpen} 
+        onClose={() => setQuickLookOpen(false)} 
+        product={product} 
+      />
     </Card>
   );
 }

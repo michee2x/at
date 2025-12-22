@@ -17,8 +17,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Store, HelpCircle, ShoppingBag, LayoutDashboard, LogOut, ChevronDown, ShoppingCart } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Store, HelpCircle, ShoppingBag, LayoutDashboard, LogOut, ChevronDown, User, Grid } from "lucide-react";
 import { useCart } from "@/hooks/useCart";
+import { CartSheet } from "./cart/CartSheet";
 
 // Skeleton loader for the image
 const SkeletonImage = () => (
@@ -32,6 +34,7 @@ const NavBar = ({ showCategories }: { showCategories?: boolean }) => {
   const { session, isLoading } = useAuth();
   const { cart} = useCart();
   const [imageLoaded, setImageLoaded] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const totalItems = cart.items.reduce((sum, item) => sum + item.quantity, 0);
 
@@ -50,7 +53,7 @@ const NavBar = ({ showCategories }: { showCategories?: boolean }) => {
 
   return (
     <div className="w-full border-b-[1.5px] pt-2 lg:pt-0 border-gray-300 z-50 flex flex-col">
-      <div className="w-full gap-2 h-[95px] lg:h-[105px] flex flex-col">
+      <div className="w-full gap-2 h-[70px] lg:h-[105px] flex flex-col">
         {/* SEARCH + LOGO AREA */}
         <div className="w-full px-4 mb-2 lg:px-[30px] flex justify-center items-center flex-1">
           <div className="w-full relative flex justify-center items-center h-full">
@@ -92,46 +95,41 @@ const NavBar = ({ showCategories }: { showCategories?: boolean }) => {
             {/* User Profile Dropdown */}
             <div className="flex absolute items-center right-0 -translate-y-1/2 top-1/2 gap-4">
               {/* All Categories Link */}
-              <Link 
-                href="/categories" 
-                className="text-sm hidden lg:flex font-medium text-[#2B2B2B] hover:text-[#6a00f3] transition-colors cursor-pointer"
-              >
-                All Categories
-              </Link>
+              {/* All Categories Link */}
+              <Button asChild variant="ghost" className="hidden lg:flex gap-2 text-[#2B2B2B] hover:text-[#6a00f3] hover:bg-purple-50">
+                <Link href="/categories">
+                  <Grid className="w-4 h-4" />
+                  <span className="font-medium">All Categories</span>
+                </Link>
+              </Button>
 
-              {/* Cart Icon with Badge */}
-              <Link 
-                href="/cart" 
-                className="relative text-[#2B2B2B] hover:text-[#6a00f3] transition-colors cursor-pointer"
-              >
-                <ShoppingCart className="w-5 h-5 lg:w-6 lg:h-6" />
-                {totalItems > 0 && (
-                  <span className="absolute -top-2 -right-2 bg-[#6a00f3] text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
-                    {totalItems}
-                  </span>
-                )}
-              </Link>
+              {/* Cart Icon with Badge - Now opens CartSheet */}
+              <CartSheet />
 
               {isLoading ? (
                 <SkeletonImage />
               ) : session?.user ? (
-                <DropdownMenu>
+                <DropdownMenu onOpenChange={(open) => setDropdownOpen(open)}>
                   <DropdownMenuTrigger asChild>
-                    <button className="flex items-center gap-2 cursor-pointer focus:outline-none hover:opacity-80 transition-opacity">
+                    <button className="flex items-center gap-1 cursor-pointer focus:outline-none hover:opacity-80 transition-opacity">
                       {session.user.image && imageLoaded ? (
                         <Image
                           src={session.user.image}
                           alt={session.user.name ?? "User"}
                           width={32}
                           height={32}
-                          className="rounded-full object-cover"
+                          className="rounded-full object-cover border-2 border-gray-200"
                         />
                       ) : (
-                        <div className="w-8 h-8 text-md rounded-full bg-gray-200 flex items-center justify-center font-bold">
+                        <div className="w-8 h-8 text-xs rounded-full bg-gray-200 flex items-center justify-center font-semibold text-gray-700">
                           {getInitials(session.user.name)}
                         </div>
                       )}
-                      <ChevronDown className="h-4 w-4 text-gray-600" />
+                      <ChevronDown 
+                        className={`h-4 w-4 text-gray-600 transition-transform duration-200 ${
+                          dropdownOpen ? 'rotate-180' : 'rotate-0'
+                        }`} 
+                      />
                     </button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="w-56 z-[9999]">
@@ -176,9 +174,13 @@ const NavBar = ({ showCategories }: { showCategories?: boolean }) => {
                   </DropdownMenuContent>
                 </DropdownMenu>
               ) : (
-                <span onClick={() => signIn()} className="text-sm font-medium text-[#2B2B2B] hover:text-[#6a00f3] transition-colors cursor-pointer">
+                <Button 
+                  onClick={() => signIn()} 
+                  className="bg-[#1a1a1a] hover:bg-black text-white font-medium rounded-full px-5 shadow-sm hover:shadow-md transition-all h-9"
+                >
+                  <User className="w-4 h-4 mr-2" />
                   Sign In
-                </span>
+                </Button>
               )}
             </div>
           </div>
