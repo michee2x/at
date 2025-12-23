@@ -1,10 +1,14 @@
 // app/(root)/dashboard/page.tsx
 import { ArrowRight, CreditCard, Package, Sparkles, Store, TrendingUp, User, Zap } from "lucide-react";
 import { getServerSession } from "next-auth/next";
+import Link from "next/link";
 
 export default async function DashboardPage() {
   // Automatically uses your NextAuth route configuration
   const session = await getServerSession();
+
+  // Get first name safely
+  const firstName = session?.user?.name?.split(" ")[0] || "Dear";
 
   return (
     <main>
@@ -12,8 +16,7 @@ export default async function DashboardPage() {
       <div className="mb-8 sm:mb-12">
         <div>
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900">
-            Hello,{" "}
-            <span>{session?.user ? session.user.name : <p>Dear</p>}</span>
+            Hello, <span className="text-[#6a00f3]">{firstName}</span>
           </h1>
           <p className="text-gray-600 mt-1">Welcome back to your dashboard</p>
         </div>
@@ -43,11 +46,14 @@ export default async function DashboardPage() {
               View orders, manage addresses, and unlock wholesale opportunities.
             </p>
             <div className="flex flex-wrap gap-4">
-              <button className="px-6 sm:px-8 py-3 sm:py-4 bg-white text-purple-600 font-semibold rounded-xl hover:bg-gray-50 transition-all shadow-xl hover:shadow-2xl hover:scale-105 flex items-center gap-2 text-sm sm:text-base">
+              <Link
+                href="/become-seller"
+                className="px-6 sm:px-8 py-3 sm:py-4 bg-white text-purple-600 font-semibold rounded-xl hover:bg-gray-50 transition-all shadow-xl hover:shadow-2xl hover:scale-105 flex items-center gap-2 text-sm sm:text-base"
+              >
                 <TrendingUp className="w-5 h-5" />
                 Start Selling
                 <ArrowRight className="w-4 h-4" />
-              </button>
+              </Link>
             </div>
           </div>
         </div>
@@ -61,24 +67,27 @@ export default async function DashboardPage() {
             desc: "Track your purchases",
             icon: Package,
             action: "View orders",
+            href: "/my-account/orders",
           },
           {
             title: "Shipping & Billing",
             desc: "Manage addresses",
             icon: CreditCard,
             action: "Manage",
+            href: "/my-account/addresses",
           },
           {
             title: "Account Details",
             desc: "Password & settings",
             icon: User,
             action: "Edit profile",
+            href: "/my-account/details",
             span: "sm:col-span-2 lg:col-span-1",
           },
-        ].map(({ title, desc, icon: Icon, action, span }) => (
-          <a
+        ].map(({ title, desc, icon: Icon, action, href, span }) => (
+          <Link
             key={title}
-            href="#"
+            href={href}
             className={`group bg-white rounded-2xl p-6 sm:p-8 border border-gray-200 hover:border-gray-300 transition shadow-sm hover:shadow-md ${
               span ?? ""
             }`}
@@ -97,7 +106,7 @@ export default async function DashboardPage() {
               {action}
               <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
             </div>
-          </a>
+          </Link>
         ))}
       </div>
 
@@ -125,7 +134,8 @@ export default async function DashboardPage() {
             prices.
           </p>
 
-          <button
+          <Link
+            href="/wholesale"
             className="w-full px-6 py-3 sm:py-4 rounded-xl font-semibold
       bg-[#6a00f3] text-white
       hover:bg-[#1800f3]
@@ -134,7 +144,7 @@ export default async function DashboardPage() {
           >
             Become a wholesale customer
             <ArrowRight className="w-5 h-5" />
-          </button>
+          </Link>
         </div>
 
         {/* Vendor */}
@@ -159,7 +169,8 @@ export default async function DashboardPage() {
             powerful vendor dashboard.
           </p>
 
-          <button
+          <Link
+            href="/become-seller"
             className="w-full px-6 py-3 sm:py-4 rounded-xl font-semibold
       bg-[#6a00f3] text-white
       hover:bg-[#1800f3]
@@ -168,7 +179,7 @@ export default async function DashboardPage() {
           >
             Become a Vendor
             <ArrowRight className="w-5 h-5" />
-          </button>
+          </Link>
         </div>
       </div>
     </main>

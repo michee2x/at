@@ -142,6 +142,12 @@ const NavBar = ({ showCategories }: { showCategories?: boolean }) => {
                       </div>
                     </DropdownMenuLabel>
                     <DropdownMenuSeparator />
+                    <DropdownMenuItem asChild className="lg:hidden">
+                      <Link href="/categories" className="cursor-pointer">
+                        <Grid className="mr-2 h-4 w-4" />
+                        <span>All Categories</span>
+                      </Link>
+                    </DropdownMenuItem>
                     <DropdownMenuItem asChild>
                       <Link href="/my-account" className="cursor-pointer">
                         <LayoutDashboard className="mr-2 h-4 w-4" />

@@ -2,7 +2,8 @@
 
 import * as React from "react";
 import Image from "next/image";
-import { LogOut, User as UserIcon } from "lucide-react";
+import Link from "next/link";
+import { LogOut, User as UserIcon, ShoppingBag } from "lucide-react";
 
 import {
   DropdownMenu,
@@ -63,7 +64,17 @@ export function UserMenu({ name, email, image, onLogout }: UserMenuProps) {
           </div>
         </div>
 
+
+
         <DropdownMenuSeparator className="my-3" />
+
+        <DropdownMenuItem asChild className="lg:hidden cursor-pointer">
+          <Link href="/categories">
+            <ShoppingBag className="mr-2 h-4 w-4" />
+            Shop
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuSeparator className="my-3 lg:hidden" />
 
         <DropdownMenuItem
           className="cursor-pointer text-red-600 focus:text-red-600 focus:bg-red-50"
