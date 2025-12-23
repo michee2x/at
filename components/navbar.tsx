@@ -132,8 +132,8 @@ const NavBar = ({ showCategories }: { showCategories?: boolean }) => {
                       />
                     </button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-56 z-[9999]">
-                    <DropdownMenuLabel>
+                  <DropdownMenuContent align="end" className="w-64 p-2">
+                  <DropdownMenuLabel className="py-3">
                       <div className="flex flex-col space-y-1">
                         <p className="text-sm font-medium leading-none">{session.user.name}</p>
                         <p className="text-xs leading-none text-muted-foreground">
@@ -142,31 +142,31 @@ const NavBar = ({ showCategories }: { showCategories?: boolean }) => {
                       </div>
                     </DropdownMenuLabel>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem asChild className="lg:hidden">
+                    <DropdownMenuItem asChild className="lg:hidden py-3">
                       <Link href="/categories" className="cursor-pointer">
                         <Grid className="mr-2 h-4 w-4" />
                         <span>All Categories</span>
                       </Link>
                     </DropdownMenuItem>
-                    <DropdownMenuItem asChild>
+                    <DropdownMenuItem asChild className="py-3">
                       <Link href="/my-account" className="cursor-pointer">
                         <LayoutDashboard className="mr-2 h-4 w-4" />
                         <span>Dashboard</span>
                       </Link>
                     </DropdownMenuItem>
-                    <DropdownMenuItem asChild>
+                    <DropdownMenuItem asChild className="py-3">
                       <Link href="/stores" className="cursor-pointer">
                         <Store className="mr-2 h-4 w-4" />
                         <span>Find a Store</span>
                       </Link>
                     </DropdownMenuItem>
-                    <DropdownMenuItem asChild>
+                    <DropdownMenuItem asChild className="py-3">
                       <Link href="/help" className="cursor-pointer">
                         <HelpCircle className="mr-2 h-4 w-4" />
                         <span>Help</span>
                       </Link>
                     </DropdownMenuItem>
-                    <DropdownMenuItem asChild>
+                    <DropdownMenuItem asChild className="py-3">
                       <Link href="/become-seller" className="cursor-pointer">
                         <ShoppingBag className="mr-2 h-4 w-4" />
                         <span>Become a Seller</span>
@@ -174,7 +174,7 @@ const NavBar = ({ showCategories }: { showCategories?: boolean }) => {
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem 
-                      className="cursor-pointer text-red-600"
+                      className="cursor-pointer text-red-600 py-3"
                       onSelect={(e) => {
                         e.preventDefault();
                         useCart.getState().resetOnLogout(); // Clear cart before signing out

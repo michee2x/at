@@ -8,6 +8,7 @@ import Image from "next/image"
 import FilterToggle from "@/components/FilterToggle";
 import { ProductFilter } from "@/components/category/ProductFilter";
 import { EmptyFilterState } from "./EmptyFilterState";
+import { ScrollToTopButton } from "@/components/ScrollToTopButton";
 
 import { WooProduct, QueryParams } from "@/types";
 import { fetchDokanProducts, fetchWCProducts } from "@/lib/product-service";
@@ -123,6 +124,7 @@ export default async function CategoryPage({
           </div>
         </Suspense>
       </div>
+      <ScrollToTopButton />
     </div>
   );
 }
