@@ -5,91 +5,64 @@ import Link from "next/link";
 import { useState } from "react";
 import { z } from "zod";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-import { signIn } from "next-auth/react"; // Import signIn from next-auth
+import { HiOutlineMail } from "react-icons/hi";
+import { IoChevronBack } from "react-icons/io5";
+import { toast } from "react-toastify";
 import GoogleLoginButton from "@/components/buttons/GoogleButton";
 
 type FieldErrors = {
   email: string;
-  username: string;
   password: string;
-  confirmPassword: string;
 };
 
-const registerSchema = z
-  .object({
-    email: z.string().email("Enter a valid email"),
-    firstName: z.string().optional(),
-    lastName: z.string().optional(),
-    username: z
-      .string()
-      .min(3, "Username must be at least 3 characters")
-      .optional(),
-    password: z.string().min(8, "Password must be at least 8 characters"),
-    confirmPassword: z.string().min(8),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords do not match",
-    path: ["confirmPassword"],
-  });
+type SignupStep = "options" | "email";
+
+const registerSchema = z.object({
+  email: z.string().email("Enter a valid email"),
+  password: z.string().min(8, "Password must be at least 8 characters"),
+});
 
 export default function RegisterPage() {
+  const [step, setStep] = useState<SignupStep>("options");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
-
-  // show/hide password
   const [showPass, setShowPass] = useState(false);
-  const [showConfirmPass, setShowConfirmPass] = useState(false);
-
-  // Field errors
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({
     email: "",
-    username: "",
     password: "",
-    confirmPassword: "",
   });
+
+  const handleBack = () => {
+    setStep("options");
+    setFieldErrors({ email: "", password: "" });
+    setError(null);
+  };
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setError(null);
     setSuccess(false);
-
-    setFieldErrors({
-      email: "",
-      username: "",
-      password: "",
-      confirmPassword: "",
-    });
+    setFieldErrors({ email: "", password: "" });
 
     const fd = new FormData(e.currentTarget);
     const body = {
       email: String(fd.get("email") || ""),
-      firstName: String(fd.get("firstName") || ""),
-      lastName: String(fd.get("lastName") || ""),
-      username: String(fd.get("username") || ""),
       password: String(fd.get("password") || ""),
-      confirmPassword: String(fd.get("confirmPassword") || ""),
     };
 
     const validated = registerSchema.safeParse(body);
 
     if (!validated.success) {
-      const newErrors: FieldErrors = {
-        email: "",
-        username: "",
-        password: "",
-        confirmPassword: "",
-      };
-
+      const newErrors: FieldErrors = { email: "", password: "" };
       validated.error.issues.forEach((issue) => {
         const field = issue.path[0];
         if (field in newErrors) {
           newErrors[field as keyof FieldErrors] = issue.message;
         }
       });
-
       setFieldErrors(newErrors);
-      setError("Please fix the errors below.");
+      toast.error("Please fix the errors below.");
       return;
     }
 
@@ -101,9 +74,6 @@ export default function RegisterPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           email: body.email,
-          firstName: body.firstName,
-          lastName: body.lastName,
-          username: body.username || undefined,
           password: body.password,
         }),
       });
@@ -111,165 +81,217 @@ export default function RegisterPage() {
       const json = await res.json();
 
       if (!res.ok) {
-        setError(json?.message || "Registration failed");
+        toast.error(json?.message || "Registration failed. Please try again.");
       } else {
         setSuccess(true);
         window.location.href = "/login?registered=1";
         return;
       }
     } catch (err) {
-      if (err instanceof Error) {
-        setError(err.message);
-      } else {
-        setError("Something went wrong");
-      }
+      const message = err instanceof Error ? err.message : "Something went wrong. Please try again.";
+      toast.error(message);
     } finally {
       setLoading(false);
     }
   }
 
-  // Google login handler
-  const handleGoogleSignUp = () => {
-    signIn("google", { callbackUrl: "/dashboard" }); // Redirect to your dashboard or desired page after login
-  };
-
   return (
-    <div className="w-screen mx-auto p-4 lg:p-0 font-poppins lg:pr-10 h-screen lg:gap-10 flex items-center justify-center bg-gray-100 text-gray-900">
-      <div className="flex-1 lg:flex hidden relative h-full w-full bg-blue-600">
-        <Image
-          src="/banner/stunning-young-woman-with-voluminous-curly-hairstyle-elegant-costume-posing.jpg"
-          className="object-cover object-center"
-          fill
-          alt="african woman"
-        />
-      </div>
+    <div className="h-screen w-full flex flex-row-reverse overflow-hidden">
+      {/* RIGHT SIDE - SIGNUP FORM */}
+      <main className="w-full lg:w-[480px] xl:w-[520px] h-screen flex flex-col justify-center px-6 sm:px-10 lg:px-12 py-8 bg-white relative">
+        {/* Subtle background pattern */}
+        <div className="absolute inset-0 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:20px_20px] opacity-30" />
+        
+        <div className="relative z-10 w-full max-w-[380px] mx-auto">
+          {/* Back Button - Only show on email step */}
+          {step === "email" && (
+            <button
+              type="button"
+              onClick={handleBack}
+              className="flex items-center gap-1 text-sm text-indigo-600 hover:text-indigo-700 font-medium mb-4 transition-colors group"
+            >
+              <IoChevronBack className="w-4 h-4 transition-transform group-hover:-translate-x-0.5" />
+              Back
+            </button>
+          )}
 
-      <form
-        onSubmit={handleSubmit}
-        className="w-full max-w-md flex flex-col items-center bg-white p-8 rounded-lg border border-gray-300"
-      >
-        <div className="w-fit mb-4 flex items-center gap-0.5">
-          <div className="lg:size-[2rem] size-[1.8rem] relative">
-            <Image
-              className="object-cover"
-              fill
-              alt="atlaze-logo"
-              src="/logo/Untitled_design_20251108_095010_0000__1_-removebg-preview.png"
-            />
+          {/* Logo & Branding */}
+          <div className="flex items-center justify-center gap-3 mb-5">
+            <div className="size-10 relative">
+              <Image
+                className="object-contain"
+                fill
+                alt="Atlaze logo"
+                src="/logo/Untitled_design_20251108_095010_0000__1_-removebg-preview.png"
+                priority
+              />
+            </div>
           </div>
-          <h1 className="font-display text-2xl lg:text-3xl italic text-[#2B2B2B] tracking-tight">
-            atlaze
-          </h1>
-        </div>
 
-        <h2 className="text-2xl font-semibold mb-4">Create your account</h2>
+          {/* Header */}
+          <div className="mb-6 text-center">
+            <h1 className="text-2xl sm:text-[28px] font-bold text-gray-900 tracking-tight">
+              Create an account
+            </h1>
+          </div>
 
-        {/* Email */}
-        <div className="w-full mb-3">
-          <input
-            name="email"
-            placeholder="Email"
-            className={`w-full p-2 rounded border ${
-              fieldErrors.email ? "border-red-500" : "border-gray-300"
-            }`}
-          />
-          {fieldErrors.email && (
-            <p className="text-red-500 text-sm mt-1">{fieldErrors.email}</p>
+          {/* STEP: OPTIONS */}
+          {step === "options" && (
+            <div className="space-y-4">
+              {/* Google Sign Up */}
+              <GoogleLoginButton type="signup" />
+
+              {/* Continue with Email */}
+              <button
+                type="button"
+                onClick={() => setStep("email")}
+                className="w-full h-12 flex items-center justify-center gap-3 border border-gray-300 rounded-xl font-medium text-gray-700 hover:bg-gray-50 hover:border-gray-400 transition-all duration-200"
+              >
+                <HiOutlineMail className="w-5 h-5" />
+                Continue with email
+              </button>
+
+              {/* Login Link */}
+              <p className="text-center text-sm text-gray-500 pt-6">
+                Already have an account?{" "}
+                <Link
+                  href="/login"
+                  className="text-indigo-600 hover:text-indigo-700 font-semibold transition-colors hover:underline underline-offset-2"
+                >
+                  Log in
+                </Link>
+              </p>
+            </div>
+          )}
+
+          {/* STEP: EMAIL FORM */}
+          {step === "email" && (
+            <form onSubmit={handleSubmit} aria-label="Sign up form" className="space-y-4">
+              {/* Email Field */}
+              <div>
+                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1.5">
+                  Email
+                </label>
+                <input
+                  id="email"
+                  type="email"
+                  name="email"
+                  placeholder="you@example.com"
+                  autoComplete="email"
+                  autoFocus
+                  aria-invalid={!!fieldErrors.email}
+                  aria-describedby={fieldErrors.email ? "email-error" : undefined}
+                  className={`w-full h-11 px-4 bg-white border rounded-lg text-sm placeholder:text-gray-400 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent hover:border-gray-400 ${
+                    fieldErrors.email
+                      ? "border-red-400 focus:ring-red-500"
+                      : "border-gray-300"
+                  }`}
+                />
+                {fieldErrors.email && (
+                  <p id="email-error" className="text-red-500 text-xs mt-1.5" role="alert">
+                    {fieldErrors.email}
+                  </p>
+                )}
+              </div>
+
+              {/* Password Field */}
+              <div>
+                <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1.5">
+                  Password
+                </label>
+                <div className="relative">
+                  <input
+                    id="password"
+                    type={showPass ? "text" : "password"}
+                    name="password"
+                    placeholder=""
+                    autoComplete="new-password"
+                    aria-invalid={!!fieldErrors.password}
+                    aria-describedby={fieldErrors.password ? "password-error" : undefined}
+                    className={`w-full h-11 px-4 pr-12 bg-white border rounded-lg text-sm placeholder:text-gray-400 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent hover:border-gray-400 ${
+                      fieldErrors.password
+                        ? "border-red-400 focus:ring-red-500"
+                        : "border-gray-300"
+                    }`}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPass(!showPass)}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                    aria-label={showPass ? "Hide password" : "Show password"}
+                  >
+                    {showPass ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
+                  </button>
+                </div>
+                {fieldErrors.password && (
+                  <p id="password-error" className="text-red-500 text-xs mt-1.5" role="alert">
+                    {fieldErrors.password}
+                  </p>
+                )}
+              </div>
+
+              {/* Error + Success */}
+              {error && <p className="text-red-500 text-sm">{error}</p>}
+              {success && (
+                <p className="text-green-600 text-sm">Account created! Redirecting…</p>
+              )}
+
+              {/* Submit Button */}
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full h-11 bg-indigo-500 text-white font-semibold rounded-lg hover:bg-indigo-600 transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                aria-busy={loading}
+              >
+                {loading ? (
+                  <>
+                    <span className="loading loading-spinner loading-sm" aria-hidden="true"></span>
+                    <span>Creating account...</span>
+                  </>
+                ) : (
+                  "Sign up"
+                )}
+              </button>
+
+              {/* Terms */}
+              <p className="text-center text-xs text-gray-400 pt-2">
+                By clicking &quot;Sign up&quot;, you agree to Atlaze&apos;s{" "}
+                <Link href="/terms" className="text-indigo-600 hover:underline">
+                  Terms of Use
+                </Link>{" "}
+                and{" "}
+                <Link href="/privacy" className="text-indigo-600 hover:underline">
+                  Privacy Policy
+                </Link>
+                .
+              </p>
+
+              {/* Login Link */}
+              <p className="text-center text-sm text-gray-500 pt-2">
+                Already have an account?{" "}
+                <Link
+                  href="/login"
+                  className="text-indigo-600 hover:text-indigo-700 font-semibold transition-colors hover:underline underline-offset-2"
+                >
+                  Log in
+                </Link>
+              </p>
+            </form>
           )}
         </div>
+      </main>
 
-        {/* Username */}
-        <div className="w-full mb-3">
-          <input
-            name="username"
-            placeholder="Username (optional)"
-            className={`w-full p-2 rounded border ${
-              fieldErrors.username ? "border-red-500" : "border-gray-300"
-            }`}
-          />
-          {fieldErrors.username && (
-            <p className="text-red-500 text-sm mt-1">{fieldErrors.username}</p>
-          )}
-        </div>
-
-        {/* Password */}
-        <div className="w-full mb-3 relative">
-          <input
-            type={showPass ? "text" : "password"}
-            name="password"
-            placeholder="Password"
-            className={`w-full p-2 pr-12 rounded border ${
-              fieldErrors.password ? "border-red-500" : "border-gray-300"
-            }`}
-          />
-          <span
-            onClick={() => setShowPass(!showPass)}
-            className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-gray-500 hover:text-gray-800 transition p-2"
-          >
-            {showPass ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
-          </span>
-          {fieldErrors.password && (
-            <p className="text-red-500 text-sm mt-1">{fieldErrors.password}</p>
-          )}
-        </div>
-
-        {/* Confirm Password */}
-        <div className="w-full mb-3 relative">
-          <input
-            type={showConfirmPass ? "text" : "password"}
-            name="confirmPassword"
-            placeholder="Confirm password"
-            className={`w-full p-2 pr-12 rounded border ${
-              fieldErrors.confirmPassword ? "border-red-500" : "border-gray-300"
-            }`}
-          />
-          <span
-            onClick={() => setShowConfirmPass(!showConfirmPass)}
-            className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-gray-500 hover:text-gray-800 transition p-2"
-          >
-            {showConfirmPass ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
-          </span>
-          {fieldErrors.confirmPassword && (
-            <p className="text-red-500 text-sm mt-1">
-              {fieldErrors.confirmPassword}
-            </p>
-          )}
-        </div>
-
-        {/* Error + Success */}
-        {error && <p className="text-red-600 mb-2">{error}</p>}
-        {success && (
-          <p className="text-green-600 mb-2">Account created! Redirecting…</p>
-        )}
-
-        {/* Submit button */}
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full py-3 bg-blue-600 text-white rounded hover:bg-blue-500 transition flex items-center justify-center gap-2"
-        >
-          {loading ? (
-            <>
-              <span className="loading loading-spinner loading-sm"></span>
-              Creating…
-            </>
-          ) : (
-            "Create account"
-          )}
-        </button>
-
-        <p className="text-sm mt-10 text-muted">
-          Already have an account?{" "}
-          <Link className="text-primary hover:underline" href="/login">
-            login
-          </Link>
-        </p>
-
-        {/* Google Sign Up Button */}
-        <div className="mt-4 w-full">
-          <GoogleLoginButton type="signup" />
-        </div>
-      </form>
+      {/* LEFT SIDE - ILLUSTRATION */}
+      <div className="hidden lg:block flex-1 relative bg-gradient-to-br from-amber-400 via-orange-500 to-red-500">
+        <Image
+          src="/auth/african_wildlife.png"
+          className="object-cover"
+          fill
+          alt="African wildlife illustration"
+          priority
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
+      </div>
     </div>
   );
 }

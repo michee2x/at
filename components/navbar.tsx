@@ -6,7 +6,7 @@ import React, { useEffect, useState } from "react";
 import { IoMenuSharp } from "react-icons/io5";
 import AlgoliaSearch from "./AlgoliaSearch";
 import { useAuth } from "@/contexts/auth-context";
-import { signIn } from "next-auth/react";
+import { signIn, signOut } from "next-auth/react";
 import Banner from "./home/Banner";
 import Link from "next/link";
 import {
@@ -167,7 +167,14 @@ const NavBar = ({ showCategories }: { showCategories?: boolean }) => {
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem className="cursor-pointer text-red-600">
+                    <DropdownMenuItem 
+                      className="cursor-pointer text-red-600"
+                      onSelect={(e) => {
+                        e.preventDefault();
+                        useCart.getState().resetOnLogout(); // Clear cart before signing out
+                        signOut({ callbackUrl: "/" });
+                      }}
+                    >
                       <LogOut className="mr-2 h-4 w-4" />
                       <span>Sign Out</span>
                     </DropdownMenuItem>
@@ -176,9 +183,9 @@ const NavBar = ({ showCategories }: { showCategories?: boolean }) => {
               ) : (
                 <Button 
                   onClick={() => signIn()} 
-                  className="bg-[#1a1a1a] hover:bg-black text-white font-medium rounded-full px-5 shadow-sm hover:shadow-md transition-all h-9"
+                  className="bg-[#1a1a1a] hover:bg-black text-white font-medium rounded-full px-5 shadow-sm hover:shadow-md transition-all h-9 flex items-center gap-2"
                 >
-                  <User className="w-4 h-4 mr-2" />
+                  <User className="w-4 h-4" />
                   Sign In
                 </Button>
               )}

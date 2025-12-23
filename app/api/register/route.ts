@@ -1,11 +1,12 @@
 // app/api/register/route.ts
+
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { WooClient } from "../../../lib/wooClient";
 
-// ------------------------------
+// ─────────────────────────────────────────────────────────────
 // TYPES
-// ------------------------------
+// ─────────────────────────────────────────────────────────────
 
 interface WooCustomerPayload {
   email: string;
@@ -15,39 +16,61 @@ interface WooCustomerPayload {
   password: string;
 }
 
-interface WooError {
-  message?: string;
-}
-
-// ------------------------------
-// ZOD SCHEMA
-// ------------------------------
+// ─────────────────────────────────────────────────────────────
+// VALIDATION SCHEMA
+// ─────────────────────────────────────────────────────────────
 
 const registerSchema = z.object({
-  email: z.string().email(),
-  firstName: z.string().optional(),
-  lastName: z.string().optional(),
-  username: z.string().min(3).optional(),
-  password: z.string().min(8),
+  email: z.string().email("Please enter a valid email address"),
+  password: z.string().min(8, "Password must be at least 8 characters"),
 });
 
-// ------------------------------
+// ─────────────────────────────────────────────────────────────
+// ERROR MESSAGES
+// ─────────────────────────────────────────────────────────────
+
+const ERROR_MESSAGES: Record<string, string> = {
+  "registration-error-email-exists": "An account with this email already exists. Try logging in instead.",
+  "registration-error-username-exists": "This username is already taken. Please try another.",
+  "invalid_email": "Please enter a valid email address.",
+  "rest_invalid_param": "Please check your information and try again.",
+};
+
+function getErrorMessage(errorBody: string): string {
+  for (const [key, message] of Object.entries(ERROR_MESSAGES)) {
+    if (errorBody.includes(key)) {
+      return message;
+    }
+  }
+  return "Registration failed. Please try again later.";
+}
+
+// ─────────────────────────────────────────────────────────────
 // POST ROUTE
-// ------------------------------
+// ─────────────────────────────────────────────────────────────
 
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const parsed = registerSchema.parse(body);
+    
+    // Validate input
+    const parsed = registerSchema.safeParse(body);
+    if (!parsed.success) {
+      const firstError = parsed.error.issues[0]?.message || "Invalid input";
+      return NextResponse.json(
+        { success: false, message: firstError },
+        { status: 400 }
+      );
+    }
 
+    // Prepare payload
     const payload: WooCustomerPayload = {
-      email: parsed.email,
-      first_name: parsed.firstName,
-      last_name: parsed.lastName,
-      username: parsed.username || parsed.email.split("@")[0],
-      password: parsed.password,
+      email: parsed.data.email,
+      username: parsed.data.email.split("@")[0],
+      password: parsed.data.password,
     };
 
+    // Create customer in WooCommerce
     const created = await WooClient.createCustomer(payload);
 
     return NextResponse.json(
@@ -56,12 +79,11 @@ export async function POST(req: Request) {
     );
 
   } catch (err: unknown) {
-    const errorObj = err as WooError;
-
-    console.error("Register error:", errorObj);
+    const errorMessage = err instanceof Error ? err.message : String(err);
+    const userFriendlyMessage = getErrorMessage(errorMessage);
 
     return NextResponse.json(
-      { success: false, message: errorObj.message || "Error" },
+      { success: false, message: userFriendlyMessage },
       { status: 400 }
     );
   }

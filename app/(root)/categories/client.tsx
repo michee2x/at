@@ -9,16 +9,14 @@ import { Button } from "@/components/ui/button";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Ratings } from "@/components/Ratings";
 import { useInView } from "react-intersection-observer";
-import { useRef, useState } from "react";
-
-import { useCart } from "@/contexts/CartContext";
-import { useCart as useZustandCart } from "@/hooks/useCart";
+import { useState } from "react";
+import { useCart } from "@/hooks/useCart";
 import { QuickLookModal } from "@/components/QuickLookModal";
 
 export function ProductCard({ product }: { product: WooProduct }) {
-  const { cart, addToCart } = useCart();
-  const { updateQuantity, removeItem } = useZustandCart();
+  const { cart, addItem, updateQuantity, removeItem } = useCart();
   const [justAdded, setJustAdded] = useState(false);
+  const [isAdding, setIsAdding] = useState(false);
   
   // Track image loading state to show custom loader
   const [imageLoaded, setImageLoaded] = useState(false);
@@ -27,15 +25,14 @@ export function ProductCard({ product }: { product: WooProduct }) {
   const [quickLookOpen, setQuickLookOpen] = useState(false);
   
   // Lazy loading: Only render when card is in viewport
-  // This improves performance by not rendering off-screen products
   const { ref, inView } = useInView({
-    triggerOnce: true, // Load once and stay loaded
-    threshold: 0.1, // Trigger when 10% of card is visible
-    rootMargin: '50px', // Start loading slightly before entering viewport
+    triggerOnce: true,
+    threshold: 0.1,
+    rootMargin: '50px',
   });
 
-  // current quantity for this product from cart (fast, local)
-  const currentQty = cart.find((i) => i.slug === product.slug)?.quantity ?? 0;
+  // Get current quantity from the Zustand cart (real-time, synced with API)
+  const currentQty = cart.items.find((i) => i.id === product.id)?.quantity ?? 0;
 
   // Check if product is on sale
   const isOnSale = product.sale_price && parseFloat(product.sale_price) < parseFloat(product.regular_price);
@@ -43,57 +40,39 @@ export function ProductCard({ product }: { product: WooProduct }) {
     ? Math.round(((parseFloat(product.regular_price) - parseFloat(product.sale_price)) / parseFloat(product.regular_price)) * 100)
     : 0;
 
-  function handleAddToCart() {
-    // Instant optimistic add — updates local CartContext immediately
-    addToCart({ ...product, quantity: 1 });
-
-    // Also update global zustand cart so other consumers (e.g., CartToastContainer) reflect totals instantly
-    try {
-      const addItem = useZustandCart.getState()?.addItem;
-      if (addItem) {
-        // non-blocking: update store; the store sets new state synchronously before making any network calls
-        addItem({
-          id: product.id,
-          name: product.name,
-          slug: product.slug,
-          price: product.price,
-          images: product.images,
-          quantity: 1,
-        });
-      }
-    } catch (e) {
-      // swallow - don't block UX
-      console.error("Failed to sync to global cart", e);
-    }
-
-    // tiny visual feedback for the user
-    setJustAdded(true);
-    setTimeout(() => setJustAdded(false), 400);
-
-    // existing toast behavior will run via CartContext dispatch event
-  }
-
-  function handleIncrement() {
-    const newQty = currentQty + 1;
-    updateQuantity(product.id, newQty);
+  async function handleAddToCart() {
+    if (isAdding) return;
     
-    // Also update local cart context
-    addToCart({ ...product, quantity: 1 });
+    setIsAdding(true);
+    setJustAdded(true);
+
+    try {
+      await addItem({
+        id: product.id,
+        name: product.name,
+        slug: product.slug,
+        price: product.price,
+        images: product.images,
+        quantity: 1,
+      });
+    } catch (e) {
+      console.error("Failed to add to cart", e);
+    } finally {
+      setIsAdding(false);
+      setTimeout(() => setJustAdded(false), 400);
+    }
   }
 
-  function handleDecrement() {
+  async function handleIncrement() {
+    const newQty = currentQty + 1;
+    await updateQuantity(product.id, newQty);
+  }
+
+  async function handleDecrement() {
     if (currentQty <= 1) {
-      removeItem(product.id);
-      // Also remove from local cart context
-      const cartItem = cart.find((i) => i.slug === product.slug);
-      if (cartItem) {
-        addToCart({ ...product, quantity: -currentQty });
-      }
+      await removeItem(product.id);
     } else {
-      const newQty = currentQty - 1;
-      updateQuantity(product.id, newQty);
-      // Also update local cart context
-      addToCart({ ...product, quantity: -1 });
+      await updateQuantity(product.id, currentQty - 1);
     }
   }
 
@@ -114,7 +93,7 @@ export function ProductCard({ product }: { product: WooProduct }) {
           <div className="absolute bottom-3 left-3 z-30 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0">
              <button
                 onClick={(e) => {
-                    e.preventDefault(); // Prevent navigating to product page
+                    e.preventDefault();
                     setQuickLookOpen(true);
                 }}
                 className="bg-white hover:bg-gray-50 text-gray-900 transition-all transform hover:scale-105 shadow-sm hover:shadow-md rounded-full px-2.5 py-1 flex items-center gap-1.5 font-medium text-[11px] sm:text-xs border border-gray-200"
@@ -219,20 +198,20 @@ export function ProductCard({ product }: { product: WooProduct }) {
             </div>
           </div>
 
-          {/* Cart Controls - Always reserve space, show on hover */}
+          {/* Cart Controls */}
           <div className="min-h-[36px] flex items-end pt-1">
             {currentQty === 0 ? (
               <button
                 onClick={handleAddToCart}
-                disabled={product.stock_status === "outofstock"}
+                disabled={product.stock_status === "outofstock" || isAdding}
                 className={`h-9 bg-[#6a00f3] text-white rounded-lg w-full transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-400 flex items-center justify-center gap-2 text-sm font-semibold hover:bg-[#5a00d3] ${
                   justAdded ? "scale-105" : ""
                 }`}
                 aria-label="Add to cart"
               >
                 <ShoppingCart className="h-4 w-4" />
-                <span className="hidden sm:inline">Add to cart</span>
-                <span className="sm:hidden">Add</span>
+                <span className="hidden sm:inline">{isAdding ? "Adding..." : "Add to cart"}</span>
+                <span className="sm:hidden">{isAdding ? "..." : "Add"}</span>
               </button>
             ) : (
               <div className="flex items-center gap-1.5 bg-[#6a00f3] text-white rounded-lg justify-between h-9 px-2 w-full">
@@ -263,7 +242,7 @@ export function ProductCard({ product }: { product: WooProduct }) {
         </div>
       </CardContent>
 
-      {/* Render Modal outside of card content flow but logically connected */}
+      {/* Quick Look Modal */}
       <QuickLookModal 
         isOpen={quickLookOpen} 
         onClose={() => setQuickLookOpen(false)} 

@@ -1,9 +1,21 @@
+"use client";
+
 import { signIn } from "next-auth/react";
-const GoogleLoginButton = ({type = "login"}:{type?: "login" | "signup"}) => {
+import { useSearchParams } from "next/navigation";
+
+interface GoogleLoginButtonProps {
+  type?: "login" | "signup";
+}
+
+const GoogleLoginButton = ({ type = "login" }: GoogleLoginButtonProps) => {
+  const searchParams = useSearchParams();
+  // Use callbackUrl from URL params, or default to /my-account
+  const callbackUrl = searchParams.get("callbackUrl") || "/my-account";
+
   return (
     <div className="relative flex flex-col">
       <button
-        onClick={() => signIn("google", { callbackUrl: "/dashboard" })}
+        onClick={() => signIn("google", { callbackUrl })}
         type="button"
         className="relative isolate inline-flex shrink-0 items-center justify-center rounded-full border text-base focus:outline focus:outline-2 focus:outline-offset-2 data-[disabled]:opacity-75 [&>[data-slot=icon]]:-mx-0.5 [&>[data-slot=icon]]:shrink-0 min-h-10 gap-x-3 px-4 py-2 sm:text-sm [&>[data-slot=icon]]:size-5 [&>[data-slot=icon]]:sm:size-4 border-[--btn-border] bg-[--btn-bg] text-[--btn-text] hover:bg-[--btn-hover] focus:outline-[--btn-text] [--btn-bg:transparent] [--btn-border:hsl(var(--primary)/15%)] [--btn-hover:hsl(var(--bg-overlay-hover))] [--btn-text:hsl(var(--primary))]"
       >

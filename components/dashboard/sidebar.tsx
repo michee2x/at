@@ -21,6 +21,7 @@ import { Button, buttonVariants } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { signOut } from "next-auth/react";
+import { useCart } from "@/hooks/useCart";
 
 const navigationItems = [
   {
@@ -82,6 +83,7 @@ const navigationItems = [
 
 export default function DashboardSidebar({ onLinkClick }: { onLinkClick?: () => void }) {
   const pathname = usePathname();
+  const { resetOnLogout } = useCart();
 
   return (
     // Always render content so it can be used inside the mobile sheet.
@@ -140,7 +142,10 @@ export default function DashboardSidebar({ onLinkClick }: { onLinkClick?: () => 
           <Button
             variant="ghost"
             className="w-full justify-start text-destructive hover:text-destructive hover:bg-destructive/10"
-            onClick={() => signOut({ callbackUrl: "/" })}
+            onClick={() => {
+              resetOnLogout(); // Clear cart before signing out
+              signOut({ callbackUrl: "/" });
+            }}
           >
             <LogOut className="mr-3 h-5 w-5" aria-hidden="true" />
             Logout

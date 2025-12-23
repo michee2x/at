@@ -5,202 +5,159 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import { z } from "zod";
 import type { User } from "next-auth";
 
-import { fetchWpNonce, loginWordPressUser } from "./helpers/wp-auth";
-import {
-  checkUserExists,
-  createUserInWordPress,
-  getWpUserByEmail,
-} from "./helpers/wp-user";
+import { loginWordPressUser } from "./helpers/wp-auth";
+import { createUserInWordPress, getWpUserByEmail } from "./helpers/wp-user";
+import type { CustomSession, CustomToken } from "./helpers/types";
 
-import type {
-  CustomSession,
-  CustomToken,
-  WpAuthResult,
-} from "./helpers/types";
-import { toNumber } from "@/utils/to-number";
+// ─────────────────────────────────────────────────────────────
+// VALIDATION SCHEMA
+// ─────────────────────────────────────────────────────────────
 
 const loginSchema = z.object({
-  username: z.string().min(1),
-  password: z.string().min(1),
+  username: z.string().min(1, "Email is required"),
+  password: z.string().min(1, "Password is required"),
 });
+
+// ─────────────────────────────────────────────────────────────
+// AUTH OPTIONS
+// ─────────────────────────────────────────────────────────────
 
 export const authOptions: AuthOptions = {
   session: { strategy: "jwt" },
 
   providers: [
+    // ───── GOOGLE OAUTH ─────
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
     }),
 
+    // ───── CREDENTIALS (Email/Password) ─────
     CredentialsProvider({
-      name: "WordPress",
-      credentials: { username: {}, password: {} },
+      name: "Credentials",
+      credentials: {
+        username: { label: "Email", type: "text" },
+        password: { label: "Password", type: "password" },
+      },
 
       async authorize(credentials): Promise<User | null> {
-        console.log("[AUTH] Credentials authorize() called");
-
+        // Validate input
         const parsed = loginSchema.safeParse(credentials);
         if (!parsed.success) {
-          console.log("[AUTH] Credentials Zod parse failed");
-          return null;
+          throw new Error("Please enter your email and password");
         }
 
         const { username, password } = parsed.data;
-        console.log("[AUTH] Credentials login attempt for:", username);
 
         try {
-          const wp = await loginWordPressUser(username, password);
+          const wpUser = await loginWordPressUser(username, password);
 
-if (!wp) {
-  throw new Error("Invalid username or password");
-}
-          console.log("\n\n\n\n\n\n\n\n\n\n\n\n\[AUTH] loginWordPressUser response:", {
-            id: wp.id,
-            email: wp.user_email,
-            name: wp.user_display_name,
-          });
+          if (!wpUser) {
+            throw new Error("The email or password you entered is incorrect");
+          }
 
-          const user: User & {
-            wpToken: string;
-            wpUserId: number;
-            wpUsername: string;
-            wpPassword: string;
-          } = {
-            id: String(wp.id),
-            email: wp.user_email,
-            name: wp.user_display_name,
-            wpToken: wp.token,
-            wpUserId: wp.id,
-            wpUsername: username,
-            wpPassword: password,
-          };
+          // Return user object for NextAuth
+          return {
+            id: String(wpUser.id),
+            email: wpUser.user_email,
+            name: wpUser.user_display_name,
+            wpToken: wpUser.token,
+            wpUserId: wpUser.id,
+          } as User & { wpToken: string; wpUserId: number };
 
-          return user;
-        } catch (e: any) {
-          console.log("[AUTH] Credentials login FAILED:", e.message);
-          return null;
+        } catch (error: any) {
+          // Re-throw with user-friendly message
+          if (error.message?.includes("incorrect") || error.message?.includes("Invalid")) {
+            throw new Error("The email or password you entered is incorrect");
+          }
+          throw new Error("Unable to sign in. Please try again later");
         }
       },
     }),
   ],
 
   callbacks: {
-    // -----------------------------
-    // JWT CALLBACK
-    // -----------------------------
+    // ─────────────────────────────────────────────────────────────
+    // JWT CALLBACK - Runs when JWT is created/updated
+    // ─────────────────────────────────────────────────────────────
     async jwt({ token, user, account }): Promise<CustomToken> {
       const t = token as CustomToken;
 
-      console.log("\n========== [AUTH] JWT CALLBACK ==========");
-      console.log("[AUTH] Provider:", account?.provider);
-      console.log("[AUTH] Incoming token:", t);
-      console.log("[AUTH] Incoming user:", user);
-
-      const u = user as User & {
-    wpToken: string;
-    wpUserId: number;
-  };
-
-      // ----------- CREDENTIALS LOGIN -----------
+      // ───── CREDENTIALS LOGIN ─────
       if (account?.provider === "credentials" && user) {
-  console.log("[AUTH] Handling CREDENTIALS login inside JWT");
+        const u = user as User & { wpToken: string; wpUserId: number };
+        
+        t.jwt = u.wpToken;
+        t.wpUserId = u.wpUserId;
+        t.email = u.email!;
+        t.name = u.name!;
+        t.google = false;
+        
+        return t;
+      }
 
-
-  console.log("[AUTH] Credentials user data:", {
-    wpUserId: u.wpUserId,
-    email: u.email,
-    name: u.name,
-  });
-
-  // 🟢 Store all essential user fields into the token
-  t.jwt = u.wpToken;
-  t.wpUserId = u.wpUserId;
-  t.email = u.email!;
-  t.name = u.name!;
-
-  console.log("[AUTH] Stored wpUserId:", t.wpUserId);
-
-  return t;
-}
-
-
-      // ----------- GOOGLE LOGIN -----------
+      // ───── GOOGLE LOGIN ─────
       if (account?.provider === "google" && user) {
-  console.log("[AUTH] Handling GOOGLE login inside JWT");
+        const email = user.email || "";
+        const name = user.name || "";
+        const username = email.split("@")[0]; // WP username is the email prefix
 
-  const email = user.email || "";
-  const name = user.name || "";
+        t.google = true;
+        t.email = email;
+        t.name = name;
 
-  console.log("[AUTH] Google user:", { email, name });
+        // Check if WordPress user exists
+        let wpUser = await getWpUserByEmail(email);
 
-  t.google = true;
-  t.email = email;
-  t.name = name;
+        // Create new WP user if not found
+        if (!wpUser?.id) {
+          const newUser = await createUserInWordPress(email, name);
+          if (newUser?.id) {
+            wpUser = { id: newUser.id, slug: username, email };
+          }
+        }
 
-  // Check if WP user exists
-  let wpUser = await getWpUserByEmail(email);
-  console.log("[AUTH] WP user lookup:", wpUser);
+        t.wpUserId = wpUser?.id;
 
-  if (!wpUser?.id) {
-    console.log("[AUTH] WP user not found—creating new one...");
-    const newId = await createUserInWordPress(email, name);
-    console.log("[AUTH] WP new user creation result:", newId);
-    if (newId) {
-      wpUser = { id: newId, slug: email.split("@")[0], email }; // minimal WP user object
-    }
-  }
+        // Get WP token for Google user
+        // IMPORTANT: Use username (email prefix), not full email!
+        // WP users created for Google OAuth use the email prefix as username
+        try {
+          const defaultAppPassword = process.env.WP_DEFAULT_APP_PASSWORD!;
+          const wpAuth = await loginWordPressUser(username, defaultAppPassword);
+          t.jwt = wpAuth?.token || "";
+        } catch {
+          t.jwt = "";
+        }
 
-  t.wpUserId = wpUser?.id;
+        return t;
+      }
 
-  console.log("[AUTH] FINAL wpUserId for Google:", t.wpUserId);
-
-  // Log in to WP using default app password from .env
-  try {
-    const defaultAppPassword = process.env.WP_DEFAULT_APP_PASSWORD!;
-    const wpAuth = await loginWordPressUser(email, defaultAppPassword);
-    t.jwt = wpAuth?.token || ""; // assign JWT from WP
-    console.log("[AUTH] WP JWT for Google user:", t.jwt);
-  } catch (err) {
-    console.warn("[AUTH] Failed to login Google user to WP:", err);
-    t.jwt = ""; // fallback
-  }
-
-  return t;
-}
-
-
-      // ----------- DEFAULT -----------
-      console.log("[AUTH] Returning existing JWT token:", t);
+      // ───── RETURN EXISTING TOKEN ─────
       return t;
     },
 
-    // -----------------------------
-    // SESSION CALLBACK
-    // -----------------------------
-    async session({ session, token }): Promise<any> {
-      console.log("\n========== [AUTH] SESSION CALLBACK ==========");
-      console.log("[AUTH] Incoming token to session:", token);
-
-      const s = session as CustomSession;
+    // ─────────────────────────────────────────────────────────────
+    // SESSION CALLBACK - Shapes the session object
+    // ─────────────────────────────────────────────────────────────
+    async session({ session, token }): Promise<CustomSession> {
       const t = token as CustomToken;
 
-      s.wpToken = t.jwt;
-      s.wpNonce = t.wpNonce;
-      s.google = t.google;
-
-      s.user = {
-        name: t.name ?? session.user?.name ?? "",
-        email: t.email ?? session.user?.email ?? "",
-        id: t.wpUserId ? String(t.wpUserId) : "",
-      };
-
-      console.log("[AUTH] Final session object:", s);
-      console.log("=============================================\n");
-
-      return s;
+      return {
+        ...session,
+        wpToken: t.jwt,
+        google: t.google,
+        user: {
+          id: t.wpUserId ? String(t.wpUserId) : "",
+          name: t.name ?? session.user?.name ?? "",
+          email: t.email ?? session.user?.email ?? "",
+        },
+      } as CustomSession;
     },
 
+    // ─────────────────────────────────────────────────────────────
+    // SIGN IN CALLBACK
+    // ─────────────────────────────────────────────────────────────
     async signIn() {
       return true;
     },
@@ -209,6 +166,10 @@ if (!wp) {
   secret: process.env.NEXTAUTH_SECRET,
   pages: { signIn: "/login" },
 };
+
+// ─────────────────────────────────────────────────────────────
+// EXPORT HANDLERS
+// ─────────────────────────────────────────────────────────────
 
 const handler = NextAuth(authOptions);
 export { handler as GET, handler as POST };

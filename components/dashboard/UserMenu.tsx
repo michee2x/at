@@ -9,6 +9,7 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
   DropdownMenuSeparator,
+  DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 
@@ -64,14 +65,16 @@ export function UserMenu({ name, email, image, onLogout }: UserMenuProps) {
 
         <DropdownMenuSeparator className="my-3" />
 
-        <Button
-          variant="ghost"
-          className="w-full justify-start text-sm"
-          onClick={onLogout}
+        <DropdownMenuItem
+          className="cursor-pointer text-red-600 focus:text-red-600 focus:bg-red-50"
+          onSelect={(e) => {
+            e.preventDefault();
+            onLogout?.();
+          }}
         >
           <LogOut className="mr-2 h-4 w-4" />
           Logout
-        </Button>
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );

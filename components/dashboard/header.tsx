@@ -11,11 +11,14 @@ import Image from "next/image";
 import { UserMenu } from "./UserMenu";
 import { useAuth } from "@/contexts/auth-context";
 import { CartSheet } from "@/components/cart/CartSheet";
+import { signOut } from "next-auth/react";
+import { useCart } from "@/hooks/useCart";
 
 export function DashboardHeader() {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
   const { session } = useAuth();
+  const { resetOnLogout } = useCart();
 
   const userName =
     (session?.user && ("name" in session.user ? session.user.name : null)) ||
@@ -73,7 +76,16 @@ export function DashboardHeader() {
 
         {/* User profile menu - uses logged-in user data */}
         {session?.user && (
-          <UserMenu name={userName || ""} email={userEmail} image={userImage} />
+          <UserMenu 
+            name={userName || ""} 
+            email={userEmail} 
+            image={userImage} 
+            onLogout={async () => {
+              resetOnLogout(); // Clear cart before signing out
+              await signOut({ redirect: false });
+              window.location.href = "/";
+            }}
+          />
         )}
       </nav>
     </header>
