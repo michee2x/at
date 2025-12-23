@@ -96,9 +96,10 @@ function RegisterContent() {
   }
 
   return (
-    <div className="h-screen w-full flex flex-row-reverse overflow-hidden">
+    <div className="h-screen w-full flex flex-col-reverse lg:flex-row-reverse overflow-hidden bg-white">
       {/* RIGHT SIDE - SIGNUP FORM */}
-      <main className="w-full lg:w-[480px] xl:w-[520px] h-screen flex flex-col justify-center px-6 sm:px-10 lg:px-12 py-8 bg-white relative">
+      {/* RIGHT SIDE - SIGNUP FORM */}
+      <main className="w-full lg:w-[480px] xl:w-[520px] flex-1 lg:h-screen flex flex-col justify-start pt-8 lg:justify-center px-6 sm:px-10 lg:px-12 pb-8 bg-white relative rounded-t-[30px] -mt-10 lg:mt-0 z-10 lg:rounded-none shadow-[0_-10px_40px_rgba(0,0,0,0.1)] lg:shadow-none">
         {/* Subtle background pattern */}
         <div className="absolute inset-0 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:20px_20px] opacity-30" />
         
@@ -282,7 +283,7 @@ function RegisterContent() {
       </main>
 
       {/* LEFT SIDE - ILLUSTRATION */}
-      <div className="hidden lg:block flex-1 relative bg-gradient-to-br from-amber-400 via-orange-500 to-red-500">
+      <div className="relative w-full h-[35vh] lg:h-auto lg:flex-1 shrink-0 bg-gradient-to-br from-amber-400 via-orange-500 to-red-500">
         <Image
           src="/auth/african_wildlife.png"
           className="object-cover"
