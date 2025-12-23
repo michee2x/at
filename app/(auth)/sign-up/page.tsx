@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import { z } from "zod";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { HiOutlineMail } from "react-icons/hi";
@@ -22,7 +22,7 @@ const registerSchema = z.object({
   password: z.string().min(8, "Password must be at least 8 characters"),
 });
 
-export default function RegisterPage() {
+function RegisterContent() {
   const [step, setStep] = useState<SignupStep>("options");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -293,5 +293,13 @@ export default function RegisterPage() {
         <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
       </div>
     </div>
+  );
+}
+
+export default function RegisterPage() {
+  return (
+    <Suspense fallback={<div className="h-screen w-full flex items-center justify-center bg-white">Loading...</div>}>
+      <RegisterContent />
+    </Suspense>
   );
 }
