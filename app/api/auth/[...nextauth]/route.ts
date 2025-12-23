@@ -86,13 +86,13 @@ export const authOptions: AuthOptions = {
       // ───── CREDENTIALS LOGIN ─────
       if (account?.provider === "credentials" && user) {
         const u = user as User & { wpToken: string; wpUserId: number };
-        
+
         t.jwt = u.wpToken;
         t.wpUserId = u.wpUserId;
         t.email = u.email!;
         t.name = u.name!;
         t.google = false;
-        
+
         return t;
       }
 
@@ -126,7 +126,8 @@ export const authOptions: AuthOptions = {
           const defaultAppPassword = process.env.WP_DEFAULT_APP_PASSWORD!;
           const wpAuth = await loginWordPressUser(username, defaultAppPassword);
           t.jwt = wpAuth?.token || "";
-        } catch {
+        } catch (error) {
+          console.error("GOOGLE WP LOGIN ERROR:", error);
           t.jwt = "";
         }
 

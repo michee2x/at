@@ -23,6 +23,12 @@ export async function loginWordPressUser(
     const tokenData = await tokenRes.json();
 
     if (!tokenRes.ok || !tokenData?.token) {
+      console.error("[WP_AUTH] Token fetch failed:", {
+        status: tokenRes.status,
+        url: `${WP_URL}wp-json/jwt-auth/v1/token`,
+        username, // Log username to verify correct one is used
+        error: tokenData
+      });
       return null;
     }
 
@@ -36,8 +42,14 @@ export async function loginWordPressUser(
     const userData = await userRes.json();
 
     if (!userRes.ok || !userData?.id) {
+      console.error("[WP_AUTH] User data fetch failed:", {
+        status: userRes.status,
+        error: userData
+      });
       return null;
     }
+
+    console.log("[WP_AUTH] Login success for:", username, "UserId:", userData.id, "Token length:", token?.length);
 
     // Step 3: Return combined result
     return {
@@ -46,7 +58,8 @@ export async function loginWordPressUser(
       user_display_name: userData.name || tokenData.user_display_name,
       token,
     };
-  } catch {
+  } catch (err) {
+    console.error("[WP_AUTH] Network/System error:", err);
     return null;
   }
 }
