@@ -33,7 +33,8 @@ export const ScrollToTopButton = () => {
     <Button
       onClick={scrollToTop}
       className={cn(
-        "fixed bottom-8 left-1/2 -translate-x-1/2 z-50 rounded-full px-6 py-3 shadow-lg transition-all duration-300 transform lg:hidden",
+        "fixed bottom-8 left-1/2 -translate-x-1/2 z-50 rounded-full px-6 py-3 shadow-lg transition-all duration-300 transform",
+        "md:left-auto md:right-8 md:translate-x-0", // Desktop positioning: Bottom right
         "bg-black text-white hover:bg-gray-800",
         isVisible ? "translate-y-0 opacity-100" : "translate-y-16 opacity-0 pointer-events-none"
       )}

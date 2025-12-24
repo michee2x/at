@@ -13,8 +13,8 @@ import {
 } from "@/components/ui/select";
 import { useFilter } from "@/contexts/filter-context";
 import { useLockBodyScroll } from "@/hooks/useLockBodyScroll";
-import { X, Star } from "lucide-react";
-import { useState } from "react";
+import { X, Star, Loader2 } from "lucide-react";
+import { useState, useMemo, useEffect } from "react";
 import { SearchParamsType } from "@/app/(root)/categories/page";
 
 interface ProductFilterProps {
@@ -45,8 +45,78 @@ export function ProductFilter({
   const [selectedRating, setSelectedRating] = useState(searchParams.rating || "");
   const [onSale, setOnSale] = useState(searchParams.on_sale === "true");
   const [featured, setFeatured] = useState(searchParams.featured === "true");
+  const [isApplying, setIsApplying] = useState(false);
+  const [isClearing, setIsClearing] = useState(false);
+
+  // Reset loading state when params change (navigation complete)
+  useEffect(() => {
+    setIsApplying(false);
+    setIsClearing(false);
+  }, [params]);
+
+  // Detect if filters have changed from URL params
+  const hasFiltersChanged = useMemo(() => {
+    const currentMinPrice = searchParams.min_price || "";
+    const currentMaxPrice = searchParams.max_price || "";
+    const currentVendor = searchParams.vendor || searchParams.store || "";
+    const currentBrand = searchParams.brand || "";
+    const currentSort = searchParams.orderby || "";
+    const currentStock = searchParams.stock_status || "";
+    const currentRating = searchParams.rating || "";
+    const currentOnSale = searchParams.on_sale === "true";
+    const currentFeatured = searchParams.featured === "true";
+
+    return (
+      minPrice !== currentMinPrice ||
+      maxPrice !== currentMaxPrice ||
+      selectedVendor !== currentVendor ||
+      selectedBrand !== currentBrand ||
+      selectedSort !== currentSort ||
+      selectedStock !== currentStock ||
+      selectedRating !== currentRating ||
+      onSale !== currentOnSale ||
+      featured !== currentFeatured
+    );
+  }, [
+    minPrice,
+    maxPrice,
+    selectedVendor,
+    selectedBrand,
+    selectedSort,
+    selectedStock,
+    selectedRating,
+    onSale,
+    featured,
+    searchParams,
+  ]);
+
+  // Check if any filters are currently applied
+  const hasActiveFilters = useMemo(() => {
+    return !!(
+      minPrice ||
+      maxPrice ||
+      selectedVendor ||
+      selectedBrand ||
+      selectedSort ||
+      selectedStock ||
+      selectedRating ||
+      onSale ||
+      featured
+    );
+  }, [
+    minPrice,
+    maxPrice,
+    selectedVendor,
+    selectedBrand,
+    selectedSort,
+    selectedStock,
+    selectedRating,
+    onSale,
+    featured,
+  ]);
 
   function applyFilters() {
+    setIsApplying(true);
     const query = new URLSearchParams(params.toString());
 
     // Price range
@@ -116,8 +186,8 @@ export function ProductFilter({
     // Reset to page 1
     query.set("page", "1");
 
-    // Close overlay on mobile after applying
-    setShowFilter(false);
+    // Close overlay on mobile after applying -> REMOVED per user request
+    // setShowFilter(false);
 
     router.push(`?${query.toString()}`);
   }
@@ -133,6 +203,7 @@ export function ProductFilter({
     setOnSale(false);
     setFeatured(false);
 
+    setIsClearing(true);
     // Navigate to base URL without filters
     const query = new URLSearchParams();
     if (params.get("category")) {
@@ -140,7 +211,8 @@ export function ProductFilter({
     }
     query.set("page", "1");
 
-    setShowFilter(false);
+    // Close overlay on mobile after applying -> REMOVED per user request
+    // setShowFilter(false);
     router.push(`?${query.toString()}`);
   }
 
@@ -172,7 +244,7 @@ export function ProductFilter({
               type="button"
               onClick={() => setShowFilter(false)}
               aria-label="Close filters"
-              className="p-2 hover:bg-[#6a00f3]/10 rounded-full transition text-gray-700 hover:text-[#6a00f3]"
+              className="p-2 hover:bg-gray-100 rounded-full transition text-gray-700 hover:text-gray-900"
             >
               <X className="h-5 w-5" />
             </button>
@@ -325,15 +397,35 @@ export function ProductFilter({
             <Button
               variant="outline"
               onClick={clearFilters}
-              className="flex-1 h-10 border-[#6a00f3] text-[#6a00f3] hover:bg-[#6a00f3]/10"
+              disabled={!hasActiveFilters || isClearing}
+              className="flex-1 h-10 border-gray-300 text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Clear All
+              {isClearing ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Clearing...
+                </>
+              ) : (
+                "Clear All"
+              )}
             </Button>
             <Button
               onClick={applyFilters}
-              className="flex-1 h-10 bg-[#6a00f3] hover:bg-[#5a00d3] text-white"
+              disabled={!hasFiltersChanged || isApplying}
+              className={`flex-1 h-10 text-white transition-colors ${
+                hasFiltersChanged
+                  ? "bg-gray-700 hover:bg-gray-800"
+                  : "bg-gray-400 cursor-not-allowed"
+              }`}
             >
-              Apply Filters
+              {isApplying ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Applying...
+                </>
+              ) : (
+                "Apply Filters"
+              )}
             </Button>
           </div>
 
@@ -341,16 +433,36 @@ export function ProductFilter({
           <div className="hidden lg:block mt-4 space-y-2">
             <Button
               onClick={applyFilters}
-              className="w-full bg-[#6a00f3] hover:bg-[#5a00d3] text-white"
+              disabled={!hasFiltersChanged || isApplying}
+              className={`w-full text-white transition-colors ${
+                hasFiltersChanged
+                  ? "bg-gray-700 hover:bg-gray-800"
+                  : "bg-gray-400 cursor-not-allowed"
+              }`}
             >
-              Apply Filters
+              {isApplying ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Applying...
+                </>
+              ) : (
+                "Apply Filters"
+              )}
             </Button>
             <Button
               variant="outline"
               onClick={clearFilters}
-              className="w-full border-[#6a00f3] text-[#6a00f3] hover:bg-[#6a00f3]/10"
+              disabled={!hasActiveFilters || isClearing}
+              className="w-full border-gray-300 text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Clear All
+              {isClearing ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Clearing...
+                </>
+              ) : (
+                "Clear All"
+              )}
             </Button>
           </div>
         </div>

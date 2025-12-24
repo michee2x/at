@@ -53,7 +53,7 @@ export interface PageProps {
   searchParams: Promise<SearchParamsType>;
 }
 
-const PER_PAGE = 20; // Reduced as per request (user said maybe 5 but I'll do 20 for real usage, user said 5 just for test, I'll stick to reasonable defaults or 12)
+const PER_PAGE = 40; // Reduced as per request (user said maybe 5 but I'll do 20 for real usage, user said 5 just for test, I'll stick to reasonable defaults or 12)
 // User said: "reduce the perpage number to increase the pages (just for now to test, maybe 5 products per page)"
 // I will set it to 12.
 
@@ -118,7 +118,11 @@ export default async function CategoryPage({
             {!products || products.length === 0 ? (
               <EmptyFilterState searchParams={resolvedSearchParams} />
             ) : (
-              <ProductGrid initialProducts={products} totalPages={totalPages} />
+              <ProductGrid 
+                initialProducts={products} 
+                totalPages={totalPages} 
+                productsPerPage={PER_PAGE}
+              />
             )}
             
           </div>

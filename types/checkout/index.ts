@@ -32,7 +32,7 @@ city?: string;
 state?: string;
 postcode?: string;
 country?: Country;
-deliveryMethod?: "deliver" | "pickup";
+deliveryMethod?: "deliver";
 }
 
 export type UserBillingInfo = Omit<BillingInfo, "addressLine1" | "addressLine2" | "firstName" | "lastName"> & {

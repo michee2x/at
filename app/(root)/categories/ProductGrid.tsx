@@ -12,9 +12,10 @@ import { cn } from "@/lib/utils";
 interface ProductGridProps {
   initialProducts: WooProduct[];
   totalPages: number;
+  productsPerPage?: number;
 }
 
-export function ProductGrid({ initialProducts, totalPages }: ProductGridProps) {
+export function ProductGrid({ initialProducts, totalPages, productsPerPage = 12 }: ProductGridProps) {
   const [products, setProducts] = useState<WooProduct[]>(initialProducts);
   const [loadingMore, setLoadingMore] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
@@ -82,6 +83,7 @@ export function ProductGrid({ initialProducts, totalPages }: ProductGridProps) {
     try {
       const params = new URLSearchParams(searchParams.toString());
       params.set("page", nextPage.toString());
+      params.set("per_page", productsPerPage.toString());
       
       const res = await fetch(`/api/wc/product?${params.toString()}`);
       if (!res.ok) throw new Error("Failed to load more products");
@@ -128,116 +130,37 @@ export function ProductGrid({ initialProducts, totalPages }: ProductGridProps) {
         ))}
       </div>
       
-      {/* Infinite Scroll Loader (Mobile) */}
-      {isMobile && hasMore && (
-        <div ref={ref} className="w-full py-12 flex justify-center items-center min-h-[100px]">
-          {loadingMore && (
-            <div className="flex flex-col items-center gap-2">
-              <Loader2 className="h-8 w-8 animate-spin text-[#6a00f3]" />
-              <span className="text-sm text-gray-500">Loading more products...</span>
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* End of products message (Mobile) */}
-      {isMobile && !hasMore && deduplicatedProducts.length > 0 && (
-        <div className="w-full py-8 flex justify-center items-center">
-          <span className="text-sm text-gray-500">You&apos;ve reached the end</span>
-        </div>
-      )}
-
-      {/* Pagination (Desktop) */}
-      {!isMobile && totalPages > 1 && (
-        <DesktopPagination 
-          currentPage={currentPage}
-          totalPages={totalPages}
-          onPageChange={(page) => {
-            const params = new URLSearchParams(searchParams.toString());
-            params.set("page", page.toString());
-            router.push(`?${params.toString()}`);
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-          }}
-        />
-      )}
-    </div>
-  );
-}
-
-function DesktopPagination({ 
-    currentPage, 
-    totalPages, 
-    onPageChange 
-}: { 
-    currentPage: number; 
-    totalPages: number; 
-    onPageChange: (page: number) => void;
-}) {
-  const getPageNumbers = () => {
-    const pages = [];
-    const showMax = 5;
-    
-    let start = Math.max(1, currentPage - 2);
-    const end = Math.min(totalPages, start + showMax - 1);
-    
-    if (end - start < showMax - 1) {
-      start = Math.max(1, end - showMax + 1);
-    }
-
-    for (let i = start; i <= end; i++) {
-        pages.push(i);
-    }
-    return pages;
-  };
-
-  return (
-    <div className="flex items-center justify-center gap-2 mt-8">
-      <Button
-        variant="outline"
-        size="icon"
-        disabled={currentPage === 1}
-        onClick={() => onPageChange(currentPage - 1)}
-        className="h-9 w-9"
-      >
-        <ChevronLeft className="h-4 w-4" />
-      </Button>
-
-      {getPageNumbers().map(page => (
-        <Button
-          key={page}
-          variant={currentPage === page ? "default" : "outline"}
-          size="sm"
-          onClick={() => onPageChange(page)}
-          className={cn("h-9 w-9", currentPage === page ? "bg-primary text-white" : "")}
-        >
-          {page}
-        </Button>
-      ))}
-      
-      {totalPages > 5 && currentPage < totalPages - 2 && (
-          <span className="text-muted-foreground">...</span>
-      )}
-      
-      {totalPages > 5 && currentPage < totalPages - 2 && (
+      {/* Load More Button - Unified for all screen sizes */}
+      {hasMore && (
+        <div className="w-full py-12 flex justify-center items-center">
           <Button
+            onClick={loadMoreProducts}
+            disabled={loadingMore}
             variant="outline"
-            size="sm"
-            onClick={() => onPageChange(totalPages)}
-            className="h-9 w-9"
+            className="group relative px-8 py-6 h-auto text-base font-medium bg-white hover:bg-gray-50 border-gray-200 text-gray-900 shadow-sm hover:shadow-md transition-all duration-300 min-w-[240px] rounded-full"
           >
-            {totalPages}
+            {loadingMore ? (
+              <span className="flex items-center gap-2">
+                <Loader2 className="w-4 h-4 animate-spin text-gray-600" />
+                <span className="text-gray-600">Loading products...</span>
+              </span>
+            ) : (
+              <span className="flex items-center gap-2">
+                Load More Products
+                <ChevronRight className="w-4 h-4 text-gray-400 group-hover:translate-x-0.5 transition-transform" />
+              </span>
+            )}
           </Button>
+        </div>
       )}
 
-      <Button
-        variant="outline"
-        size="icon"
-        disabled={currentPage === totalPages}
-        onClick={() => onPageChange(currentPage + 1)}
-        className="h-9 w-9"
-      >
-        <ChevronRight className="h-4 w-4" />
-      </Button>
+      {/* End of products message */}
+      {!hasMore && deduplicatedProducts.length > 0 && (
+        <div className="w-full py-12 flex flex-col items-center gap-3">
+          <div className="h-px w-24 bg-gray-200" />
+          <span className="text-sm font-medium text-gray-400 uppercase tracking-widest">End of Results</span>
+        </div>
+      )}
     </div>
   );
 }

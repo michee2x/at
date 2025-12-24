@@ -17,6 +17,7 @@ import {
 import OrderSummary from "@/sections/cart/OrderSummary";
 import { useCart } from "@/hooks/useCart";
 import { Info, Truck } from "lucide-react";
+import { Breadcrumbs } from "@/components/ui/breadcrumbs";
 
 export function DialogDeleteDemo() {
   const itemToDelete = useCart((state) => state.itemToDelete);
@@ -62,6 +63,7 @@ const CartPage = () => {
   return (
     <Dialog>
       <div className="container mx-auto px-4 py-8 lg:py-12 min-h-screen">
+        <Breadcrumbs items={[{ label: "Cart" }]} />
         <h1 className="text-3xl font-bold mb-8 text-gray-900">Your Cart</h1>
         
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">

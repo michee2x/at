@@ -4,6 +4,7 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import ProductImageZoomWrapper from "./ProductImageZoomWrapper";
+import { Breadcrumbs } from "@/components/ui/breadcrumbs";
 import Link from "next/link";
 import { FiHeart } from "react-icons/fi";
 import { GoArrowUpRight } from "react-icons/go";
@@ -12,6 +13,7 @@ import { Ratings } from "@/components/Ratings";
 import { ProductDescription } from "@/components/category/productDesc";
 import ProductMediaGallery from "@/components/ProductMediaGallery";
 import ProductSuggestionList from "@/components/productdetails/suggestionCard";
+import { AddToCartButton } from "@/components/cart/AddToCartButton";
 
 export const revalidate = 3600; // Revalidate this page every hour
 
@@ -124,37 +126,16 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
   return (
     <main className="container w-full mx-auto md:max-w-[95%] lg:max-w-full xl:max-w-[1300px] 2xl:max-w-[1440px] font-poppins px-2 py-8">
       {/* Breadcrumb — keep semantic & crawlable links */}
-      <nav aria-label="breadcrumb">
-        <ol className="flex capitalize flex-wrap gap-x-2 text-sm">
-          <li>
-            <Link
-              target="_blank"
-              rel="noopener noreferrer"
-              href="/"
-              className="hover:text-[#ab23e0] text-[#cb47ff] cursor-pointer hover:underline"
-            >
-              Home
-            </Link>
-          </li>
-          <li>/</li>
-          <li>
-            <Link
-              href={`/categories?cat=${product?.categories[0]?.id}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-[#ab23e0] text-[#cb47ff] cursor-pointer hover:underline"
-            >
-              {product?.categories[0]?.name
-                ?.replace("&amp;", "")
-                ?.toLowerCase()}
-            </Link>
-          </li>
-          <li>/</li>
-          <li aria-current="page" className="text-gray-500">
-            Product Details
-          </li>
-        </ol>
-      </nav>
+      {/* Breadcrumb — keep semantic & crawlable links */}
+      <Breadcrumbs 
+        items={[
+          { 
+            label: product?.categories[0]?.name?.replace("&amp;", "") || "Category",
+            href: `/categories?cat=${product?.categories[0]?.id}`
+          },
+          { label: "Product Details" }
+        ]} 
+      />
 
       <article
         className="mt-8 flex flex-col lg:flex-row gap-5"
@@ -172,23 +153,22 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
             <ProductHeader product={product!} />
           </Suspense>
 
-          <Suspense fallback={<SizeChartSkeleton />}>
-            <SizeChart />
-          </Suspense>
 
-          <div className="mt-6 flex flex-col lg:flex-row lg:space-x-4">
-            <button
-              className="mt-4 w-full bg-[#660fcf] rounded-full text-white py-3 hover:bg-[#5300b8]"
-              aria-label="Add to cart"
+
+          <div className="mt-6 flex flex-col lg:flex-row gap-4 items-center">
+            <div className="w-full lg:w-1/2">
+              <AddToCartButton 
+                product={product!}
+                className="w-full bg-[#660fcf] rounded-full text-white py-6 hover:bg-[#5300b8] h-12 text-base font-semibold shadow-lg shadow-purple-500/20"
+                showText={true}
+              />
+            </div>
+            <Link 
+              href="/cart"
+              className="w-full lg:w-1/2 flex items-center justify-center border border-black text-black rounded-full h-12 hover:border-[#4c1292] hover:text-[#4c1292] transition-colors font-semibold"
             >
-              Add to Cart
-            </button>
-            <button
-              className="mt-4 flex gap-3 items-center justify-center w-full border border-black text-black rounded-full py-3 hover:border-[#4c1292]"
-              aria-label="Add to cart"
-            >
-              Favorite <FiHeart className="text-[20px]" />
-            </button>
+              Go to Cart
+            </Link>
           </div>
         </section>
       </article>
@@ -261,41 +241,7 @@ function ProductHeader({ product }: { product: WooProduct }) {
   );
 }
 
-function SizeChart() {
-  // If product carries size attributes in the future, parse them here.
-  return (
-    <section className="mt-4" aria-labelledby="sizechart-title">
-      <h2 id="sizechart-title" className="text-sm font-semibold">
-        UK Only sizes of applicable (UK 6 — EU 40)
-      </h2>
-      <table className="w-full text-sm mt-2 border-collapse" role="table" aria-label="Size chart">
-        <thead>
-          <tr>
-            <th className="border p-2 text-left">Size</th>
-            <th className="border p-2 text-left">UK</th>
-            <th className="border p-2 text-left">EU</th>
-            <th className="border p-2 text-left">US</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td className="border p-2">UK 6</td>
-            <td className="border p-2">UK 6</td>
-            <td className="border p-2">EU 40</td>
-            <td className="border p-2">US 7</td>
-          </tr>
-          <tr>
-            <td className="border p-2">UK 7</td>
-            <td className="border p-2">UK 7</td>
-            <td className="border p-2">EU 41</td>
-            <td className="border p-2">US 8</td>
-          </tr>
-          {/* Add other rows as needed */}
-        </tbody>
-      </table>
-    </section>
-  );
-}
+
 
 // -------------------------
 // Product Suggestions (server component)

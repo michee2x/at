@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Menu, ShoppingCart, User, X } from "lucide-react";
+import { Menu, ShoppingCart, User, X, ShoppingBag } from "lucide-react";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import DashboardSidebar from "./sidebar";
@@ -71,6 +71,14 @@ export function DashboardHeader() {
         role="navigation"
         aria-label="Dashboard navigation"
       >
+        {/* Shop Button */}
+        <Button asChild variant="ghost" className="hidden lg:flex gap-2 text-gray-600 hover:text-[#6a00f3] hover:bg-purple-50">
+          <Link href="/categories" target="_blank" rel="noopener noreferrer">
+            <ShoppingBag className="w-4 h-4" />
+            <span className="font-medium">Shop Now</span>
+          </Link>
+        </Button>
+
         {/* User Order button / Cart Sheet */}
         <CartSheet />
 

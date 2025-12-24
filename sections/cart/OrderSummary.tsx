@@ -9,10 +9,8 @@ import { Separator } from "@/components/ui/separator";
 
 export default function OrderSummary({
   showCheckoutButton = true,
-  deliveryMethod = "deliver",
 }: {
   showCheckoutButton?: boolean;
-  deliveryMethod?: "deliver" | "pickup";
 }) {
   const { cart, isLoading } = useCart();
   const [data, setData] = useState({
@@ -33,8 +31,8 @@ export default function OrderSummary({
     }, 0);
 
     const packagingFee = 2000.05;
-    const serviceFee = deliveryMethod === "pickup" ? 0 : 500.05;
-    const deliveryFee = deliveryMethod === "pickup" ? 0 : 2000.05;
+    const serviceFee = 500.05;
+    const deliveryFee = 2000.05;
 
     // Total calculation
     const total = subtotal + packagingFee + serviceFee + deliveryFee;
@@ -46,7 +44,7 @@ export default function OrderSummary({
       deliveryFee,
       total,
     });
-  }, [cart, deliveryMethod]);
+  }, [cart]);
 
   if (isLoading || !cart) return <OrderSummarySkeleton />;
 
@@ -60,12 +58,8 @@ export default function OrderSummary({
         {/* Fees (can be conditional later) */}
         <SummaryRow label="Packaging Fee" value={data.packagingFee} />
         
-        {deliveryMethod !== "pickup" && (
-          <>
-            <SummaryRow label="Service Fee" value={data.serviceFee} />
-            <SummaryRow label="Delivery Fee" value={data.deliveryFee} />
-          </>
-        )}
+        <SummaryRow label="Service Fee" value={data.serviceFee} />
+        <SummaryRow label="Delivery Fee" value={data.deliveryFee} />
 
         <Separator className="my-4 bg-gray-200" />
 

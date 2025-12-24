@@ -69,7 +69,7 @@ export function UserMenu({ name, email, image, onLogout }: UserMenuProps) {
         <DropdownMenuSeparator className="my-3" />
 
         <DropdownMenuItem asChild className="lg:hidden cursor-pointer">
-          <Link href="/categories">
+          <Link href="/categories" target="_blank" rel="noopener noreferrer">
             <ShoppingBag className="mr-2 h-4 w-4" />
             Shop
           </Link>

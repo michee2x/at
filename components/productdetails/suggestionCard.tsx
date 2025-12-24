@@ -11,66 +11,52 @@ export default function ProductSuggestionList({
   suggestions: WooProduct[];
 }) {
   return (
-    <ul className="w-full grid grid-cols-2 gap-y-4 lg:flex lg:gap-x-6 h-auto">
-      {suggestions.map((item, idx) => {
-
-        return (
-          <li
-            key={item.id}
-            className="lg:w-[244px] rounded-md overflow-hidden w-[95%] min-h-[170px] lg:h-[285px] flex flex-col lg:max-h-[320.25px]"
-            itemScope
-            itemType="http://schema.org/Product"
+    <ul className="w-full grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 lg:gap-6 mt-6">
+      {suggestions.map((item) => (
+        <li
+          key={item.id}
+          className="group relative flex flex-col w-full"
+          itemScope
+          itemType="http://schema.org/Product"
+        >
+          <Link
+            href={`/product/${item.slug}`}
+            className="block relative w-full aspect-square bg-[#FAFAFA] rounded-xl overflow-hidden hover:opacity-95 transition-opacity"
+            itemProp="url"
           >
-            <Link
+            <Image
+              fill
+              className="object-contain p-4 group-hover:scale-105 transition-transform duration-300"
+              src={item.images?.[0]?.src ?? "/placeholder.png"}
+              alt={item.name ?? "Product image"}
+              sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
+            />
+          </Link>
+
+          <div className="mt-3 flex flex-col gap-1">
+            <Link 
               href={`/product/${item.slug}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="block bg-[#FAFAFA] relative overflow-hidden w-full h-[175px] lg:w-full lg:min-h-[242.61px]"
-              itemProp="url"
+              className="font-medium text-gray-900 line-clamp-2 text-sm lg:text-base hover:text-[#6a00f3] transition-colors"
+              itemProp="name"
             >
-
-              <Image
-                fill
-                className="object-contain"
-                src={item.images?.[0]?.src ?? "/placeholder.png"}
-                alt={item.name ?? "Product image"}
-                priority
-                itemProp="image"
-              />
-
-              <div
-                className="absolute top-0 w-full p-1 text-[10px] flex items-center justify-between"
-                aria-hidden
-              >
-                <FiHeart className="text-xl" />
-                <span className="w-6 h-6 rounded-full text-white text-xl flex items-center justify-center bg-black">
-                  +
-                </span>
-              </div>
+              {item.name}
             </Link>
-
-            <div className="w-full mt-1 flex flex-col h-auto">
-              <div className="flex items-center gap-[2.36px]">
-                <span
-                  className="text-[#2B2B2B] text-nowrap text-[12px] lg:text-[16px] font-[Red Hat Display]"
-                  itemProp="name"
-                >
-                  {item.name?.slice(0, 14) ?? "Product"}
-                </span>
-                <GoArrowUpRight className="lg:text-[20px] text-[14px]" />
-              </div>
-              <span
-                className="text-[#6C757D] text-end text-[10px] lg:text-[12px]"
-                itemProp="brand"
-              >
-                {item?.brands?.[0]?.name ??
-                  item?.slug?.split("-")[0]?.toUpperCase() ??
-                  ""}
+            
+            <div className="flex items-center justify-between mt-1">
+              <span className="font-semibold text-gray-900">
+                ₦{Number(item.price).toLocaleString()}
               </span>
+              
+              <button 
+                className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 hover:bg-[#6a00f3] hover:text-white transition-colors"
+                aria-label="View Product"
+              >
+                <GoArrowUpRight className="text-lg" />
+              </button>
             </div>
-          </li>
-        );
-      })}
+          </div>
+        </li>
+      ))}
     </ul>
   );
 }

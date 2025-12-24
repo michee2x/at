@@ -16,8 +16,6 @@ const CardOne = ({
 }) => {
   return (
     <Link
-      target="_blank"
-      rel="noopener noreferrer"
       href={`/product/${data.slug}`}
       className={`carousel-item cursor-pointer lg:w-[230px] ${
         fillViewport ? "w-full" : "w-[240px]"

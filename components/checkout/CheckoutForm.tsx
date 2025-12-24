@@ -40,13 +40,11 @@ export default function CheckoutForm({
   defaultValues,
   onContinue,
   loading = false,
-  deliveryMethod,
-  setDeliveryMethod,
-}: CheckoutFormProps) {
+}: Omit<CheckoutFormProps, "deliveryMethod" | "setDeliveryMethod">) {
   const form = useForm<CheckoutSchema>({
     resolver: zodResolver(checkoutSchema),
     defaultValues: {
-      deliveryMethod: deliveryMethod ?? "deliver",
+      deliveryMethod: "deliver",
       firstName: defaultValues?.firstName ?? "",
       lastName: defaultValues?.lastName ?? "",
       addressLine2: defaultValues?.addressLine2 ?? "",
@@ -58,14 +56,6 @@ export default function CheckoutForm({
     mode: "onChange",
   });
 
-  const selectedDelivery = form.watch("deliveryMethod");
-
-  useEffect(() => {
-    if (setDeliveryMethod && selectedDelivery) {
-      setDeliveryMethod(selectedDelivery);
-    }
-  }, [selectedDelivery, setDeliveryMethod]);
-
   const onSubmit = async (vals: CheckoutSchema) => {
     await onContinue({
       firstName: vals.firstName,
@@ -75,89 +65,19 @@ export default function CheckoutForm({
       preferredAddress: vals.preferredAddress,
       email: vals.email,
       phone: vals.phone,
-      deliveryMethod: vals.deliveryMethod,
+      deliveryMethod: "deliver",
     });
   };
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 max-w-2xl">
-        <div className="space-y-6">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-10 max-w-xl">
+        <div className="space-y-10">
           <section>
-            <h2 className="text-xl font-bold text-gray-900 mb-4">
-              Delivery Method
-            </h2>
-            <FormField
-              control={form.control}
-              name="deliveryMethod"
-              render={({ field }) => (
-                <FormItem className="space-y-3">
-                  <FormControl>
-                    <RadioGroup
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                      className="grid grid-cols-1 sm:grid-cols-2 gap-4"
-                    >
-                      {/* Deliver Option */}
-                      <FormItem>
-                        <FormControl>
-                          <RadioGroupItem
-                            value="deliver"
-                            className="peer sr-only"
-                          />
-                        </FormControl>
-                        <FormLabel className="flex flex-col items-start justify-between rounded-xl border-2 border-muted bg-transparent p-4 hover:bg-gray-50 peer-data-[state=checked]:border-[#6a00f3] peer-data-[state=checked]:bg-[#6a00f3]/5 cursor-pointer transition-all">
-                          <div className="mb-3 rounded-md bg-white p-2 shadow-sm">
-                            <Truck className="h-6 w-6 text-[#6a00f3]" />
-                          </div>
-                          <div className="space-y-1">
-                            <p className="text-sm font-bold text-gray-900">
-                              Deliver It
-                            </p>
-                            <p className="text-xs text-muted-foreground">
-                              We will deliver to your address
-                            </p>
-                          </div>
-                        </FormLabel>
-                      </FormItem>
-
-                      {/* Pickup Option */}
-                      <FormItem>
-                        <FormControl>
-                          <RadioGroupItem
-                            value="pickup"
-                            className="peer sr-only"
-                          />
-                        </FormControl>
-                        <FormLabel className="flex flex-col items-start justify-between rounded-xl border-2 border-muted bg-transparent p-4 hover:bg-gray-50 peer-data-[state=checked]:border-[#6a00f3] peer-data-[state=checked]:bg-[#6a00f3]/5 cursor-pointer transition-all">
-                          <div className="mb-3 rounded-md bg-white p-2 shadow-sm">
-                            <Store className="h-6 w-6 text-[#6a00f3]" />
-                          </div>
-                          <div className="space-y-1">
-                            <p className="text-sm font-bold text-gray-900">
-                              Pickup
-                            </p>
-                            <p className="text-xs text-muted-foreground">
-                              Collect from our store
-                            </p>
-                          </div>
-                        </FormLabel>
-                      </FormItem>
-                    </RadioGroup>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </section>
-
-          <Separator />
-
-          <section>
-            <h2 className="text-xl font-bold text-gray-900 mb-4">
+            <h2 className="text-xl font-bold text-gray-900 mb-6">
               Shipping Address
             </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
               <FormField
                 control={form.control}
                 name="firstName"
@@ -165,7 +85,7 @@ export default function CheckoutForm({
                   <FormItem>
                     <FormLabel>First Name</FormLabel>
                     <FormControl>
-                      <Input placeholder="Enter first name" className="!border !border-solid !border-gray-300 focus-visible:!border-[#6a00f3] focus-visible:!ring-[#6a00f3]" {...field} />
+                      <Input placeholder="Enter first name" className="h-12 text-base !border !border-solid !border-gray-300 focus-visible:!border-[#6a00f3] focus-visible:!ring-[#6a00f3]" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -178,7 +98,7 @@ export default function CheckoutForm({
                   <FormItem>
                     <FormLabel>Last Name</FormLabel>
                     <FormControl>
-                      <Input placeholder="Enter last name" className="!border !border-solid !border-gray-300 focus-visible:!border-[#6a00f3] focus-visible:!ring-[#6a00f3]" {...field} />
+                      <Input placeholder="Enter last name" className="h-12 text-base !border !border-solid !border-gray-300 focus-visible:!border-[#6a00f3] focus-visible:!ring-[#6a00f3]" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -192,7 +112,7 @@ export default function CheckoutForm({
                     <FormItem>
                       <FormLabel>Address</FormLabel>
                       <FormControl>
-                        <Input placeholder="Full street address" className="!border !border-solid !border-gray-300 focus-visible:!border-[#6a00f3] focus-visible:!ring-[#6a00f3]" {...field} />
+                        <Input placeholder="Full street address" className="h-12 text-base !border !border-solid !border-gray-300 focus-visible:!border-[#6a00f3] focus-visible:!ring-[#6a00f3]" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -231,10 +151,10 @@ export default function CheckoutForm({
           <Separator />
 
           <section>
-            <h2 className="text-xl font-bold text-gray-900 mb-4">
+            <h2 className="text-xl font-bold text-gray-900 mb-6">
               Contact Information
             </h2>
-            <div className="space-y-4">
+            <div className="space-y-6">
               <FormField
                 control={form.control}
                 name="email"
@@ -243,8 +163,8 @@ export default function CheckoutForm({
                     <FormLabel>Email</FormLabel>
                     <FormControl>
                       <div className="relative">
-                        <Mail className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
-                        <Input className="pl-9 !border !border-solid !border-gray-300 focus-visible:!border-[#6a00f3] focus-visible:!ring-[#6a00f3]" placeholder="Enter email" {...field} />
+                        <Mail className="absolute left-3 top-3.5 h-5 w-5 text-muted-foreground" />
+                        <Input className="pl-10 h-12 text-base !border !border-solid !border-gray-300 focus-visible:!border-[#6a00f3] focus-visible:!ring-[#6a00f3]" placeholder="Enter email" {...field} />
                       </div>
                     </FormControl>
                     <FormDescription>
@@ -262,8 +182,8 @@ export default function CheckoutForm({
                     <FormLabel>Phone Number</FormLabel>
                     <FormControl>
                       <div className="relative">
-                        <Phone className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
-                        <Input className="pl-9 !border !border-solid !border-gray-300 focus-visible:!border-[#6a00f3] focus-visible:!ring-[#6a00f3]" placeholder="Enter phone number" {...field} />
+                        <Phone className="absolute left-3 top-3.5 h-5 w-5 text-muted-foreground" />
+                        <Input className="pl-10 h-12 text-base !border !border-solid !border-gray-300 focus-visible:!border-[#6a00f3] focus-visible:!ring-[#6a00f3]" placeholder="Enter phone number" {...field} />
                       </div>
                     </FormControl>
                     <FormDescription>
@@ -279,7 +199,7 @@ export default function CheckoutForm({
 
         <Button 
           type="submit" 
-          className="w-full bg-[#6a00f3] hover:bg-[#5a00d3] h-12 text-lg font-medium"
+          className="w-full bg-[#6a00f3] hover:bg-[#5a00d3] h-14 text-lg font-medium rounded-xl"
           disabled={loading}
         >
           {loading ? (

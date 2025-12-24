@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import Link from "next/link";
+import { Breadcrumbs } from "@/components/ui/breadcrumbs";
 import { usePathname, useSearchParams } from "next/navigation";
 import { ProductCard } from "@/components/category/ProductCard";
 import { Params, WooProduct } from "@/types";
@@ -54,50 +54,7 @@ export function Loader({ size = 48 }: { size?: number }) {
 // -----------------------------
 // Breadcrumb
 // -----------------------------
-export function Breadcrumb() {
-  const pathname = usePathname();
-  const segments = pathname.split("/").filter(Boolean);
 
-  const formatName = (str: string) =>
-    decodeURIComponent(
-      str.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())
-    );
-
-  const paths = segments.map((seg, i) => ({
-    name: formatName(seg),
-    href: "/" + segments.slice(0, i + 1).join("/"),
-  }));
-
-  return (
-    <nav
-      className="text-[15px] capitalize text-gray-500 mb-3"
-      aria-label="Breadcrumb"
-    >
-      <ol className="flex items-center flex-wrap gap-1">
-        <li>
-          <Link href="/" className="hover:text-[#ab23e0] text-[#cb47ff]">
-            Home
-          </Link>
-        </li>
-        {paths.map((p, idx) => (
-          <li key={idx} className="flex items-center gap-1">
-            <span>/</span>
-            {idx === paths.length - 1 ? (
-              <span className="text-gray-800 font-medium">{p.name}</span>
-            ) : (
-              <Link
-                href={p.href}
-                className="hover:text-blue-600 text-[#9747FF]"
-              >
-                {p.name}
-              </Link>
-            )}
-          </li>
-        ))}
-      </ol>
-    </nav>
-  );
-}
 
 // -----------------------------
 // Types
@@ -234,7 +191,11 @@ export default function CategoryPageClient({
       <div className="flex w-full px-4 lg:px-7 2xl:px-12 flex-col gap-8">
         <Carousel />
         {/* <Banner /> */}
-        <Breadcrumb />
+        <Breadcrumbs 
+          items={[
+            { label: title ?? (category ? decodeURIComponent(category).replace(/-/g, " ") : "Category") }
+          ]} 
+        />
       </div>
       <div className="flex container mx-auto gap-6 md:gap-10">
         <Filters

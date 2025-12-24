@@ -11,6 +11,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Breadcrumbs } from "@/components/ui/breadcrumbs";
 
 export default function BecomeSellerPage() {
   const [formData, setFormData] = useState({
@@ -43,7 +44,7 @@ export default function BecomeSellerPage() {
         {/* Left Side - Information */}
         <div className="bg-gray-50 p-8 lg:p-12 flex flex-col justify-center">
           <div className="max-w-xl">
-            <p className="text-sm text-gray-500 mb-2">Home / Become a Seller</p>
+            <Breadcrumbs items={[{ label: "Become a Seller" }]} />
             <h1 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
               Start Selling on Atlaze
             </h1>

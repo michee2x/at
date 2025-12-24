@@ -50,7 +50,7 @@ export function CartSheet() {
           <>
             <div className="flex-1 overflow-y-auto min-h-0 px-6">
               <div className="flex flex-col gap-8 py-6">
-                {cart.items.map((item) => (
+                {[...cart.items].reverse().map((item) => (
                   <div key={item.id} className="flex gap-4 items-start">
                     {/* Image */}
                     <div className="relative aspect-square h-24 w-24 min-w-[6rem] overflow-hidden bg-gray-100 shrink-0">

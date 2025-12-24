@@ -10,14 +10,15 @@ import { CartProvider } from "@/contexts/CartContext";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { SessionProvider } from "next-auth/react";
+import { type Session } from "next-auth";
 import { AuthProvider } from "@/contexts/auth-context";
 
-const Providers = ({ children }: { children: ReactNode }) => {
+const Providers = ({ children, session }: { children: ReactNode, session?: Session | null }) => {
   const [client] = useState(() => new QueryClient());
 
   return (
     <QueryClientProvider client={client}>
-      <SessionProvider>
+      <SessionProvider session={session}>
         <AuthProvider>
           <SidebarProvider>
             <FilterProvider>

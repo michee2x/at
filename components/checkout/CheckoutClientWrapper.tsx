@@ -12,10 +12,6 @@ export function CheckoutClientWrapper({
 }: {
   defaultBilling: BillingInfo | undefined;
 }) {
-  const [deliveryMethod, setDeliveryMethod] = useState<"deliver" | "pickup">(
-    "deliver"
-  );
-
   const { isPlacingOrder, error, placeOrder } = useCheckout();
 
   const handleContinue = async (
@@ -29,8 +25,6 @@ export function CheckoutClientWrapper({
       <section className="lg:col-span-8 w-full">
         <CheckoutForm
           defaultValues={defaultBilling}
-          deliveryMethod={deliveryMethod}
-          setDeliveryMethod={setDeliveryMethod}
           loading={isPlacingOrder}
           onContinue={handleContinue}
         />
@@ -46,7 +40,6 @@ export function CheckoutClientWrapper({
         <div className="lg:sticky lg:top-40">
           <OrderSummary
             showCheckoutButton={false}
-            deliveryMethod={deliveryMethod}
           />
         </div>
       </aside>

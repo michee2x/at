@@ -5,11 +5,10 @@ import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { WooProduct } from "@/types";
 import ProductMediaGallery from "./ProductMediaGallery";
 import { Ratings } from "./Ratings"; // Assuming this exists based on client.tsx usage
-import { Button } from "./ui/button";
 import { ShoppingCart, Star } from "lucide-react";
+import { Button } from "./ui/button";
 import Image from "next/image";
-import { useCart } from "@/hooks/useCart"; // Adjust import path if needed
-import { useCart as useContextCart } from "@/contexts/CartContext";
+import { AddToCartButton } from "@/components/cart/AddToCartButton";
 
 type QuickLookModalProps = {
   isOpen: boolean;
@@ -18,27 +17,6 @@ type QuickLookModalProps = {
 };
 
 export function QuickLookModal({ isOpen, onClose, product }: QuickLookModalProps) {
-  const { addItem } = useCart();
-  const { addToCart } = useContextCart();
-
-  const handleAddToCart = () => {
-     // Instant optimistic add - match ProductCard logic
-    addToCart({ ...product, quantity: 1 });
-    
-    // Sync with zustand
-    addItem({
-        id: product.id,
-        name: product.name,
-        slug: product.slug,
-        price: product.price,
-        images: product.images,
-        quantity: 1,
-    });
-    
-    // Optional: Close modal after adding? or keep open? 
-    // Usually quick look stays open or shows toast. We'll rely on existing toast system.
-  };
-
   const isOnSale = product.sale_price && parseFloat(product.sale_price) < parseFloat(product.regular_price);
   const discountPercentage = isOnSale 
     ? Math.round(((parseFloat(product.regular_price) - parseFloat(product.sale_price)) / parseFloat(product.regular_price)) * 100)
@@ -110,18 +88,11 @@ export function QuickLookModal({ isOpen, onClose, product }: QuickLookModalProps
 
             {/* Actions */}
             <div className="pt-4 mt-auto">
-                 <Button 
-                    onClick={handleAddToCart}
-                    className="w-full h-12 text-base font-semibold bg-[#6a00f3] hover:bg-[#5a00d3] text-white shadow-lg shadow-purple-500/20"
-                    disabled={product.stock_status === 'outofstock'}
-                 >
-                    {product.stock_status === 'outofstock' ? 'Out of Stock' : (
-                        <>
-                            <ShoppingCart className="mr-2 h-5 w-5" />
-                            Add to Cart
-                        </>
-                    )}
-                </Button>
+                 <AddToCartButton 
+                    product={product}
+                    variant="full"
+                    className="h-12 text-base font-semibold shadow-lg shadow-purple-500/20"
+                 />
                 <div className="mt-4 text-center">
                     <a href={`/product/${product.slug}`} className="text-sm text-gray-500 hover:text-[#6a00f3] underline underline-offset-4">
                         View Full Details

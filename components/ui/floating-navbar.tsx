@@ -57,7 +57,7 @@ export const FloatingNav = ({ className }: { className?: string }) => {
   // When floating is off (top of page)
   if (!isFloating) {
     return (
-      <div className={cn("w-screen relative top-0 bg-white z-[8999]", className)}>
+      <div className={cn("w-full relative top-0 bg-white z-[8999]", className)}>
         <NavBar showCategories={marginTop} />
       </div>
     );
@@ -74,7 +74,7 @@ export const FloatingNav = ({ className }: { className?: string }) => {
         }}
         transition={{ duration: 0.25, ease: "easeOut" }}
         className={cn(
-          "flex w-screen sticky top-0 bg-white inset-x-0 mx-auto z-[8999] items-center justify-center lg:shadow-md",
+          "flex w-full sticky top-0 bg-white inset-x-0 mx-auto z-[8999] items-center justify-center lg:shadow-md",
           className
         )}
       >

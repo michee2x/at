@@ -3,8 +3,9 @@
 import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { SearchX, Filter, RotateCcw } from "lucide-react";
+import { SearchX, Filter, RotateCcw, Loader2 } from "lucide-react";
 import { SearchParamsType } from "./page";
+import { useState, useEffect } from "react";
 
 interface EmptyFilterStateProps {
   searchParams: SearchParamsType;
@@ -13,6 +14,13 @@ interface EmptyFilterStateProps {
 export function EmptyFilterState({ searchParams }: EmptyFilterStateProps) {
   const router = useRouter();
   const params = useSearchParams();
+  const [isClearing, setIsClearing] = useState(false);
+  const [isBrowsing, setIsBrowsing] = useState(false);
+
+  useEffect(() => {
+    setIsClearing(false);
+    setIsBrowsing(false);
+  }, [params]);
 
   // Check if any filters are active
   const hasActiveFilters = 
@@ -28,6 +36,7 @@ export function EmptyFilterState({ searchParams }: EmptyFilterStateProps) {
     (searchParams.orderby && searchParams.orderby !== "popularity");
 
   function clearAllFilters() {
+    setIsClearing(true);
     const query = new URLSearchParams();
     if (params.get("category")) {
       query.set("category", params.get("category")!);
@@ -36,14 +45,19 @@ export function EmptyFilterState({ searchParams }: EmptyFilterStateProps) {
     router.push(`?${query.toString()}`);
   }
 
+  function handleBrowseAll() {
+    setIsBrowsing(true);
+    router.push("/");
+  }
+
   return (
     <div className="px-4">
-      <Card className="flex flex-col items-center justify-center min-h-[500px] p-8 text-center rounded-2xl border-2 border-dashed">
+      <Card className="flex flex-col items-center justify-center min-h-[500px] p-8 text-center rounded-2xl border-gray-300 border-2 border-dashed">
         {/* Icon */}
         <div className="mb-6 relative">
-          <div className="absolute inset-0 bg-[#6a00f3]/10 rounded-full blur-2xl" />
-          <div className="relative bg-[#6a00f3]/5 p-6 rounded-full">
-            <SearchX className="h-16 w-16 text-[#6a00f3]/70" strokeWidth={1.5} />
+          <div className="absolute inset-0 bg-gray-200/10 rounded-full blur-2xl" />
+          <div className="relative bg-gray-200 p-6 rounded-full">
+            <SearchX className="h-16 w-16 text-gray-500" strokeWidth={1.5} />
           </div>
         </div>
 
@@ -111,20 +125,27 @@ export function EmptyFilterState({ searchParams }: EmptyFilterStateProps) {
           {hasActiveFilters && (
             <Button
               onClick={clearAllFilters}
+              disabled={isClearing}
               size="lg"
-              className="gap-2 bg-[#6a00f3] hover:bg-[#5a00d3] text-white"
+              className="gap-2 bg-gray-900 hover:bg-gray-800 text-white"
             >
-              <RotateCcw className="h-4 w-4" />
-              Clear All Filters
+              {isClearing ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <RotateCcw className="h-4 w-4" />
+              )}
+              {isClearing ? "Clearing..." : "Clear All Filters"}
             </Button>
           )}
           
           <Button
             variant={hasActiveFilters ? "outline" : "default"}
             size="lg"
-            onClick={() => router.push("/")}
-            className={hasActiveFilters ? "border-[#6a00f3] text-[#6a00f3] hover:bg-[#6a00f3]/10" : "bg-[#6a00f3] hover:bg-[#5a00d3] text-white"}
+            onClick={handleBrowseAll}
+            disabled={isBrowsing}
+            className={hasActiveFilters ? "border-gray-900 text-gray-900 hover:bg-gray-800 hover:text-white" : "bg-gray-900 hover:bg-gray-800 hover:text-white text-white"}
           >
+             {isBrowsing && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             Browse All Products
           </Button>
         </div>

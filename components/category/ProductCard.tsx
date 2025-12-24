@@ -95,8 +95,6 @@ export function ProductCard({ product }: { product: WooProduct }) {
     <>
       {/* WRAP THE WHOLE CARD IN A LINK */}
       <Link
-        target="_blank"
-        rel="noopener noreferrer"
         href={`/product/${product.slug}`}
         className="block" // ensures click area stays correct
       >

@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { useState, Suspense } from "react";
 import { z } from "zod";
@@ -9,6 +8,7 @@ import { HiOutlineMail } from "react-icons/hi";
 import { IoChevronBack } from "react-icons/io5";
 import { toast } from "react-toastify";
 import GoogleLoginButton from "@/components/buttons/GoogleButton";
+import AuthShowcase from "@/components/auth/AuthShowcase";
 
 type FieldErrors = {
   email: string;
@@ -96,10 +96,9 @@ function RegisterContent() {
   }
 
   return (
-    <div className="h-screen w-full flex flex-col-reverse lg:flex-row-reverse overflow-hidden bg-white">
+    <div className="min-h-screen w-full flex flex-col-reverse lg:flex-row-reverse bg-white">
       {/* RIGHT SIDE - SIGNUP FORM */}
-      {/* RIGHT SIDE - SIGNUP FORM */}
-      <main className="w-full lg:w-[480px] xl:w-[520px] flex-1 lg:h-screen flex flex-col justify-start pt-8 lg:justify-center px-6 sm:px-10 lg:px-12 pb-8 bg-white relative rounded-t-[30px] -mt-10 lg:mt-0 z-10 lg:rounded-none shadow-[0_-10px_40px_rgba(0,0,0,0.1)] lg:shadow-none">
+      <main className={`w-full lg:w-[480px] xl:w-[520px] flex-1 lg:h-screen flex flex-col justify-start ${step === "email" ? "pt-28" : "pt-12"} lg:justify-center px-6 sm:px-10 lg:px-12 pb-8 bg-white relative rounded-t-[30px] -mt-10 lg:mt-0 z-10 lg:rounded-none shadow-[0_-10px_40px_rgba(0,0,0,0.1)] lg:shadow-none`}>
         {/* Subtle background pattern */}
         <div className="absolute inset-0 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:20px_20px] opacity-30" />
         
@@ -116,19 +115,6 @@ function RegisterContent() {
             </button>
           )}
 
-          {/* Logo & Branding */}
-          <div className="flex items-center justify-center gap-3 mb-5">
-            <div className="size-10 relative">
-              <Image
-                className="object-contain"
-                fill
-                alt="Atlaze logo"
-                src="/logo/Untitled_design_20251108_095010_0000__1_-removebg-preview.png"
-                priority
-              />
-            </div>
-          </div>
-
           {/* Header */}
           <div className="mb-6 text-center">
             <h1 className="text-2xl sm:text-[28px] font-bold text-gray-900 tracking-tight">
@@ -141,6 +127,12 @@ function RegisterContent() {
             <div className="space-y-4">
               {/* Google Sign Up */}
               <GoogleLoginButton type="signup" />
+
+              <div className="relative flex py-3 items-center">
+                <div className="flex-grow border-t border-gray-300"></div>
+                <span className="flex-shrink-0 mx-4 text-gray-400 text-sm">Or</span>
+                <div className="flex-grow border-t border-gray-300"></div>
+              </div>
 
               {/* Continue with Email */}
               <button
@@ -282,17 +274,8 @@ function RegisterContent() {
         </div>
       </main>
 
-      {/* LEFT SIDE - ILLUSTRATION */}
-      <div className="relative w-full h-[35vh] lg:h-auto lg:flex-1 shrink-0 bg-gradient-to-br from-amber-400 via-orange-500 to-red-500">
-        <Image
-          src="/auth/african_wildlife.png"
-          className="object-cover"
-          fill
-          alt="African wildlife illustration"
-          priority
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
-      </div>
+      {/* LEFT SIDE - CREATIVE SHOWCASE */}
+      <AuthShowcase step={step} />
     </div>
   );
 }

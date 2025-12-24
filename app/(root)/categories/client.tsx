@@ -12,6 +12,7 @@ import { useInView } from "react-intersection-observer";
 import { useState } from "react";
 import { useCart } from "@/hooks/useCart";
 import { QuickLookModal } from "@/components/QuickLookModal";
+import { AddToCartButton } from "@/components/cart/AddToCartButton";
 
 export function ProductCard({ product }: { product: WooProduct }) {
   const { cart, addItem, updateQuantity, removeItem } = useCart();
@@ -31,54 +32,15 @@ export function ProductCard({ product }: { product: WooProduct }) {
     rootMargin: '50px',
   });
 
-  // Get current quantity from the Zustand cart (real-time, synced with API)
-  const currentQty = cart.items.find((i) => i.id === product.id)?.quantity ?? 0;
-
   // Check if product is on sale
   const isOnSale = product.sale_price && parseFloat(product.sale_price) < parseFloat(product.regular_price);
   const discountPercentage = isOnSale 
     ? Math.round(((parseFloat(product.regular_price) - parseFloat(product.sale_price)) / parseFloat(product.regular_price)) * 100)
     : 0;
 
-  async function handleAddToCart() {
-    if (isAdding) return;
-    
-    setIsAdding(true);
-    setJustAdded(true);
-
-    try {
-      await addItem({
-        id: product.id,
-        name: product.name,
-        slug: product.slug,
-        price: product.price,
-        images: product.images,
-        quantity: 1,
-      });
-    } catch (e) {
-      console.error("Failed to add to cart", e);
-    } finally {
-      setIsAdding(false);
-      setTimeout(() => setJustAdded(false), 400);
-    }
-  }
-
-  async function handleIncrement() {
-    const newQty = currentQty + 1;
-    await updateQuantity(product.id, newQty);
-  }
-
-  async function handleDecrement() {
-    if (currentQty <= 1) {
-      await removeItem(product.id);
-    } else {
-      await updateQuantity(product.id, currentQty - 1);
-    }
-  }
-
   // Optimize performance by not rendering the full card if it's not in the viewport
   if (!inView) {
-    return <div ref={ref} className="aspect-[3/4] bg-gray-50/50 rounded-xl" />;
+    return <div ref={ref} className="aspect-[3/4] bg-gray-100 rounded-xl" />;
   }
 
   return (
@@ -200,44 +162,11 @@ export function ProductCard({ product }: { product: WooProduct }) {
 
           {/* Cart Controls */}
           <div className="min-h-[36px] flex items-end pt-1">
-            {currentQty === 0 ? (
-              <button
-                onClick={handleAddToCart}
-                disabled={product.stock_status === "outofstock" || isAdding}
-                className={`h-9 bg-[#6a00f3] text-white rounded-lg w-full transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-400 flex items-center justify-center gap-2 text-sm font-semibold hover:bg-[#5a00d3] ${
-                  justAdded ? "scale-105" : ""
-                }`}
-                aria-label="Add to cart"
-              >
-                <ShoppingCart className="h-4 w-4" />
-                <span className="hidden sm:inline">{isAdding ? "Adding..." : "Add to cart"}</span>
-                <span className="sm:hidden">{isAdding ? "..." : "Add"}</span>
-              </button>
-            ) : (
-              <div className="flex items-center gap-1.5 bg-[#6a00f3] text-white rounded-lg justify-between h-9 px-2 w-full">
-                <Button
-                  size="icon"
-                  variant="ghost"
-                  onClick={handleDecrement}
-                  className="h-7 w-7 rounded-full hover:bg-white/20 text-white transition-colors"
-                  aria-label="Decrease quantity"
-                >
-                  <span className="text-lg leading-none font-bold">−</span>
-                </Button>
-                <span className="min-w-[28px] text-center text-sm font-bold">
-                  {currentQty}
-                </span>
-                <Button
-                  size="icon"
-                  variant="ghost"
-                  onClick={handleIncrement}
-                  className="h-7 w-7 rounded-full hover:bg-white/20 text-white transition-colors"
-                  aria-label="Increase quantity"
-                >
-                  <span className="text-lg leading-none font-bold">+</span>
-                </Button>
-              </div>
-            )}
+              <AddToCartButton 
+                product={product} 
+                variant="full" 
+                className={justAdded ? "scale-105" : ""}
+              />
           </div>
         </div>
       </CardContent>

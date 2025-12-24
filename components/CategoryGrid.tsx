@@ -1,4 +1,4 @@
-import { groups } from "@/constants";
+import { fetchCategoriesByParent } from "@/lib/category-service";
 import CategoryGroup from "./CategoryGroup";
 
 const parentCategories = [
@@ -12,7 +12,14 @@ const parentCategories = [
   { name: "Work tools and Accessories", id: 82 },
 ];
 
-export default function CategoryGrid() {
+export default async function CategoryGrid() {
+  // Fetch all categories in parallel
+  const categoriesWithData = await Promise.all(
+    parentCategories.map(async (cat) => {
+      const items = await fetchCategoriesByParent(cat.id);
+      return { ...cat, items };
+    })
+  );
 
   return (
     <section className="w-full mt-16 max-w-7xl mx-auto py-6">
@@ -21,11 +28,12 @@ export default function CategoryGrid() {
       </h2>
 
       <div className="grid px-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-y-8 gap-x-2">
-        {parentCategories.map((category, i) => (
+        {categoriesWithData.map((category, i) => (
           <CategoryGroup
             key={`${i}`}
             title={category.name}
             parent={category.id}
+            items={category.items}
           />
         ))}
       </div>

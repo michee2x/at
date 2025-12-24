@@ -3,10 +3,10 @@
 import { useState } from "react";
 import { MapPin, Clock, Phone, Navigation } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { Breadcrumbs } from "@/components/ui/breadcrumbs";
 
 export default function StoresPage() {
   const [searchLocation, setSearchLocation] = useState("");
-  const [selectedFilter, setSelectedFilter] = useState("all");
 
   const stores = [
     {
@@ -51,19 +51,13 @@ export default function StoresPage() {
     }
   ];
 
-  const filters = [
-    { id: "all", label: "All Stores" },
-    { id: "open", label: "Open Now" },
-    { id: "nearby", label: "Nearby" }
-  ];
-
   return (
     <main className="min-h-screen bg-white">
       {/* Compact Header with Integrated Search */}
       <div className="bg-gray-50 border-b border-gray-200">
         <div className="container mx-auto px-4 py-6">
           <div className="max-w-5xl mx-auto">
-            <p className="text-sm text-gray-500 mb-2">Home / Store Locator</p>
+            <Breadcrumbs items={[{ label: "Store Locator" }]} />
             <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4">
               <div>
                 <h1 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-2">
@@ -92,24 +86,7 @@ export default function StoresPage() {
 
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-5xl mx-auto">
-          {/* Filters */}
-          <div className="mb-6 flex items-center gap-3">
-            <span className="text-sm font-medium text-gray-700">Filter:</span>
-            {filters.map((filter) => (
-              <button
-                key={filter.id}
-                onClick={() => setSelectedFilter(filter.id)}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
-                  selectedFilter === filter.id
-                    ? "bg-[#6a00f3] text-white"
-                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                }`}
-              >
-                {filter.label}
-              </button>
-            ))}
-          </div>
-
+          
           {/* Store List - Compact Design */}
           <div className="space-y-3">
             {stores.map((store, index) => (

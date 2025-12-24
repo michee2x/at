@@ -1,19 +1,13 @@
-"use client"
-
 import DiverseCategoryCarousel from "@/components/CategoryCarousel";
 import CategoryCarousel from "@/components/home/category-carousel";
 import Hero from "@/components/home/hero";
 import Image from "next/image";
 import Link from "next/link";
-import ProductList from "@/components/ProductList";
-import { useCategory } from "@/contexts/category-context";
-import CategoryButton from "@/components/skeletons/category-button";
+import ProductListServer from "@/components/ProductListServer";
 import CategoryGrid from "@/components/CategoryGrid";
 import HeadphoneGrid from "@/components/HeadPhoneGrid";
 
 export default function Home() {
-  const { categories } = useCategory();
-
   return (
     <div className="w-full remove_scrollbar items-center flex-col min-h-screen relative flex justify-center">
       <Hero />
@@ -25,7 +19,7 @@ export default function Home() {
           Africa
         </h1>
 
-        <ProductList
+        <ProductListServer
           banner="/home/section%20three/6939971f273e65575e37ad7fdf4efc69b5aec528%20(1).png"
           bannerText="EXPLORE THE BEST OF AFRICAN FASHION"
           reverseVertically={true}
@@ -33,7 +27,7 @@ export default function Home() {
           className="lg:order-3"
         />
 
-        <ProductList
+        <ProductListServer
           banner="/home/bottles/59b73de021e333eda75613c6ac0ec5d1877ef0ac.jpg"
           bannerText="BEAUTY PRODUCTS MADE FOR THE AFRICAN WOMAN"
           reverseVertically={true}

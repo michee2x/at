@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Search, HelpCircle, MessageCircle, Mail, Phone, Package, Truck, RotateCcw, User, CreditCard, ChevronRight } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { Breadcrumbs } from "@/components/ui/breadcrumbs";
 import {
   Accordion,
   AccordionContent,
@@ -61,7 +62,7 @@ export default function HelpPage() {
       <div className="bg-white border-b border-gray-200">
         <div className="container mx-auto px-4 py-8">
           <div className="max-w-4xl mx-auto">
-            <p className="text-sm text-gray-500 mb-2">Home / Help Center</p>
+            <Breadcrumbs items={[{ label: "Help Center" }]} />
             <h1 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
               Help Center
             </h1>
@@ -109,31 +110,7 @@ export default function HelpPage() {
           </div>
         </div>
 
-        {/* Help Categories */}
-        <div className="mb-16 max-w-4xl mx-auto">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">
-            Browse by Category
-          </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {helpCategories.map(({ title, icon: Icon, desc }) => (
-              <a
-                key={title}
-                href="#"
-                className="group bg-white rounded-xl p-5 border border-gray-200 hover:border-[#6a00f3] transition"
-              >
-                <div className="flex items-start gap-3">
-                  <div className="w-10 h-10 bg-gray-100 group-hover:bg-[#6a00f3]/10 rounded-lg flex items-center justify-center flex-shrink-0 transition">
-                    <Icon className="w-5 h-5 text-gray-700 group-hover:text-[#6a00f3] transition" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-gray-900 mb-1">{title}</h3>
-                    <p className="text-sm text-gray-600">{desc}</p>
-                  </div>
-                </div>
-              </a>
-            ))}
-          </div>
-        </div>
+
 
         {/* FAQ Section */}
         <div className="max-w-3xl mx-auto">

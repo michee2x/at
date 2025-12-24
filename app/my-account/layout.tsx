@@ -1,10 +1,15 @@
-import { Suspense } from "react";
 import DashboardSidebar from "@/components/dashboard/sidebar";
 import { DashboardHeader } from "@/components/dashboard/header";
 import AtlazeLoader from "@/components/lottie/AtlazeLoader";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { redirect } from "next/navigation";
+import { Metadata } from "next";
+import {Suspense} from "react"
+
+export const metadata: Metadata = {
+  title: "My Account - Atlaze",
+};
 
 export default async function DashboardLayout({
   children,

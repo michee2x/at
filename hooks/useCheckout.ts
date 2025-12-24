@@ -59,11 +59,11 @@ export const useCheckout = () => {
                   },
                   {
                     name: "Service Fee",
-                    total: billing.deliveryMethod === "pickup" ? "0" : "500.05",
+                    total: "500.05",
                   },
                   {
                     name: "Delivery Fee",
-                    total: billing.deliveryMethod === "pickup" ? "0" : "2000.05",
+                    total: "2000.05",
                   }
                 ],
       };
