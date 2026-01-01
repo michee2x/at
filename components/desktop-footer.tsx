@@ -142,28 +142,41 @@ export default function Footer() {
         <div className="flex items-center justify-center gap-4">
           {/* Google Play Button */}
           <button className="flex rounded-full w-[158px] h-[56px] px-3 bg-black gap-3 items-center justify-center cursor-pointer hover:bg-gray-900 transition-colors">
-            <svg
-              className="w-6 h-6"
-              viewBox="0 0 24 24"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M3.609 1.814L13.792 12 3.61 22.186a.996.996 0 0 1-.61-.92V2.734a1 1 0 0 1 .609-.92z"
-                fill="#32BBFF"
-              />
-              <path
-                d="M3.609 1.814A.989.989 0 0 1 4.629 1.5L15.18 7.25 13.792 12 3.609 1.814z"
-                fill="#32BBFF"
-              />
-              <path
-                d="M13.792 12l1.388 4.75L4.629 22.5a.989.989 0 0 1-1.02-.314L13.792 12z"
-                fill="#32BBFF"
-              />
-              <path
-                d="M13.792 12L15.18 7.25l5.023 2.868a1.001 1.001 0 0 1 0 1.764l-5.023 2.868L13.792 12z"
-                fill="#32BBFF"
-              />
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M4.01217 19.9881L14.7735 12L4.01217 4.01185V19.9881Z" fill="#00E2FF"/>
+              <path d="M14.7735 12L19.5097 15.6983L14.7735 12ZM14.7735 12L4.01217 4.01186L16.2995 2.22729L14.7735 12Z" fill="#32A071"/>
+              <path d="M14.7735 12L4.01217 19.9881L16.2995 21.7725L14.7735 12Z" fill="#F4204D"/>
+              <path d="M14.7735 12L19.5097 8.30151L21.7825 10.0861C22.6136 10.7383 22.6136 11.2616 21.7825 11.9137L19.5097 13.6982L14.7735 12Z" fill="#FFC932"/>
+              <path d="M19.5097 15.6983L14.7735 12L16.2995 21.7727L19.5097 15.6983Z" fill="#FA2C56"/>
+              <path d="M14.7735 12L19.5097 8.30153L16.2995 2.22731L14.7735 12Z" fill="#2DA56B"/>
+              <path d="M4.01217 19.9881L14.7735 12L16.2995 21.7727L4.01217 19.9881Z" fill="#CC143E"/>
+              <path d="M4.01217 4.01186L14.7735 12L16.2995 2.22731L4.01217 4.01186Z" fill="#258E5E"/>
+            <path d="M3.609 1.814L13.792 12 3.61 22.186a.996.996 0 0 1-.61-.92V2.734a1 1 0 0 1 .609-.92z" fill="url(#paint0_linear)"/>
+            <path d="M13.792 12l1.388 4.75L4.629 22.5a.989.989 0 0 1-1.02-.314L13.792 12z" fill="url(#paint1_linear)"/>
+            <path d="M13.792 12L15.18 7.25l5.023 2.868a1.001 1.001 0 0 1 0 1.764l-5.023 2.868L13.792 12z" fill="url(#paint2_linear)"/>
+            <path d="M3.609 1.814A.989.989 0 0 1 4.629 1.5L15.18 7.25 13.792 12 3.609 1.814z" fill="url(#paint3_linear)"/>
+              <defs>
+                <linearGradient id="paint0_linear" x1="14.208" y1="12" x2="3.197" y2="12" gradientUnits="userSpaceOnUse">
+                    <stop stopColor="#32A071"/>
+                    <stop offset="0.0685" stopColor="#2DA771"/>
+                    <stop offset="0.4762" stopColor="#15CF74"/>
+                    <stop offset="0.8009" stopColor="#06E775"/>
+                    <stop offset="1" stopColor="#00F355"/>
+                </linearGradient>
+                <linearGradient id="paint1_linear" x1="20.841" y1="17.546" x2="3.818" y2="-9.083" gradientUnits="userSpaceOnUse">
+                    <stop stopColor="#FA2D48"/>
+                    <stop offset="1" stopColor="#C8123C"/>
+                </linearGradient>
+                <linearGradient id="paint2_linear" x1="2.259" y1="3.237" x2="16.591" y2="25.437" gradientUnits="userSpaceOnUse">
+                    <stop stopColor="#FFC800"/>
+                    <stop offset="1" stopColor="#F0B500"/>
+                    <stop offset="1" stopColor="#E9AC00"/>
+                </linearGradient>
+                <linearGradient id="paint3_linear" x1="-3.454" y1="-0.982" x2="9.674" y2="19.349" gradientUnits="userSpaceOnUse">
+                    <stop stopColor="#0C9D58"/>
+                    <stop offset="1" stopColor="#017A43"/>
+                </linearGradient>
+              </defs>
             </svg>
             <div className="flex h-fit flex-col items-start">
               <span className="text-[10px] text-nowrap font-normal text-white leading-none mb-0.5">
@@ -183,7 +196,7 @@ export default function Footer() {
               fill="white"
               xmlns="http://www.w3.org/2000/svg"
             >
-              <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z" />
+              <path d="M17.07 19.88c-.9 1.3-1.85 2.59-3.3 2.59-1.42 0-1.84-.86-3.46-.86-1.63 0-2.11.83-3.45.86-1.39.03-2.45-1.42-3.36-2.73-1.85-2.67-3.27-7.59-1.35-10.9 0.95-1.63 2.65-2.67 4.49-2.67 1.39 0 2.65.91 3.51.91 0.83 0 2.39-1.15 4.04-.97 0.69.03 2.62.28 3.86 2.08-0.1 0.06-2.3 1.33-2.28 4.09 0.03 3.26 2.84 4.34 2.87 4.35-0.03 0.08-0.45 1.55-1.47 3.05M14 .35c0.77-0.93 1.28-2.24 1.14-3.53-1.11 0.05-2.46 0.74-3.26 1.67-0.72 0.82-1.35 2.14-1.18 3.39 1.24 0.1 2.5-0.63 3.3-1.53" />
             </svg>
             <div className="flex h-fit flex-col items-start">
               <span className="text-[10px] text-nowrap font-normal text-white leading-none mb-0.5">

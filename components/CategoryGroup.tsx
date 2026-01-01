@@ -56,10 +56,13 @@ export default function CategoryGroup({
             ))}
         </div>
 
-        <button className="text-xs flex items-center gap-1 font-medium text-[#6A00EF] font-poppins hover:underline">
+        <Link
+          href={`/categories/?cat=${parent}&title=${title}`}
+          className="text-xs flex items-center gap-1 font-medium text-[#6A00EF] font-poppins hover:underline"
+        >
           {linkText}
           <FaChevronRight className=" mt-1`" />
-        </button>
+        </Link>
       </div>
     </div>
   );
