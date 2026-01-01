@@ -142,41 +142,15 @@ export default function Footer() {
         <div className="flex items-center justify-center gap-4">
           {/* Google Play Button */}
           <button className="flex rounded-full w-[158px] h-[56px] px-3 bg-black gap-3 items-center justify-center cursor-pointer hover:bg-gray-900 transition-colors">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M4.01217 19.9881L14.7735 12L4.01217 4.01185V19.9881Z" fill="#00E2FF"/>
-              <path d="M14.7735 12L19.5097 15.6983L14.7735 12ZM14.7735 12L4.01217 4.01186L16.2995 2.22729L14.7735 12Z" fill="#32A071"/>
-              <path d="M14.7735 12L4.01217 19.9881L16.2995 21.7725L14.7735 12Z" fill="#F4204D"/>
-              <path d="M14.7735 12L19.5097 8.30151L21.7825 10.0861C22.6136 10.7383 22.6136 11.2616 21.7825 11.9137L19.5097 13.6982L14.7735 12Z" fill="#FFC932"/>
-              <path d="M19.5097 15.6983L14.7735 12L16.2995 21.7727L19.5097 15.6983Z" fill="#FA2C56"/>
-              <path d="M14.7735 12L19.5097 8.30153L16.2995 2.22731L14.7735 12Z" fill="#2DA56B"/>
-              <path d="M4.01217 19.9881L14.7735 12L16.2995 21.7727L4.01217 19.9881Z" fill="#CC143E"/>
-              <path d="M4.01217 4.01186L14.7735 12L16.2995 2.22731L4.01217 4.01186Z" fill="#258E5E"/>
-            <path d="M3.609 1.814L13.792 12 3.61 22.186a.996.996 0 0 1-.61-.92V2.734a1 1 0 0 1 .609-.92z" fill="url(#paint0_linear)"/>
-            <path d="M13.792 12l1.388 4.75L4.629 22.5a.989.989 0 0 1-1.02-.314L13.792 12z" fill="url(#paint1_linear)"/>
-            <path d="M13.792 12L15.18 7.25l5.023 2.868a1.001 1.001 0 0 1 0 1.764l-5.023 2.868L13.792 12z" fill="url(#paint2_linear)"/>
-            <path d="M3.609 1.814A.989.989 0 0 1 4.629 1.5L15.18 7.25 13.792 12 3.609 1.814z" fill="url(#paint3_linear)"/>
-              <defs>
-                <linearGradient id="paint0_linear" x1="14.208" y1="12" x2="3.197" y2="12" gradientUnits="userSpaceOnUse">
-                    <stop stopColor="#32A071"/>
-                    <stop offset="0.0685" stopColor="#2DA771"/>
-                    <stop offset="0.4762" stopColor="#15CF74"/>
-                    <stop offset="0.8009" stopColor="#06E775"/>
-                    <stop offset="1" stopColor="#00F355"/>
-                </linearGradient>
-                <linearGradient id="paint1_linear" x1="20.841" y1="17.546" x2="3.818" y2="-9.083" gradientUnits="userSpaceOnUse">
-                    <stop stopColor="#FA2D48"/>
-                    <stop offset="1" stopColor="#C8123C"/>
-                </linearGradient>
-                <linearGradient id="paint2_linear" x1="2.259" y1="3.237" x2="16.591" y2="25.437" gradientUnits="userSpaceOnUse">
-                    <stop stopColor="#FFC800"/>
-                    <stop offset="1" stopColor="#F0B500"/>
-                    <stop offset="1" stopColor="#E9AC00"/>
-                </linearGradient>
-                <linearGradient id="paint3_linear" x1="-3.454" y1="-0.982" x2="9.674" y2="19.349" gradientUnits="userSpaceOnUse">
-                    <stop stopColor="#0C9D58"/>
-                    <stop offset="1" stopColor="#017A43"/>
-                </linearGradient>
-              </defs>
+            <svg
+              className="w-6 h-6"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path d="M4.54 2.53L13.8 12l-9.26 9.47A1.5 1.5 0 0 1 4 20.08V3.92c0-0.53 0.19-1.02 0.54-1.39z" fill="#2196F3" />
+              <path d="M4.54 2.53L13.8 12l4.18-4.22L5.8 1.25A1.5 1.5 0 0 0 4.54 2.53z" fill="#F44336" />
+              <path d="M13.8 12l-9.26 9.47L4.54 21.47a1.5 1.5 0 0 0 1.25 0.28l12.18-6.93l-4.17-2.82z" fill="#4CAF50" />
+              <path d="M18.8 8.08l2.9 1.63c0.83 0.47 0.83 1.22 0 1.69l-2.9 1.63L13.8 12l5-3.92z" fill="#FFC107" />
             </svg>
             <div className="flex h-fit flex-col items-start">
               <span className="text-[10px] text-nowrap font-normal text-white leading-none mb-0.5">
