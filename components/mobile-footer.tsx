@@ -47,7 +47,7 @@ const MobileFooter: React.FC = () => {
         })}
       </div>
       <p className="text-[#828EA3] text-nowrap h-[3rem] flex">
-        © 2020 - 2024 ATLAZE, Inc.
+        © 2020 - {new Date().getFullYear()} ATLASE, Inc.
       </p>
     </footer>
   );

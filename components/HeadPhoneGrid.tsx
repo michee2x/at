@@ -1,65 +1,77 @@
 "use client";
 import { useProducts } from "@/hooks/wc/useProducts";
-import HeadphoneCard from "./HeadPhoneCard"
+import HeadphoneCard from "./HeadPhoneCard";
 import { WooProduct } from "@/types";
 
 export default function HeadphoneGrid() {
-    const { data, isLoading, error } = useProducts({
-      per_page: 12,
-      category: 51,
-    });
-  
-      const products: WooProduct[] = Array.isArray(data)
-          ? data
-          : (data?.products as WooProduct[]) ?? [];
-  console.log("this are the headphones: ", products);
+  const { data, isLoading } = useProducts({
+    per_page: 10, 
+    category: 51,
+  });
+
+  const products: WooProduct[] = Array.isArray(data)
+    ? data
+    : (data?.products as WooProduct[]) ?? [];
+
+    console.log("HeadphoneGrid products:", products);
+
   return (
-    <div className=" w-full mt-16 lg:min-h-screen px-2 flex flex-col items-center py-10">
-      <h1 className="text-white flex flex-col bg-gradient-to-b from-[#F8E08F] to-[#ECC870] h-16 w-full lg:h-[5rem] text-3xl font-bold mb-4">
-        <div className="w-full flex-nowrap h-auto p-1.5 lg:flex hidden justify-between">
-          {[...Array(57)].map((_, idx) => {
-            return (
-              <span
-                key={`${idx}`}
-                className="flex rounded-full size-[11.32px] bg-white"
-              ></span>
-            );
-          })}
+    <section className="w-full py-10 lg:py-16 px-4 md:px-8 mt-10">
+      <div className="max-w-[1440px] mx-auto flex flex-col items-center">
+        
+        {/* PROMOTIONAL HEADER RESTORED */}
+        <div className="w-full relative h-20 lg:h-24 mb-8 rounded-xl overflow-hidden shadow-lg group">
+           {/* Background Gradient - Brand Purple Theme with visible animation */}
+           <div className="absolute inset-0 bg-gradient-to-r from-[#5300b8] via-[#8B5CF6] to-[#5300b8] animate-gradient-xy"></div>
+           
+           {/* Content */}
+           <div className="relative z-10 w-full h-full flex items-center justify-between px-6 lg:px-12">
+              {/* Decorative dots */}
+              <div className="hidden lg:flex gap-1 opacity-50">
+                  {[...Array(12)].map((_, idx) => (
+                    <span key={idx} className="block w-2 h-2 rounded-full bg-white/20"></span>
+                  ))}
+              </div>
+
+              {/* Text Content */}
+              <div className="flex-1 flex flex-col md:flex-row items-center justify-center lg:justify-center gap-1 md:gap-3 text-white font-poppins text-center md:text-left">
+                 <div className="flex items-baseline gap-1.5">
+                    <span className="text-sm md:text-xl lg:text-3xl font-bold uppercase tracking-wide whitespace-nowrap">Deals up to</span>
+                    <span className="text-2xl md:text-3xl lg:text-5xl font-extrabold text-[#ECC870] drop-shadow-sm">80%</span>
+                 </div>
+                 <span className="hidden md:block w-px h-8 bg-white/30 mx-2"></span>
+                 <span className="text-[10px] md:text-lg lg:text-2xl font-light uppercase tracking-widest md:tracking-normal bg-white/10 md:bg-transparent px-2 py-0.5 rounded-full md:rounded-none md:px-0 md:py-0">
+                    Wishlist Now
+                 </span>
+              </div>
+
+               {/* Decorative dots */}
+               <div className="hidden lg:flex gap-1 opacity-50">
+                  {[...Array(12)].map((_, idx) => (
+                    <span key={idx} className="block w-2 h-2 rounded-full bg-white/20"></span>
+                  ))}
+              </div>
+           </div>
         </div>
-        <div className="w-full lg:hidden flex-nowrap h-auto p-1.5 flex justify-between">
-          {[...Array(20)].map((_, idx) => {
-            return (
-              <span
-                key={`${idx}`}
-                className="flex rounded-full size-[11.32px] bg-white"
-              ></span>
-            );
-          })}
-        </div>
-        <div className="flex-1 gap-2 text-[18px] lg:text-[26px] font-poppins text-black font-semibold p-3 flex items-end justify-center">
-          <div className="w-fit flex h-fit gap-1">
-            <h1>Deals up to 80</h1>
-            <span className="text-[16.07px]">%</span>
+
+        {/* LOADING & GRID STATE */}
+        {isLoading ? (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 w-full gap-3 md:gap-4 lg:gap-5 animate-pulse">
+            {[...Array(10)].map((_, i) => (
+              <div
+                key={i}
+                className="w-full h-[260px] lg:h-[300px] bg-gray-200 rounded-2xl"
+              />
+            ))}
           </div>
-          <h1>off | Wishlist now</h1>
-        </div>
-      </h1>
-      {isLoading ? (
-        <div className="grid w-full lg:flex justify-between h-auto grid-cols-2 gap-2 mb-3 animate-pulse">
-          {[...Array(6)].map((_, i) => (
-            <div
-              key={i}
-              className="w-full h-[304.59px] bg-gray-100 rounded-lg"
-            />
-          ))}
-        </div>
-      ) : (
-        <div className="grid grid-cols-2 md:grid-cols-4 w-full gap-x-1.5 lg:gap-x-3 place-items-center sm:grid-cols-2 lg:grid-cols-6 max-w-7xl">
-          {[...products, ...products.slice(0, 3)].map((item, index) => (
-            <HeadphoneCard key={`${index}`} item={item} />
-          ))}
-        </div>
-      )}
-    </div>
+        ) : (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 w-full gap-3 md:gap-4 lg:gap-5 place-items-center">
+            {products.map((item) => (
+              <HeadphoneCard key={item.id} item={item} />
+            ))}
+          </div>
+        )}
+      </div>
+    </section>
   );
 }

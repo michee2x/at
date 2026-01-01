@@ -1,52 +1,80 @@
 import Image from "next/image";
+import Link from "next/link";
 import { memo } from "react";
-import BlurredDots from "./BlurredDots";
 import { WooProduct } from "@/types";
+import { ShoppingCart } from "lucide-react";
 
 const HeadphoneCard = memo(
   ({ item }: { item: WooProduct }) => {
     return (
-      <div className="bg-gradient-to-b relative pt-4 from-[#6A00EF] to-[#DBBFFF] flex flex-col place-content-between w-full h-[280px] lg:h-[304.59px] hover:z-50 overflow-hidden text-center text-white hover:scale-105 transition-transform duration-300">
-        <div className="flex-1 relative">
-          <h1 className="lg:text-[18px] text-[15px] w-full h-auto items-center">
+      <Link
+        href={`/product/${item.slug}`}
+        className="group relative flex flex-col w-full h-[220px] lg:h-[270px] bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1.5 border border-black/5"
+      >
+        {/* Discount Badge */}
+        {item.regular_price && item.price !== item.regular_price && (
+             <div className="absolute top-2 left-2 z-10 bg-black text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full uppercase tracking-wider">
+               Sale
+             </div>
+        )}
+
+        <div className="relative w-full h-[68%] bg-gray-50 flex items-center justify-center p-3 overflow-hidden">
+            {/* Circular background decoration */}
+            <div className="absolute w-28 h-28 bg-purple-100 rounded-full blur-2xl opacity-0 group-hover:opacity-50 transition-opacity duration-500"></div>
+            
+           {item.images[0]?.src ? (
+             <Image
+               src={item.images[0].src}
+               alt={item.name}
+               fill
+               className="object-contain p-2 group-hover:scale-110 transition-transform duration-500 ease-out z-10"
+               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 20vw, 15vw"
+             />
+           ) : (
+             <div className="w-full h-full flex items-center justify-center bg-gray-100 text-gray-400 text-xs">
+               No Image
+             </div>
+           )}
+           
+           {/* Quick action overlay */}
+           <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+        </div>
+        
+        <div className="flex flex-col flex-1 px-3 py-2 text-center relative bg-white justify-between">
+            <h3 className="font-semibold text-gray-900 line-clamp-1 text-xs lg:text-[13px] transition-colors">
             {item.name}
-          </h1>
-          <div className="flex justify-center">
-            <Image
-              src={item.images[0]?.src}
-              alt={item.name}
-              width={130}
-              height={130}
-              className="object-contain"
-            />
-          </div>
-          <ul className="text-xs mt-2 list text-gray-300 lg:space-y-1">
-            {item?.short_description &&
-              Array.from(item?.short_description.matchAll(/<li>(.*?)<\/li>/g))
-                .map((match) => match[1])
-                .map((feature, i) => (
-                  <li
-                    key={`${i}`}
-                    className="flex items-center justify-center gap-0.5 lg:gap-2 text-gray-100"
-                  >
-                    <span className="lg:w-1.5 w-1 lg:h-1.5 h-1 bg-white rounded-full"></span>
-                    <span>{feature?.replace("amp;", "")}</span>
-                  </li>
-                ))}
-          </ul>
+            </h3>
+          
+            <div className="w-full h-8 relative mt-1">
+                {/* Default State: Price */}
+                <div className="absolute inset-0 flex flex-col items-center justify-center font-poppins transition-all duration-300 transform group-hover:-translate-y-8 group-hover:opacity-0">
+                    <div className="flex items-baseline">
+                        <span className="font-bold text-[#5300b8] text-xs">₦</span>
+                        <span className="font-extrabold text-[#5300b8] text-lg lg:text-xl leading-none">
+                            {parseInt(item.price).toLocaleString()}
+                        </span>
+                        {item.regular_price && item.price !== item.regular_price && (
+                            <span className="ml-1 text-[9px] lg:text-[10px] text-gray-400 line-through">
+                                ₦{parseInt(item.regular_price).toLocaleString()}
+                            </span>
+                        )}
+                    </div>
+                </div>
+
+                {/* Hover State: Shop Now */}
+                <div className="absolute inset-0 flex items-center justify-center transition-all duration-300 transform translate-y-8 opacity-0 group-hover:translate-y-0 group-hover:opacity-100">
+                    <p className="text-[10px] font-bold text-white flex items-center gap-1.5 bg-[#5300b8] px-3 py-1.5 rounded-full shadow-md">
+                        Shop Now <ShoppingCart className="w-3 h-3 text-white" />
+                    </p>
+                </div>
+            </div>
         </div>
-        <div className="h-[36px] relative w-full flex items-center justify-center text-black text-[18.94px] bg-white">
-          {item.price}
-        </div>
-        <BlurredDots className="flex-col" />
-        <BlurredDots className="right-0 flex-col" />
-        <BlurredDots className="top-0" />
-      </div>
+      </Link>
     );
   },
-  (prevProps, nextProps) => prevProps.item.name === nextProps.item.name
+  (prevProps, nextProps) => prevProps.item.id === nextProps.item.id
 );
 
-HeadphoneCard.displayName = "HeadphoneCard"; // 👈 Fixes the ESLint warning
+HeadphoneCard.displayName = "HeadphoneCard";
 
 export default HeadphoneCard;

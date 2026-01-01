@@ -33,7 +33,7 @@ export const metadata: Metadata = {
     icon: "/logo/Untitled%20design_20251108_095010_0000%20(1).png",
   },
 };
-
+ 
 import { getSession } from "@/lib/auth";
 
 export default async function RootLayout({
