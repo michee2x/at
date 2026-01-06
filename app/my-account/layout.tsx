@@ -30,8 +30,8 @@ export default async function DashboardLayout({
         <div className="hidden lg:block">
           <DashboardSidebar />
         </div>
-        <main className="flex-1 lg:ml-80">
-          <div className="container min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 font-display max-w-6xl py-8 px-4 md:px-6 lg:px-8">
+        <main className="flex-1 bg-gradient-to-br from-slate-50 to-slate-100 lg:ml-80">
+          <div className="container min-h-screen font-display max-w-6xl py-8 px-4 md:px-6 lg:px-8">
             <Suspense fallback={<DashboardLoading />}>{children}</Suspense>
           </div>
         </main>
