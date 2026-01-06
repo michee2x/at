@@ -119,15 +119,40 @@ export const authOptions: AuthOptions = {
 
         t.wpUserId = wpUser?.id;
 
-        // Get WP token for Google user
-        // IMPORTANT: Use username (email prefix), not full email!
-        // WP users created for Google OAuth use the email prefix as username
-        try {
-          const defaultAppPassword = process.env.WP_DEFAULT_APP_PASSWORD!;
-          const wpAuth = await loginWordPressUser(username, defaultAppPassword);
-          t.jwt = wpAuth?.token || "";
-        } catch (error) {
-          console.error("GOOGLE WP LOGIN ERROR:", error);
+        t.wpUserId = wpUser?.id;
+        
+        // ───── TOKEN EXCHANGE ─────
+        // Exchange Google Access Token for WordPress JWT
+        if (account?.access_token) {
+          try {
+            // Ensure we have a base URL. defaulting to env var if available
+            const baseUrl = process.env.WC_API_URL || process.env.NEXT_PUBLIC_WORDPRESS_API_URL || "";
+            // Remove trailing slash if present to avoid double slashes
+            const cleanUrl = baseUrl.replace(/\/$/, "");
+            
+            const wpResponse = await fetch(`${cleanUrl}/wp-json/oauth-jwt/v1/token`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                google_token: account.access_token,
+                email: email,
+              }),
+            });
+            
+            const wpData = await wpResponse.json();
+            
+            if (wpData.token) {
+              t.jwt = wpData.token;
+              t.wpUserId = wpData.user_id;
+            } else {
+              console.error("WP Token Exchange Failed:", wpData);
+              t.jwt = "";
+            }
+          } catch (error) {
+            console.error("WP Token Exchange Error:", error);
+            t.jwt = "";
+          }
+        } else {
           t.jwt = "";
         }
 
