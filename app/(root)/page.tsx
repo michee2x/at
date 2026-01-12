@@ -12,7 +12,7 @@ export default function Home() {
     <div className="w-full remove_scrollbar items-center flex-col min-h-screen relative flex justify-center">
       <Hero />
 
-      <section className="w-full md:max-w-[95%] lg:max-w-full xl:max-w-[1300px] 2xl:max-w-[1440px]  xl:px-[28px] lg:px-[16px] mt-20 lg:mt-32 min-h-screen flex flex-col items-center">
+      <section className="w-full md:max-w-[95%] lg:max-w-full xl:max-w-[1300px] 2xl:max-w-[1440px]  xl:px-[28px] lg:px-[16px] mt-6 md:mt-20 lg:mt-32 min-h-screen flex flex-col items-center">
         <CategoryGrid />
         <h1 className="text-[20px] hidden lg:order-1 lg:text-[clamp(1.5rem, 2vw + 1rem, 3rem)] font-display text-center w-full lg:w-[1252px] h-[56px] leading-[100%] tracking-[0%] align-middle text-[#000000]">
           Discover the best brands & products <br className="lg:hidden" /> from

@@ -22,8 +22,8 @@ export default async function CategoryGrid() {
   );
 
   return (
-    <section className="w-full mt-16 max-w-7xl mx-auto py-6">
-      <h2 className="text-center text-lg lg:text-[31px] md:text-xl font-semibold mb-6">
+    <section className="w-full mt-10 max-w-7xl mx-auto py-6">
+      <h2 className="text-center lg:text-[31px] text-[28px] font-display font-semibold mb-6">
         Explore our diverse categories
       </h2>
 
