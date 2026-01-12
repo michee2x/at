@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/select";
 import { useFilter } from "@/contexts/filter-context";
 import { useLockBodyScroll } from "@/hooks/useLockBodyScroll";
-import { X, Star, Loader2 } from "lucide-react";
+import { X, Loader2 } from "lucide-react";
 import { useState, useMemo, useEffect } from "react";
 import { SearchParamsType } from "@/app/(root)/categories/page";
 
@@ -41,8 +41,6 @@ export function ProductFilter({
   const [selectedVendor, setSelectedVendor] = useState(searchParams.vendor || searchParams.store || "");
   const [selectedBrand, setSelectedBrand] = useState(searchParams.brand || "");
   const [selectedSort, setSelectedSort] = useState(searchParams.orderby || "");
-  const [selectedStock, setSelectedStock] = useState(searchParams.stock_status || "");
-  const [selectedRating, setSelectedRating] = useState(searchParams.rating || "");
   const [onSale, setOnSale] = useState(searchParams.on_sale === "true");
   const [featured, setFeatured] = useState(searchParams.featured === "true");
   const [isApplying, setIsApplying] = useState(false);
@@ -52,7 +50,8 @@ export function ProductFilter({
   useEffect(() => {
     setIsApplying(false);
     setIsClearing(false);
-  }, [params]);
+    setShowFilter(false); // Close mobile filter panel
+  }, [params, setShowFilter]);
 
   // Detect if filters have changed from URL params
   const hasFiltersChanged = useMemo(() => {
@@ -61,8 +60,6 @@ export function ProductFilter({
     const currentVendor = searchParams.vendor || searchParams.store || "";
     const currentBrand = searchParams.brand || "";
     const currentSort = searchParams.orderby || "";
-    const currentStock = searchParams.stock_status || "";
-    const currentRating = searchParams.rating || "";
     const currentOnSale = searchParams.on_sale === "true";
     const currentFeatured = searchParams.featured === "true";
 
@@ -72,8 +69,6 @@ export function ProductFilter({
       selectedVendor !== currentVendor ||
       selectedBrand !== currentBrand ||
       selectedSort !== currentSort ||
-      selectedStock !== currentStock ||
-      selectedRating !== currentRating ||
       onSale !== currentOnSale ||
       featured !== currentFeatured
     );
@@ -83,8 +78,6 @@ export function ProductFilter({
     selectedVendor,
     selectedBrand,
     selectedSort,
-    selectedStock,
-    selectedRating,
     onSale,
     featured,
     searchParams,
@@ -98,8 +91,6 @@ export function ProductFilter({
       selectedVendor ||
       selectedBrand ||
       selectedSort ||
-      selectedStock ||
-      selectedRating ||
       onSale ||
       featured
     );
@@ -109,8 +100,6 @@ export function ProductFilter({
     selectedVendor,
     selectedBrand,
     selectedSort,
-    selectedStock,
-    selectedRating,
     onSale,
     featured,
   ]);
@@ -155,20 +144,6 @@ export function ProductFilter({
       query.delete("orderby");
     }
 
-    // Stock status
-    if (selectedStock) {
-      query.set("stock_status", selectedStock);
-    } else {
-      query.delete("stock_status");
-    }
-
-    // Rating
-    if (selectedRating) {
-      query.set("rating", selectedRating);
-    } else {
-      query.delete("rating");
-    }
-
     // On sale
     if (onSale) {
       query.set("on_sale", "true");
@@ -186,9 +161,6 @@ export function ProductFilter({
     // Reset to page 1
     query.set("page", "1");
 
-    // Close overlay on mobile after applying -> REMOVED per user request
-    // setShowFilter(false);
-
     router.push(`?${query.toString()}`);
   }
 
@@ -198,8 +170,6 @@ export function ProductFilter({
     setSelectedVendor("");
     setSelectedBrand("");
     setSelectedSort("");
-    setSelectedStock("");
-    setSelectedRating("");
     setOnSale(false);
     setFeatured(false);
 
@@ -211,8 +181,6 @@ export function ProductFilter({
     }
     query.set("page", "1");
 
-    // Close overlay on mobile after applying -> REMOVED per user request
-    // setShowFilter(false);
     router.push(`?${query.toString()}`);
   }
 
@@ -267,14 +235,14 @@ export function ProductFilter({
                     type="number"
                     value={minPrice}
                     onChange={(e) => setMinPrice(e.target.value)}
-                    className="h-9"
+                    className="h-9 border-gray-300"
                   />
                   <Input
                     placeholder="Max"
                     type="number"
                     value={maxPrice}
                     onChange={(e) => setMaxPrice(e.target.value)}
-                    className="h-9"
+                    className="h-9 border-gray-300"
                   />
                 </div>
               </div>
@@ -284,7 +252,7 @@ export function ProductFilter({
                 <div>
                   <label className="block mb-2 text-sm font-medium">Vendor</label>
                   <Select value={selectedVendor || undefined} onValueChange={(val) => setSelectedVendor(val)}>
-                    <SelectTrigger className="w-full h-9">
+                    <SelectTrigger className="w-full h-9 border-gray-300">
                       <SelectValue placeholder="All vendors" />
                     </SelectTrigger>
                     <SelectContent>
@@ -303,7 +271,7 @@ export function ProductFilter({
                 <div>
                   <label className="block mb-2 text-sm font-medium">Brand</label>
                   <Select value={selectedBrand || undefined} onValueChange={(val) => setSelectedBrand(val)}>
-                    <SelectTrigger className="w-full h-9">
+                    <SelectTrigger className="w-full h-9 border-gray-300">
                       <SelectValue placeholder="All brands" />
                     </SelectTrigger>
                     <SelectContent>
@@ -317,30 +285,11 @@ export function ProductFilter({
                 </div>
               )}
 
-              {/* Rating Filter */}
-              <div>
-                <label className="block mb-2 text-sm font-medium">Minimum Rating</label>
-                <Select value={selectedRating || undefined} onValueChange={(val) => setSelectedRating(val)}>
-                  <SelectTrigger className="w-full h-9">
-                    <SelectValue placeholder="Any rating" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {[5, 4, 3, 2, 1].map((rating) => (
-                      <SelectItem key={rating} value={rating.toString()}>
-                        <div className="flex items-center gap-1">
-                          {rating} <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" /> & up
-                        </div>
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
               {/* Sort By */}
               <div>
                 <label className="block mb-2 text-sm font-medium">Sort By</label>
                 <Select value={selectedSort || undefined} onValueChange={(val) => setSelectedSort(val)}>
-                  <SelectTrigger className="w-full h-9">
+                  <SelectTrigger className="w-full h-9 border-gray-300">
                     <SelectValue placeholder="Default" />
                   </SelectTrigger>
                   <SelectContent>
@@ -349,20 +298,6 @@ export function ProductFilter({
                     <SelectItem value="rating">Rating</SelectItem>
                     <SelectItem value="price">Price: Low to High</SelectItem>
                     <SelectItem value="price-desc">Price: High to Low</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              {/* Stock Status */}
-              <div>
-                <label className="block mb-2 text-sm font-medium">Stock Status</label>
-                <Select value={selectedStock || undefined} onValueChange={(val) => setSelectedStock(val)}>
-                  <SelectTrigger className="w-full h-9">
-                    <SelectValue placeholder="All" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="instock">In Stock</SelectItem>
-                    <SelectItem value="outofstock">Out of Stock</SelectItem>
                   </SelectContent>
                 </Select>
               </div>

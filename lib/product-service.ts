@@ -19,8 +19,12 @@ export function buildQueryParams(params: QueryParams): Record<string, string> {
     if (params.min_price) query["min_price"] = String(params.min_price);
     if (params.max_price) query["max_price"] = String(params.max_price);
 
-    if (params.in_stock !== undefined)
+    // Stock Status: handle both 'in_stock' (legacy/boolean) and 'stock_status' (string from UI)
+    if (params.stock_status) {
+        query["stock_status"] = String(params.stock_status);
+    } else if (params.in_stock !== undefined) {
         query["stock_status"] = params.in_stock === "true" || params.in_stock === true ? "instock" : "outofstock";
+    }
 
     if (params.q) query["search"] = String(params.q);
     if (params.brand_id) query["brand"] = String(params.brand_id);
@@ -45,8 +49,12 @@ export function buildQueryParams(params: QueryParams): Record<string, string> {
 
 
     // Sorting
-    switch (params.sort) {
+    // Normalize sort input: check params.sort first, then params.orderby
+    const sortValue = params.sort || params.orderby;
+
+    switch (sortValue) {
         case "price_asc":
+        case "price": // UI sends "price" for Low to High
             query["orderby"] = "price";
             query["order"] = "asc";
             break;
@@ -55,11 +63,16 @@ export function buildQueryParams(params: QueryParams): Record<string, string> {
             query["order"] = "desc";
             break;
         case "latest":
+        case "date": // UI sends "date"
             query["orderby"] = "date";
             query["order"] = "desc";
             break;
         case "rating":
             query["orderby"] = "rating";
+            query["order"] = "desc";
+            break;
+        case "popularity":
+            query["orderby"] = "popularity";
             query["order"] = "desc";
             break;
         default:
