@@ -14,6 +14,7 @@ import { ProductDescription } from "@/components/category/productDesc";
 import ProductMediaGallery from "@/components/ProductMediaGallery";
 import ProductSuggestionList from "@/components/productdetails/suggestionCard";
 import { AddToCartButton } from "@/components/cart/AddToCartButton";
+import { ProductReviews } from "@/components/reviews/ProductReviews";
 
 export const revalidate = 3600; // Revalidate this page every hour
 
@@ -175,6 +176,10 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
 
       <Suspense fallback={<DescriptionSkeleton />}>
         <ProductDescription product={product!} />
+      </Suspense>
+
+      <Suspense fallback={<ReviewsSkeleton />}>
+        <ProductReviews productId={product!.id} productSlug={product!.slug} />
       </Suspense>
 
       <Suspense fallback={<ProductSuggestionSkeleton />}>
@@ -345,6 +350,7 @@ function SizeChartSkeleton() {
   );
 }
 
+
 function DescriptionSkeleton() {
   return (
     <div className="mt-8 animate-pulse">
@@ -352,6 +358,25 @@ function DescriptionSkeleton() {
       <div className="h-4 w-full bg-gray-200 rounded mt-2"></div>
       <div className="h-4 w-full bg-gray-200 rounded mt-2"></div>
       <div className="h-4 w-3/4 bg-gray-200 rounded mt-2"></div>
+    </div>
+  );
+}
+
+function ReviewsSkeleton() {
+  return (
+    <div className="mt-12 animate-pulse w-full max-w-[800px]">
+      <div className="h-8 w-48 bg-gray-200 rounded mb-8"></div>
+      <div className="space-y-6">
+         {[1, 2].map(i => (
+            <div key={i} className="flex gap-4">
+                <div className="w-12 h-12 rounded-full bg-gray-200 shrink-0" />
+                <div className="flex-1 space-y-2">
+                    <div className="h-4 w-32 bg-gray-200 rounded" />
+                    <div className="h-16 w-full bg-gray-200 rounded" />
+                </div>
+            </div>
+         ))}
+      </div>
     </div>
   );
 }

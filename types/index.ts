@@ -248,3 +248,25 @@ export type Customer = {
     value: string;
   }>;
 };
+
+// Product Review
+export interface WooProductReview {
+  id: number;
+  date_created: string;
+  date_created_gmt: string;
+  product_id: number;
+  reviewer: string;
+  reviewer_email: string;
+  review: string;
+  rating: number;
+  verified: boolean;
+  avatar_urls?: Record<string, string>;
+}
+
+export interface ReviewData {
+  product_id: number;
+  review: string;
+  reviewer: string;
+  reviewer_email: string;
+  rating: number;
+}

@@ -1,4 +1,4 @@
-import { QueryParams, WooProduct } from "@/types";
+import { QueryParams, WooProduct, WooProductReview, ReviewData } from "@/types";
 
 interface WCProductResponse<T = unknown> {
     products: T[];
@@ -174,4 +174,62 @@ export async function fetchDokanProducts<T = WooProduct>(params: QueryParams): P
         total: Array.isArray(data) ? data.length : 0,
         totalPages: 1, // Dokan API pagination handling might differ, basic support here
     };
+}
+
+// -----------------------------
+// Product Reviews
+// -----------------------------
+export async function fetchProductReviews(productId: number): Promise<WooProductReview[]> {
+    const base = process.env.WC_BASE_URL || "https://atlaze.com";
+    const key = process.env.WC_CONSUMER_KEY!;
+    const secret = process.env.WC_CONSUMER_SECRET!;
+
+    const url = new URL("/wp-json/wc/v3/products/reviews", base);
+    url.searchParams.set("product", String(productId));
+    url.searchParams.set("consumer_key", key);
+    url.searchParams.set("consumer_secret", secret);
+
+    const res = await fetch(url.toString(), {
+        headers: { Accept: "application/json" },
+        next: { revalidate: 3600 } 
+    });
+
+    if (!res.ok) {
+        console.error("Failed to fetch reviews", await res.text());
+        return [];
+    }
+    
+    return res.json() as Promise<WooProductReview[]>;
+}
+
+export async function createProductReview(data: ReviewData): Promise<WooProductReview> {
+    const base = process.env.WC_BASE_URL || "https://atlaze.com";
+    const key = process.env.WC_CONSUMER_KEY!;
+    const secret = process.env.WC_CONSUMER_SECRET!;
+
+    const url = new URL("/wp-json/wc/v3/products/reviews", base);
+    url.searchParams.set("consumer_key", key);
+    url.searchParams.set("consumer_secret", secret);
+
+    const res = await fetch(url.toString(), {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+        },
+        body: JSON.stringify(data),
+    });
+
+    if (!res.ok) {
+        const errorText = await res.text();
+        console.error("Failed to create review:", res.status, errorText);
+        try {
+            const errorJson = JSON.parse(errorText);
+            throw new Error(errorJson.message || "Failed to submit review");
+        } catch (e) {
+            throw new Error(`Failed to submit review: ${res.statusText}`);
+        }
+    }
+
+    return res.json() as Promise<WooProductReview>;
 }

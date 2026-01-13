@@ -37,7 +37,7 @@ export function ProductDescription({
       {showTitle && (
         <h2 className="lg:text-3xl text-xl mb-6 font-semibold">{title}</h2>
       )}
-      <div className="mt-2 prose max-w-none">
+      <div className="mt-2 prose max-w-none prose-headings:font-display prose-headings:font-bold prose-p:text-gray-600 prose-p:leading-[1.8] prose-a:text-[#6A00EF] prose-strong:text-gray-900 font-poppins">
         {content ? (
           <div
             dangerouslySetInnerHTML={{
