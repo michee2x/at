@@ -29,6 +29,9 @@ const returnParams = (searchParams: SearchParamsType) => {
     rating: searchParams.rating,
     on_sale: searchParams.on_sale,
     featured: searchParams.featured,
+    banner: searchParams.banner,
+    product_type: searchParams.product_type, // "grouped", etc.
+    title: searchParams.title,
   } as QueryParams;
 };
 
@@ -46,6 +49,9 @@ export interface SearchParamsType {
   rating?: string;
   on_sale?: string;
   featured?: string;
+  banner?: string;
+  product_type?: string;
+  title?: string;
 }
 
 export interface PageProps {
@@ -105,7 +111,7 @@ export default async function CategoryPage({
             <div className="flex px-4 items-center justify-between">
               <div>
                 <h2 className="text-xl lg:text-2xl font-bold">
-                  All Products
+                  {resolvedSearchParams.title ?? "All Products"}
                 </h2>
                 <p className="text-sm text-muted-foreground mt-1">
                   Discover our complete collection
