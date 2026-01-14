@@ -139,9 +139,9 @@ export default function AlgoliaSearch(): React.JSX.Element {
         <div onClick={() => setShowAlgoliaSearch(false)} className="w-3 lg:hidden flex mt-3 justify-center h-full">
           <FaChevronLeft className="text-xl cursor-pointer" />
         </div>
-        <section className="w-fit h-fit">
-          <div className="lg:w-[calc(612/1280*100vw)] sm:w-[calc(554/1280*100vw)] md:w-[calc(512/1280*100vw)] lg:h-[52px] w-[90vw] h-[44px] relative bg-gradient-to-r from-[#EBCC97] to-[#9747FF] rounded-[36px] p-[1.5px]">
-            <div className="sm:w-[calc(550/1280*100vw)] inset-0 lg:w-[calc(608/1280*100vw)] md:w-[calc(508/1280*100vw)] w-[89vw] h-[40px] lg:h-[48px] flex items-center absolute transform -translate-x-1/2 left-1/2 -translate-y-1/2 top-1/2 lg:gap-3 p-[6px] lg:p-[12px] rounded-[36px] bg-white">
+        <section className="w-full lg:w-fit h-fit">
+          <div className="lg:w-[calc(612/1280*100vw)] sm:w-[calc(554/1280*100vw)] md:w-[calc(512/1280*100vw)] lg:h-[52px] w-full h-[44px] relative bg-gradient-to-r from-[#EBCC97] to-[#9747FF] rounded-[36px] p-[1.5px]">
+            <div className="sm:w-[calc(550/1280*100vw)] inset-0 lg:w-[calc(608/1280*100vw)] md:w-[calc(508/1280*100vw)] w-[calc(100%-3px)] h-[40px] lg:h-[48px] flex items-center absolute transform -translate-x-1/2 left-1/2 -translate-y-1/2 top-1/2 lg:gap-3 p-[6px] lg:p-[12px] rounded-[36px] bg-white">
               <span className="flex size-[28px] items-center justify-center bg-gradient-to-r from-[#EBCC97] to-[#9747FF] rounded-full">
                 <Image
                   alt="atlaze AI search logo"

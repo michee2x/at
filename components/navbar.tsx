@@ -1,6 +1,7 @@
 "use client";
 
 import { useSideBar } from "@/contexts/sidebar-context";
+import { useFilter } from "@/contexts/filter-context";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import { IoMenuSharp } from "react-icons/io5";
@@ -18,7 +19,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { Store, HelpCircle, ShoppingBag, LayoutDashboard, LogOut, ChevronDown, User, Grid } from "lucide-react";
+import { Store, HelpCircle, ShoppingBag, LayoutDashboard, LogOut, ChevronDown, User, Grid, Search } from "lucide-react";
 import { useCart } from "@/hooks/useCart";
 import { CartSheet } from "./cart/CartSheet";
 
@@ -31,6 +32,7 @@ const SkeletonImage = () => (
 
 const NavBar = ({ showCategories }: { showCategories?: boolean }) => {
   const { setShowSideBar } = useSideBar();
+  const { showAlgoliaSearch, setShowAlgoliaSearch } = useFilter();
   const { session, isLoading } = useAuth();
   const { cart} = useCart();
   const [imageLoaded, setImageLoaded] = useState(false);
@@ -87,7 +89,7 @@ const NavBar = ({ showCategories }: { showCategories?: boolean }) => {
               </Link>
             </div>
 
-            {/* SEARCH BOX */}
+            {/* SEARCH BOX (Desktop) */}
             <div className="w-auto hidden lg:block">
               <AlgoliaSearch />
             </div>
@@ -102,6 +104,11 @@ const NavBar = ({ showCategories }: { showCategories?: boolean }) => {
                   <span className="font-medium">All Categories</span>
                 </Link>
               </Button>
+
+              {/* Mobile Search Icon - Redirects to Search Page */}
+              <Link href="/search" className="lg:hidden p-2 -mr-2 text-gray-700">
+                <Search className="w-6 h-6" />
+              </Link>
 
               {/* Cart Icon with Badge - Now opens CartSheet */}
               <CartSheet />
