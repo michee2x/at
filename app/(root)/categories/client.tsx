@@ -123,9 +123,6 @@ export function ProductCard({ product }: { product: WooProduct }) {
               {product.average_rating && parseFloat(product.average_rating) > 0 ? (
                 <div className="flex items-center gap-1">
                   <Ratings rating={parseFloat(product.average_rating)} starSize={13} />
-                  <span className="text-xs text-gray-500 font-medium">
-                    ({product.rating_count || 0})
-                  </span>
                 </div>
               ) : (
                 <span className="text-xs text-gray-400">No reviews</span>

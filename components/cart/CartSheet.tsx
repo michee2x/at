@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Sheet, SheetClose, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { ShoppingCart, Plus, Minus } from "lucide-react";
+import { ShoppingCart, Plus, Minus, Trash2 } from "lucide-react";
 import { useCart } from "@/hooks/useCart";
 import { Separator } from "@/components/ui/separator";
 
@@ -94,7 +94,7 @@ export function CartSheet() {
                       </p>
 
                       {/* Controls */}
-                      <div className="flex flex-col items-start gap-2">
+                      <div className="flex flex-row items-center justify-between w-full mt-2">
                         <div className="flex h-9 items-center border border-gray-300 rounded bg-white w-24">
                           <button 
                             onClick={() => updateQuantity(item.id, item.quantity - 1)}
@@ -119,9 +119,10 @@ export function CartSheet() {
                         
                         <button 
                           onClick={() => removeItem(item.id)}
-                          className="text-sm text-gray-500 hover:text-gray-900 underline underline-offset-2"
+                          className="h-9 w-9 flex items-center justify-center text-gray-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors"
+                          title="Remove item"
                         >
-                          Remove item
+                          <Trash2 className="h-4 w-4" />
                         </button>
                       </div>
                     </div>

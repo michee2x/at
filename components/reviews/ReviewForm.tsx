@@ -97,7 +97,11 @@ export function ReviewForm({ productId, productSlug, onSuccess, user }: ReviewFo
               className="text-2xl focus:outline-none transition-colors"
               onMouseEnter={() => setHoverRating(star)}
               onMouseLeave={() => setHoverRating(0)}
-              onClick={() => setValue("rating", star, { shouldValidate: true })}
+              onClick={() => {
+                const newValue = star === rating ? 0 : star;
+                setValue("rating", newValue, { shouldValidate: true });
+                setHoverRating(0);
+              }}
             >
               <FiStar
                 className={`${

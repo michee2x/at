@@ -231,7 +231,6 @@ function ProductHeader({ product }: { product: WooProduct }) {
         {product?.categories[0]?.name?.replace("&amp;", "")?.toLowerCase()}
       </p>
       <div className="flex flex-row flex-nowrap items-start text-[14px] lg:gap-0.5">
-        {product.rating_count}
         <Ratings rating={product.rating_count} />
       </div>
       <p
