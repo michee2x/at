@@ -6,15 +6,15 @@ import Link from "next/link";
 const MobileHero = () => {
     const images = [
         {
-            src: "/home/hero/27e49ba5c91c1af8960a1ac7dcc2d147692bfa96%20(1).jpg",
+            src: "/home/hero/Frame%201000003698.png",
             link: "/categories/?cat=76&title=Revamp your home in style",
         },
         {
-            src: "/home/hero/Frame%201000003698.png",
+            src: "/home/hero/Frame%201000003699.png",
             link: "/categories/?cat=75&title=Great Sound and Headphones"
         },
         {
-            src: "/home/hero/Frame%201000003699.png",
+            src: "/home/hero/27e49ba5c91c1af8960a1ac7dcc2d147692bfa96%20(1).jpg",
             link: "/categories/?cat=80&title=Styles for Women"
         },
         {
