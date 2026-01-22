@@ -33,10 +33,15 @@ export async function getWpUserByEmail(email: string): Promise<WpUserMeta | null
       return null;
     }
 
+    const user = users[0];
+    const roles = user.roles || [];
+    const role = roles.length > 0 ? roles[0] : 'customer';
+
     return {
-      id: users[0].id,
-      slug: users[0].slug,
+      id: user.id,
+      slug: user.slug,
       email,
+      role,
     };
   } catch {
     return null;

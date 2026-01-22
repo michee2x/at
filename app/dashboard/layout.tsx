@@ -2,51 +2,32 @@
 
 import { useState } from "react";
 import SellerSidebar from "@/components/dashboard/SellerSidebar";
-import { Sheet, SheetContent } from "@/components/ui/sheet";
-import { Button } from "@/components/ui/button";
-import { Menu } from "lucide-react";
+import { SellerHeader } from "@/components/dashboard/SellerHeader";
 
 export default function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
   return (
-    <div className="flex min-h-screen">
-      {/* Desktop Sidebar - hidden on mobile, fixed on desktop */}
-      <div className="hidden lg:block lg:fixed lg:inset-y-0 lg:w-64 lg:z-30">
-        <SellerSidebar />
-      </div>
+    <div className="min-h-screen bg-background">
+      {/* Sticky Header */}
+      <SellerHeader />
 
-      {/* Mobile Sheet Sidebar */}
-      <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
-        <SheetContent side="left" className="p-0 w-64">
-          <SellerSidebar onLinkClick={() => setMobileMenuOpen(false)} />
-        </SheetContent>
-      </Sheet>
-
-      {/* Main content */}
-      <main className="flex-1 w-full lg:ml-64">
-        {/* Mobile header with hamburger */}
-        <div className="lg:hidden sticky top-0 z-40 border-b bg-background">
-          <div className="flex items-center gap-4 p-4">
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setMobileMenuOpen(true)}
-              aria-label="Open menu"
-            >
-              <Menu className="h-6 w-6" />
-            </Button>
-            <h1 className="text-lg font-semibold">Seller Dashboard</h1>
-          </div>
+      <div className="flex">
+        {/* Desktop Sidebar - fixed position below header (top-16 = 4rem = 64px header height) */}
+        <div className="hidden lg:block lg:fixed lg:top-16 lg:bottom-0 lg:left-0 lg:w-64 lg:z-40 border-r bg-background">
+          <SellerSidebar />
         </div>
 
-        {/* Page content */}
-        <div className="container mx-auto p-4 lg:p-6 lg:p-8">{children}</div>
-      </main>
+        {/* Main content - offset by sidebar width */}
+        <main className="flex-1 w-full lg:ml-64 bg-slate-50/50 min-h-[calc(100vh-64px)]">
+          {/* Page content */}
+          <div className="container mx-auto p-4 lg:p-6 lg:p-8 max-w-7xl">
+            {children}
+          </div>
+        </main>
+      </div>
     </div>
   );
 }

@@ -8,27 +8,30 @@ import { WooClient } from "../../../lib/wooClient";
 // TYPES
 // ─────────────────────────────────────────────────────────────
 
+// TYPES
 interface WooCustomerPayload {
   email: string;
   first_name?: string;
   last_name?: string;
   username: string;
   password: string;
+  role?: string;
+  meta_data?: Array<{ key: string; value: string }>;
 }
 
-// ─────────────────────────────────────────────────────────────
 // VALIDATION SCHEMA
-// ─────────────────────────────────────────────────────────────
-
 const registerSchema = z.object({
   email: z.string().email("Please enter a valid email address"),
   password: z.string().min(8, "Password must be at least 8 characters"),
+  role: z.enum(["customer", "seller"]).default("customer"),
+  firstName: z.string().optional(),
+  lastName: z.string().optional(),
+  phone: z.string().optional(),
+  shopName: z.string().optional(),
+  shopUrl: z.string().optional(),
 });
 
-// ─────────────────────────────────────────────────────────────
 // ERROR MESSAGES
-// ─────────────────────────────────────────────────────────────
-
 const ERROR_MESSAGES: Record<string, string> = {
   "registration-error-email-exists": "An account with this email already exists. Try logging in instead.",
   "registration-error-username-exists": "This username is already taken. Please try another.",
@@ -45,10 +48,6 @@ function getErrorMessage(errorBody: string): string {
   return "Registration failed. Please try again later.";
 }
 
-// ─────────────────────────────────────────────────────────────
-// POST ROUTE
-// ─────────────────────────────────────────────────────────────
-
 export async function POST(req: Request) {
   try {
     const body = await req.json();
@@ -63,12 +62,42 @@ export async function POST(req: Request) {
       );
     }
 
+    const { email, password, role, firstName, lastName, phone, shopName, shopUrl } = parsed.data;
+
     // Prepare payload
+    // IMPORTANT: 'seller' is the usual Dokan role slug. If this fails, try 'vendor'.
+    const userRole = role === "seller" ? "seller" : "customer"; 
+
     const payload: WooCustomerPayload = {
-      email: parsed.data.email,
-      username: parsed.data.email.split("@")[0],
-      password: parsed.data.password,
+      email,
+      username: email.split("@")[0], // Username from email prefix
+      password,
+      first_name: firstName,
+      last_name: lastName,
+      role: userRole,
     };
+
+    // If Vendor, add specific meta data
+    if (role === "seller") {
+      const slug = shopUrl || shopName?.toLowerCase().replace(/\s+/g, '-') || "";
+      
+      payload.meta_data = [
+        { key: "billing_phone", value: phone || "" },
+        { key: "dokan_store_name", value: shopName || "" },
+        { key: "dokan_store_slug", value: slug },
+        { key: "dokan_enable_selling", value: "yes" }, // Auto-enable selling
+        
+        // Dokan Profile Settings structure (basic)
+        { 
+          key: "dokan_profile_settings", 
+          value: JSON.stringify({
+            store_name: shopName,
+            phone: phone,
+            address: {}, // Initialize empty address to avoid errors
+          }) 
+        }
+      ];
+    }
 
     // Create customer in WooCommerce
     const created = await WooClient.createCustomer(payload);

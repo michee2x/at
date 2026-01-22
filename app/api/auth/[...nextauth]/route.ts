@@ -63,7 +63,8 @@ export const authOptions: AuthOptions = {
             name: wpUser.user_display_name,
             wpToken: wpUser.token,
             wpUserId: wpUser.id,
-          } as User & { wpToken: string; wpUserId: number };
+            role: wpUser.role,
+          } as User & { wpToken: string; wpUserId: number; role: string };
 
         } catch (error: any) {
           // Re-throw with user-friendly message
@@ -85,13 +86,14 @@ export const authOptions: AuthOptions = {
 
       // ───── CREDENTIALS LOGIN ─────
       if (account?.provider === "credentials" && user) {
-        const u = user as User & { wpToken: string; wpUserId: number };
+        const u = user as User & { wpToken: string; wpUserId: number; role?: string };
 
         t.jwt = u.wpToken;
         t.wpUserId = u.wpUserId;
         t.email = u.email!;
         t.name = u.name!;
         t.google = false;
+        t.role = u.role; 
 
         return t;
       }
@@ -113,14 +115,15 @@ export const authOptions: AuthOptions = {
         if (!wpUser?.id) {
           const newUser = await createUserInWordPress(email, name);
           if (newUser?.id) {
-            wpUser = { id: newUser.id, slug: username, email };
+            wpUser = { id: newUser.id, slug: username, email, role: 'customer' }; // New users are customers by default
           }
         }
 
         t.wpUserId = wpUser?.id;
+        t.role = wpUser?.role;
 
         t.wpUserId = wpUser?.id;
-        
+
         // ───── TOKEN EXCHANGE ─────
         // Exchange Google Access Token for WordPress JWT
         if (account?.access_token) {
@@ -129,7 +132,7 @@ export const authOptions: AuthOptions = {
             const baseUrl = process.env.WC_API_URL || process.env.NEXT_PUBLIC_WORDPRESS_API_URL || "";
             // Remove trailing slash if present to avoid double slashes
             const cleanUrl = baseUrl.replace(/\/$/, "");
-            
+
             const wpResponse = await fetch(`${cleanUrl}/wp-json/oauth-jwt/v1/token`, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
@@ -138,9 +141,9 @@ export const authOptions: AuthOptions = {
                 email: email,
               }),
             });
-            
+
             const wpData = await wpResponse.json();
-            
+
             if (wpData.token) {
               t.jwt = wpData.token;
               t.wpUserId = wpData.user_id;
@@ -177,6 +180,7 @@ export const authOptions: AuthOptions = {
           id: t.wpUserId ? String(t.wpUserId) : "",
           name: t.name ?? session.user?.name ?? "",
           email: t.email ?? session.user?.email ?? "",
+          role: t.role,
         },
       } as CustomSession;
     },

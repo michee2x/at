@@ -8,7 +8,8 @@ export interface CustomToken extends JWT {
   google?: boolean;
   email?: string;
   name?: string;
-  wpUserId?: number;   // ← MUST BE STRING, NOT NUMBER
+  wpUserId?: number;
+  role?: string;         // <-- Add Role (e.g. "seller" or "customer")
 }
 
 export interface CustomSession extends Session {
@@ -16,9 +17,10 @@ export interface CustomSession extends Session {
   wpNonce?: string;
   google?: boolean;
   user: {
-    id?: string;           // <-- add WP user id here (optional)
+    id?: string;
     name?: string;
     email?: string;
+    role?: string;       // <-- Add Role to Session
   } & Session["user"];
 }
 
@@ -27,12 +29,14 @@ export interface WpAuthResult {
   user_display_name: string;
   user_email: string;
   token: string;
+  role?: string;         // <-- Add Role
 }
 
 export interface WpUserMeta {
   id: number;
   slug: string;
   email?: string;
+  role?: string;         // <-- Add Role
 }
   
 export interface CartItem {
