@@ -64,7 +64,7 @@ function RegisterContent() {
     if (!validated.success) {
       const newErrors: Record<string, string> = {};
       validated.error.issues.forEach((issue) => {
-        newErrors[issue.path[0]] = issue.message;
+        newErrors[String(issue.path[0])] = issue.message;
       });
       
       // Custom validation for vendor fields

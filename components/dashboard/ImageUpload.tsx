@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils";
 
 // Changed: Now stores File objects with preview URLs
 export interface ImageFile {
+  id?: number;
   file: File;
   preview: string;
 }
