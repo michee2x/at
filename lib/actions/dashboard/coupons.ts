@@ -56,7 +56,7 @@ export async function createCoupon(data: CreateCouponInput) {
       method: "POST",
       body: data,
     });
-    
+
     revalidatePath("/dashboard/coupons");
     return { success: true, data: response };
   } catch (error: any) {
@@ -71,11 +71,27 @@ export async function deleteCoupon(id: number) {
       endpoint: `coupons/${id}`,
       method: "DELETE",
     });
-    
+
     revalidatePath("/dashboard/coupons");
     return { success: true };
   } catch (error: any) {
     console.error("Error deleting coupon:", error);
     return { success: false, error: error.message || "Failed to delete coupon" };
+  }
+}
+
+export async function updateCoupon(id: number, data: Partial<CreateCouponInput>) {
+  try {
+    const response = await dokanRequest<DokanCoupon>({
+      endpoint: `coupons/${id}`,
+      method: "PUT",
+      body: data,
+    });
+
+    revalidatePath("/dashboard/coupons");
+    return { success: true, data: response };
+  } catch (error: any) {
+    console.error("Error updating coupon:", error);
+    return { success: false, error: error.message || "Failed to update coupon" };
   }
 }

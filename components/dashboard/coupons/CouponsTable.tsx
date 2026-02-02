@@ -17,10 +17,11 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { MoreHorizontal, Trash2 } from "lucide-react";
+import { MoreHorizontal, Trash2, Edit } from "lucide-react";
 import { format } from "date-fns";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { CouponEditDialog } from "./CouponEditDialog";
 
 interface CouponsTableProps {
   coupons: DokanCoupon[];
@@ -28,6 +29,7 @@ interface CouponsTableProps {
 
 export function CouponsTable({ coupons }: CouponsTableProps) {
   const [isDeleting, setIsDeleting] = useState<number | null>(null);
+  const [editingCoupon, setEditingCoupon] = useState<DokanCoupon | null>(null);
   const router = useRouter();
 
   const handleDelete = async (id: number) => {
@@ -103,6 +105,10 @@ export function CouponsTable({ coupons }: CouponsTableProps) {
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
+                      <DropdownMenuItem onClick={() => setEditingCoupon(coupon)}>
+                        <Edit className="mr-2 h-4 w-4" />
+                        Edit
+                      </DropdownMenuItem>
                       <DropdownMenuItem
                         className="text-destructive focus:text-destructive"
                         onClick={() => handleDelete(coupon.id)}
@@ -119,6 +125,14 @@ export function CouponsTable({ coupons }: CouponsTableProps) {
           )}
         </TableBody>
       </Table>
+      
+      {editingCoupon && (
+        <CouponEditDialog 
+          coupon={editingCoupon} 
+          open={!!editingCoupon} 
+          onOpenChange={(open) => !open && setEditingCoupon(null)} 
+        />
+      )}
     </div>
   );
 }
