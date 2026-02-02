@@ -6,18 +6,26 @@ import OrderSummary from "@/sections/cart/OrderSummary";
 import AtlazeLoader from "@/components/lottie/AtlazeLoader";
 import { BillingInfo } from "@/types/checkout";
 import { useCheckout } from "@/hooks/useCheckout";
+import { WCCoupon } from "@/types/checkout";
+
+export interface AppliedCoupon {
+  code: string;
+  discountAmount: number;
+  couponData: WCCoupon;
+}
 
 export function CheckoutClientWrapper({
   defaultBilling,
 }: {
   defaultBilling: BillingInfo | undefined;
 }) {
+  const [appliedCoupon, setAppliedCoupon] = useState<AppliedCoupon | null>(null);
   const { isPlacingOrder, error, placeOrder } = useCheckout();
 
   const handleContinue = async (
     values: BillingInfo & { deliveryMethod: "deliver" | "pickup" }
   ) => {
-    await placeOrder(values);
+    await placeOrder(values, appliedCoupon);
   };
 
   return (
@@ -40,6 +48,8 @@ export function CheckoutClientWrapper({
         <div className="lg:sticky lg:top-40">
           <OrderSummary
             showCheckoutButton={false}
+            appliedCoupon={appliedCoupon}
+            setAppliedCoupon={setAppliedCoupon}
           />
         </div>
       </aside>

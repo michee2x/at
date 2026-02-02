@@ -1,18 +1,37 @@
-export default function CouponsPage() {
+import { Suspense } from "react";
+import { getVendorCoupons } from "@/lib/actions/dashboard/coupons";
+import { CouponsClient } from "@/components/dashboard/coupons/CouponsClient";
+import { CouponsTableSkeleton } from "@/components/dashboard/coupons/CouponsTableSkeleton";
+import { X } from "lucide-react";
+
+export default async function CouponsPage() {
+  const coupons = await getVendorCoupons();
+
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight">Coupons</h1>
-        <p className="text-muted-foreground mt-2">
-          Manage your discount coupons and promotional codes.
+      {/* Banner from screenshot */}
+      <div className="relative rounded-lg border border-blue-100 bg-blue-50/50 p-4 text-blue-600">
+        <p className="pr-8">
+          Start with adding a Banner to gain profile progress
         </p>
+        <button className="absolute right-4 top-4 hover:opacity-70">
+          <X className="h-4 w-4" />
+        </button>
       </div>
 
-      <div className="rounded-lg border bg-card p-8 text-center">
-        <p className="text-muted-foreground">
-          Coupon management interface coming soon...
-        </p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight">Coupons</h1>
+          <div className="flex gap-4 mt-2 text-sm text-muted-foreground">
+            <span className="text-primary font-medium cursor-pointer border-b-2 border-primary pb-1">My Coupons</span>
+            <span className="cursor-pointer hover:text-foreground">Marketplace Coupons</span>
+          </div>
+        </div>
       </div>
+
+      <Suspense fallback={<CouponsTableSkeleton />}>
+        <CouponsClient initialCoupons={coupons} />
+      </Suspense>
     </div>
   );
 }

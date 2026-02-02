@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useCart } from './useCart';
 import { createWooOrder } from '@/lib/wordpress-checkout';
-import type { BillingInfo, CreateOrderResult } from '@/types/checkout';
+import type { BillingInfo, CreateOrderResult, AppliedCoupon } from '@/types/checkout';
 import { WooOrder } from '@/lib/user/types';
 import { User } from '@/lib/user/User';
 import { updateUserAction } from '@/lib/actions/UserAction';
@@ -16,7 +16,7 @@ export const useCheckout = () => {
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
-  const placeOrder = async (billing: BillingInfo): Promise<CreateOrderResult | void> => {
+  const placeOrder = async (billing: BillingInfo, coupon?: AppliedCoupon | null): Promise<CreateOrderResult | void> => {
     if (!cart || cart.items.length === 0) {
       setError('Cart is empty');
       return { success: false, error: 'Cart is empty' };
@@ -48,6 +48,14 @@ export const useCheckout = () => {
                   product_id: i.id,
                   quantity: i.quantity,
                 })),
+
+                coupon_lines: coupon ? [
+                    {
+                        code: coupon.code,
+                        amount: coupon.discountAmount.toString(),
+                        discount: coupon.discountAmount.toString(), 
+                    }
+                ] : [],
 
                 customer_id: userId ?? undefined,
 
