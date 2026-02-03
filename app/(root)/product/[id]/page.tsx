@@ -15,6 +15,7 @@ import ProductMediaGallery from "@/components/ProductMediaGallery";
 import ProductSuggestionList from "@/components/productdetails/suggestionCard";
 import { AddToCartButton } from "@/components/cart/AddToCartButton";
 import { ProductReviews } from "@/components/reviews/ProductReviews";
+import { FollowStoreButton } from "@/components/product/FollowStoreButton";
 
 export const revalidate = 3600; // Revalidate this page every hour
 
@@ -220,7 +221,17 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
    Subcomponents (server)
    ------------------------- */
 
-function ProductHeader({ product }: { product: WooProduct }) {
+// ... imports
+// ... existing code ...
+
+import { isFollowingStore } from "@/lib/actions/store/follow";
+
+async function ProductHeader({ product }: { product: WooProduct }) {
+  let isFollowing = false;
+  if (product.store?.id) {
+    isFollowing = await isFollowingStore(product.store.id);
+  }
+
   return (
     <header className="font-poppins">
       <h1 className="text-3xl font-bold" itemProp="name">
@@ -230,11 +241,25 @@ function ProductHeader({ product }: { product: WooProduct }) {
         {/* Keep semantic category info if available; fallback */}
         {product?.categories[0]?.name?.replace("&amp;", "")?.toLowerCase()}
       </p>
-      <div className="flex flex-row flex-nowrap items-start text-[14px] lg:gap-0.5">
+
+      {/* Vendor / Store Info */}
+      {product.store && (
+        <div className="mt-2 flex items-center gap-3 text-sm">
+          <span className="text-muted-foreground">Sold by:</span>
+          <span className="font-medium text-primary">{product.store.shop_name || product.store.name}</span>
+          <FollowStoreButton 
+            storeId={product.store.id} 
+            storeName={product.store.shop_name || product.store.name}
+            initialIsFollowing={isFollowing}
+          />
+        </div>
+      )}
+
+      <div className="flex flex-row flex-nowrap items-start text-[14px] lg:gap-0.5 mt-2">
         <Ratings rating={product.rating_count} />
       </div>
       <p
-        className="text-[15px] mt-6 text-[#111111] font-semibold"
+        className="text-[15px] mt-4 text-[#111111] font-semibold"
         itemProp="offers"
         itemScope
         itemType="http://schema.org/Offer"

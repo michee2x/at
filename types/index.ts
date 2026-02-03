@@ -180,6 +180,20 @@ export interface WooProduct {
   stock_status?: "instock" | "outofstock" | "onbackorder"; // added
   meta_data?: WooProductMeta[]; // for video thumbnails etc
   related_ids: number[];
+  store?: {
+    id: number;
+    name: string;
+    shop_name: string;
+    url: string;
+    address: {
+      street_1: string;
+      street_2: string;
+      city: string;
+      zip: string;
+      country: string;
+      state: string;
+    };
+  };
 }
 
 
