@@ -34,8 +34,11 @@ export async function getProductStats(after: string, before: string) {
     const params = new URLSearchParams({
         after,
         before,
-        "fields[]": ["items_sold", "net_revenue", "orders_count"],
     });
+
+    params.append("fields[]", "items_sold");
+    params.append("fields[]", "net_revenue");
+    params.append("fields[]", "orders_count");
 
     const url = `${WC_API_URL}/wp-json/wc-analytics/reports/products/stats?${params}`;
 
@@ -67,8 +70,9 @@ export async function getChartData(after: string, before: string) {
         interval: "day",
         after,
         before,
-        "fields[]": "items_sold",
     });
+    
+    params.append("fields[]", "items_sold");
 
     const url = `${WC_API_URL}/wp-json/wc-analytics/reports/products/stats?${params}`;
 
