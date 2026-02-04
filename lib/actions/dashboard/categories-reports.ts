@@ -81,7 +81,7 @@ export async function getCategoryProducts(categoryId: number, after: string, bef
     return data;
 }
 
-export async function getCategoryStats(categoryId: number, after: string, before: string) {
+export async function getCategoryStats(categoryIds: number[], after: string, before: string) {
     const session = await getServerSession(authOptions);
     if (!session?.user) throw new Error("Unauthorized");
 
@@ -94,14 +94,29 @@ export async function getCategoryStats(categoryId: number, after: string, before
         per_page: "100",
         after,
         before,
-        segmentby: "product",
-        categories: categoryId.toString(),
+        categories: categoryIds.join(","),
         "_locale": "user"
     });
-    params.append("fields[0]", "products_count");
-    params.append("fields[1]", "items_sold");
-    params.append("fields[2]", "net_revenue");
-    params.append("fields[3]", "orders_count");
+    // Note: User provided URL didn't have segmentby=product for comparison, 
+    // but did for single category. We might need to handle both cases or 
+    // separate them. The user's comparison URL specifically lacked segmentby 
+    // and just had categories=83,82.
+    // However, for single category we DO need segmentby=product to see product breakdown if we wanted that?
+    // Actually the previous step used getCategoryStats for single category too. 
+    // Let's check the previous implementation of getCategoryStats. 
+    // It had segmentby: "product".
+    // The user's new URL for comparison DOES NOT have segmentby.
+    // So I should make segmentby optional or conditional.
+
+    if (categoryIds.length === 1) {
+        params.append("segmentby", "product");
+    }
+
+    params.append("fields[0]", "items_sold");
+    params.append("fields[1]", "net_revenue");
+    params.append("fields[2]", "orders_count");
+    // Removed products_count as it wasn't in the comparison example, but probably harmless to keep.
+    // User example: fields[0]=items_sold, fields[1]=net_revenue, fields[2]=orders_count
 
     const url = `${WC_API_URL}/wp-json/wc-analytics/reports/products/stats?${params}`;
 

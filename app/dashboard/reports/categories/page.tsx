@@ -39,17 +39,23 @@ export default function CategoriesReportsPage() {
         fetchMainCategories();
     }, [dateRange]);
 
-    // Fetch single category details when selection changes
+    // Fetch data for single or multiple categories (comparison)
     useEffect(() => {
         if (filterMode === "single" && selectedCategories.length === 1) {
-            fetchSingleCategoryData(selectedCategories[0].category_id);
+            fetchCategoryStats(selectedCategories.map(c => c.category_id));
+        } else if (filterMode === "comparison" && selectedCategories.length > 0) {
+            fetchCategoryStats(selectedCategories.map(c => c.category_id));
         } else {
-            // Reset to default chart data if not in single mode
+            // Reset logic for 'all' mode or empty selection
+            // We use the main 'categories' list for chart in 'all' mode
             const defaultChartData = categories.map(cat => ({
                 name: cat.extended_info.name,
                 items_sold: cat.items_sold,
             }));
-            setChartData(defaultChartData);
+            if (filterMode === "all") {
+                setChartData(defaultChartData);
+                setSingleCategoryStats(null); // Clear specific stats
+            }
         }
     }, [filterMode, selectedCategories, dateRange, categories]);
 
@@ -65,27 +71,40 @@ export default function CategoriesReportsPage() {
         }
     };
 
-    const fetchSingleCategoryData = async (categoryId: number) => {
+    const fetchCategoryStats = async (categoryIds: number[]) => {
         setIsLoading(true);
         try {
-            const [products, stats] = await Promise.all([
-                getCategoryProducts(categoryId, dateRange.after, dateRange.before),
-                getCategoryStats(categoryId, dateRange.after, dateRange.before)
-            ]);
-            
-            setCategoryProducts(products);
-            setSingleCategoryStats(stats);
-            
-            // Format chart data from stats intervals
-            if (stats && stats.intervals) {
-                const formattedChartData = stats.intervals.map((interval: any) => ({
-                    name: new Date(interval.date_start).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }),
-                    items_sold: interval.subtotals.items_sold
-                }));
-                setChartData(formattedChartData);
+            // For single category, we also want the products list
+            if (filterMode === "single" && categoryIds.length === 1) {
+                 const [products, stats] = await Promise.all([
+                    getCategoryProducts(categoryIds[0], dateRange.after, dateRange.before),
+                    getCategoryStats(categoryIds, dateRange.after, dateRange.before)
+                ]);
+                setCategoryProducts(products);
+                setSingleCategoryStats(stats);
+                
+                if (stats && stats.intervals) {
+                    const formattedChartData = stats.intervals.map((interval: any) => ({
+                        name: new Date(interval.date_start).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }),
+                        items_sold: interval.subtotals.items_sold
+                    }));
+                    setChartData(formattedChartData);
+                }
+            } else {
+                // Comparison mode - just stats
+                const stats = await getCategoryStats(categoryIds, dateRange.after, dateRange.before);
+                setSingleCategoryStats(stats);
+                
+                if (stats && stats.intervals) {
+                    const formattedChartData = stats.intervals.map((interval: any) => ({
+                        name: new Date(interval.date_start).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }),
+                        items_sold: interval.subtotals.items_sold
+                    }));
+                    setChartData(formattedChartData);
+                }
             }
         } catch (error) {
-            console.error("Error fetching single category data:", error);
+            console.error("Error fetching category stats:", error);
         } finally {
             setIsLoading(false);
         }
@@ -106,9 +125,10 @@ export default function CategoriesReportsPage() {
 
     // Calculate stats for display
     const getStats = () => {
-        if (filterMode === "single" && singleCategoryStats?.totals) {
+        // If we have fetched stats (Single or Comparison), use them
+        if ((filterMode === "single" || filterMode === "comparison") && singleCategoryStats?.totals) {
              return {
-                categoriesCount: 1, // Or maybe products count?
+                categoriesCount: selectedCategories.length,
                 itemsSold: singleCategoryStats.totals.items_sold,
                 netSales: singleCategoryStats.totals.net_revenue,
                 ordersCount: singleCategoryStats.totals.orders_count
@@ -116,12 +136,13 @@ export default function CategoriesReportsPage() {
         }
 
         // Default stats logic for 'all' mode
-        // For comparison mode, we would sum up selected categories
+        // Note: For comparison, before fetch finishes, or if failed, we could fallback to local sum, 
+        // but fetched stats are more accurate for the specific endpoint.
         let targetCategories = categories;
-        if (filterMode === "comparison" && selectedCategories.length > 0) {
-            targetCategories = selectedCategories;
-        }
-
+        
+        // If we are in comparison but no stats loaded yet, maybe show 0 or wait?
+        // Existing logic used local reduction which is okay for 'all' mode.
+        
         const itemsSold = targetCategories.reduce((sum, cat) => sum + cat.items_sold, 0);
         const netSales = targetCategories.reduce((sum, cat) => sum + cat.net_revenue, 0);
         const ordersCount = targetCategories.reduce((sum, cat) => sum + cat.orders_count, 0);
@@ -193,7 +214,8 @@ export default function CategoriesReportsPage() {
                 <div className="flex-1">
                     <CategoryFilter 
                         categories={categories}
-                        onFilterChange={handleFilterChange} 
+                        onFilterChange={handleFilterChange}
+                        isLoading={isLoading} 
                     />
                 </div>
             </div>
