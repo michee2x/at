@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { AlertCircle } from "lucide-react";
+import Link from "next/link";
 
 interface WithdrawScheduleModalProps {
     isOpen: boolean;
@@ -37,7 +38,7 @@ export function WithdrawScheduleModal({
                         <div>
                             <h4 className="text-sm font-semibold text-yellow-800">No payment methods found.</h4>
                             <p className="text-sm text-yellow-700 mt-1">
-                                Please set up your <span className="text-purple-600 underline cursor-pointer">payment methods</span> first.
+                                Please set up your <Link href="/dashboard/settings/payment" className="text-purple-600 underline cursor-pointer">payment methods</Link> first.
                             </p>
                         </div>
                     </div>
