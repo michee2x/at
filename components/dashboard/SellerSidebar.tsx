@@ -17,6 +17,7 @@ import {
   MessageSquare,
   Settings,
   ChevronRight,
+  UserCog,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -108,6 +109,12 @@ const navigationItems: NavItem[] = [
     label: "Vendor Support",
     icon: MessageSquare,
     href: "/dashboard/support",
+  },
+  {
+    id: "staff",
+    label: "Staff",
+    icon: UserCog,
+    href: "/dashboard/staff",
   },
   {
     id: "settings",
