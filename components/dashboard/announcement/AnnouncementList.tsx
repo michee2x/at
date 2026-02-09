@@ -155,7 +155,7 @@ export default function AnnouncementList({
                   {announcement.title}
                 </TableCell>
                 <TableCell>
-                  {new Date(announcement.created_at).toLocaleDateString()}
+                  {announcement.human_readable_date}
                 </TableCell>
                 <TableCell>
                   <AnnouncementBadge status={announcement.read_status} />

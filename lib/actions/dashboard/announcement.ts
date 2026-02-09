@@ -11,6 +11,7 @@ export interface Announcement {
     read_status: 'read' | 'unread' | 'trash';
     created_at: string;
     updated_at: string;
+    human_readable_date: string;
 }
 
 export interface AnnouncementFilters {
