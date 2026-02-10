@@ -18,6 +18,7 @@ import {
   Settings,
   ChevronRight,
   UserCog,
+  Award,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -103,6 +104,12 @@ const navigationItems: NavItem[] = [
     label: "Announcement",
     icon: Megaphone,
     href: "/dashboard/announcement",
+  },
+  {
+    id: "badge",
+    label: "Badge",
+    icon: Award,
+    href: "/dashboard/badges",
   },
   {
     id: "support",
