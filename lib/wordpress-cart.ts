@@ -1,7 +1,7 @@
 import { Cart } from "@/types";
 import { toNumber } from "@/utils/to-number";
 
-const WORDPRESS_URL = 'https://atlaze.com';
+const WORDPRESS_URL = 'https://api.atlaze.com';
 
 export class WordPressCartAPI {
 
@@ -67,39 +67,39 @@ export class WordPressCartAPI {
   }
 
   static async mergeGuestCart(
-  userId: number,
-  guestCart: Cart,
-  authToken: string
-): Promise<Cart> {
-  if (!guestCart.items.length) return this.getUserCart(userId, authToken);
+    userId: number,
+    guestCart: Cart,
+    authToken: string
+  ): Promise<Cart> {
+    if (!guestCart.items.length) return this.getUserCart(userId, authToken);
 
-  const userCart = await this.getUserCart(userId, authToken);
-  const mergedItems = [...userCart.items];
+    const userCart = await this.getUserCart(userId, authToken);
+    const mergedItems = [...userCart.items];
 
-  guestCart.items.forEach(guestItem => {
-    const existing = mergedItems.find(item => item.id === guestItem.id);
-    if (!existing) {
-      mergedItems.push(guestItem);
-    }
-    // Do not add quantities if already exists
-  });
+    guestCart.items.forEach(guestItem => {
+      const existing = mergedItems.find(item => item.id === guestItem.id);
+      if (!existing) {
+        mergedItems.push(guestItem);
+      }
+      // Do not add quantities if already exists
+    });
 
-  const total = mergedItems.reduce(
-    (sum, item) => sum + toNumber(item.price) * item.quantity,
-    0
-  );
+    const total = mergedItems.reduce(
+      (sum, item) => sum + toNumber(item.price) * item.quantity,
+      0
+    );
 
-  const mergedCart: Cart = {
-    items: mergedItems,
-    total,
-    updatedAt: new Date().toISOString(),
-  };
+    const mergedCart: Cart = {
+      items: mergedItems,
+      total,
+      updatedAt: new Date().toISOString(),
+    };
 
-  await this.updateUserCart(userId, mergedCart, authToken);
-  localStorage.removeItem('atlaze-cart-storage');
+    await this.updateUserCart(userId, mergedCart, authToken);
+    localStorage.removeItem('atlaze-cart-storage');
 
-  return mergedCart;
-}
+    return mergedCart;
+  }
 
 
   static async clearCart(userId: number, authToken: string): Promise<boolean> {
@@ -121,5 +121,5 @@ export class WordPressCartAPI {
       return false;
     }
   }
-  
+
 }

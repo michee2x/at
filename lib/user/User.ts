@@ -11,7 +11,7 @@ export class User {
 
   constructor(options: UserOptions) {
     this.id = options.id;
-    this.wpUrl = process.env.WORDPRESS_URL! || "https://atlaze.com";
+    this.wpUrl = process.env.WORDPRESS_URL! || "https://api.atlaze.com";
     this.consumerKey = process.env.WC_CONSUMER_KEY!;
     this.consumerSecret = process.env.WC_CONSUMER_SECRET!;
   }

@@ -27,7 +27,7 @@ export async function wooCommerceRequest<T>({
     throw new Error("Unauthorized");
   }
 
-  const url = new URL(`${WC_API_URL || "https://atlaze.com"}/wp-json/wc/v3/${endpoint}`);
+  const url = new URL(`${WC_API_URL || "https://api.atlaze.com"}/wp-json/wc/v3/${endpoint}`);
   url.searchParams.append("consumer_key", WC_CONSUMER_KEY);
   url.searchParams.append("consumer_secret", WC_CONSUMER_SECRET);
 

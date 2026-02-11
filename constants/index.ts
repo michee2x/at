@@ -443,7 +443,7 @@ const michee = {
         "_links": {
             "self": [
                 {
-                    "href": "https://atlaze.com/wp-json/wc/v3/customers/6",
+                    "href": "https://api.atlaze.com/wp-json/wc/v3/customers/6",
                     "targetHints": {
                         "allow": [
                             "GET",
@@ -457,7 +457,7 @@ const michee = {
             ],
             "collection": [
                 {
-                    "href": "https://atlaze.com/wp-json/wc/v3/customers"
+                    "href": "https://api.atlaze.com/wp-json/wc/v3/customers"
                 }
             ]
         }

@@ -2,7 +2,7 @@
 import type { OrderPayload, CreateOrderResult, WooOrderResponse, WooErrorResponse } from '@/types/checkout';
 import { WooOrder } from './user/types';
 
-const WORDPRESS_URL = 'https://atlaze.com';
+const WORDPRESS_URL = 'https://api.atlaze.com';
 const WC_CONSUMER_KEY = process.env.WC_CONSUMER_KEY!
 const WC_CONSUMER_SECRET = process.env.WC_CONSUMER_SECRET!
 

@@ -19,8 +19,8 @@ import { FollowStoreButton } from "@/components/product/FollowStoreButton";
 
 export const revalidate = 3600; // Revalidate this page every hour
 
-//https://atlaze.com/wp-json/wc/v3/products?slug=noise-buds-n1
-//https://atlaze.com/wp-json/wc/v3/products?slug=noise-buds-n1
+//https://api.atlaze.com/wp-json/wc/v3/products?slug=noise-buds-n1
+//https://api.atlaze.com/wp-json/wc/v3/products?slug=noise-buds-n1
 /**
  * Assumptions & notes:
  * - This is an app-router server component (file under /app/product/[id]/page.tsx).
@@ -42,7 +42,7 @@ export const revalidate = 3600; // Revalidate this page every hour
 async function fetchProduct(productSlug: string): Promise<WooProduct> {
   if (!productSlug) throw new Error("Missing product id");
 
-  const base = process.env.WC_API_BASE ?? "https://atlaze.com/wp-json/wc/v3";
+  const base = process.env.WC_API_BASE ?? "https://api.atlaze.com/wp-json/wc/v3";
   const key = process.env.WC_CONSUMER_KEY;
   const secret = process.env.WC_CONSUMER_SECRET;
   if (!key || !secret)
@@ -278,7 +278,7 @@ async function ProductHeader({ product }: { product: WooProduct }) {
 async function ProductSuggestion({ relatedIds }: { relatedIds?: number[] }) {
   if (!relatedIds || relatedIds.length === 0) return null;
 
-  const base = process.env.WC_API_BASE ?? "https://atlaze.com/wp-json/wc/v3";
+  const base = process.env.WC_API_BASE ?? "https://api.atlaze.com/wp-json/wc/v3";
   const key = process.env.WC_CONSUMER_KEY!;
   const secret = process.env.WC_CONSUMER_SECRET!;
 

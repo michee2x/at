@@ -4,7 +4,7 @@ export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   const parent = searchParams.get("parent") || "0"; // default to 0
 
-  const url = `https://atlaze.com/wp-json/wc/v3/products/categories?parent=${parent}`;
+  const url = `https://api.atlaze.com/wp-json/wc/v3/products/categories?parent=${parent}`;
   const key = process.env.WC_CONSUMER_KEY!;
   const secret = process.env.WC_CONSUMER_SECRET!;
 

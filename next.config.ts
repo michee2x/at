@@ -5,7 +5,7 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "atlaze.com",
+        hostname: "api.atlaze.com",
         port: "",
         pathname: "/**",
       },

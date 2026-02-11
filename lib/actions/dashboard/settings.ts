@@ -2,8 +2,10 @@
 
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { storeSettingsUpdateSchema, type StoreSettingsUpdate } from "@/lib/schemas/store-settings";
+import { revalidateTag } from "next/cache";
 
-const WC_API_URL = process.env.NEXT_PUBLIC_WORDPRESS_URL || "https://atlaze.com";
+const WC_API_URL = process.env.NEXT_PUBLIC_WORDPRESS_URL || "https://api.atlaze.com";
 
 export interface SocialLinks {
     fb?: string;
@@ -21,25 +23,53 @@ export interface WarrantySettings {
     label?: string;
     type?: "no_warranty" | "included_warranty" | "addon_warranty";
     policy?: string;
-    // Addon specific fields if needed later (cost, duration)
+}
+
+export interface FullStoreData {
+    id?: number;
+    store_name?: string;
+    first_name?: string;
+    last_name?: string;
+    email?: string;
+    social?: SocialLinks;
+    phone?: string;
+    show_email?: boolean;
+    address?: any;
+    location?: string;
+    banner?: string;
+    banner_id?: number;
+    gravatar?: string;
+    gravatar_id?: number;
+    shop_url?: string;
+    toc_enabled?: boolean;
+    store_toc?: string;
+    company_name?: string;
+    vat_number?: string;
+    company_id_number?: string;
+    bank_name?: string;
+    bank_iban?: string;
+    vendor_biography?: string;
+    warranties?: WarrantySettings;
+    [key: string]: any; // For other fields from API
 }
 
 export interface StoreSettingsResponse {
     success: boolean;
+    data?: FullStoreData;
     social?: SocialLinks;
     warranties?: WarrantySettings;
     message?: string;
 }
 
 /**
- * Fetches the current store settings (mostly social for this page)
+ * Fetches the current store settings (full store data)
  */
 export async function getStoreSettings(): Promise<StoreSettingsResponse> {
     const session = await getServerSession(authOptions);
     if (!session?.user) return { success: false, message: "Unauthorized" };
 
     const wpToken = (session as any)?.wpToken;
-    const userId = (session as any)?.user?.id; // Assuming user ID corresponds to vendor ID
+    const userId = (session as any)?.user?.id;
 
     if (!wpToken || !userId) return { success: false, message: "No token or user ID" };
 
@@ -55,20 +85,74 @@ export async function getStoreSettings(): Promise<StoreSettingsResponse> {
 
         if (!response.ok) return { success: false, message: "Failed to fetch settings" };
 
-        const data = await response.json();
+        const data: FullStoreData = await response.json();
 
-        // DEBUG: Log full data to find RMA keys
-        console.log("FULL STORE SETTINGS (DEBUG):", JSON.stringify(data, null, 2));
-
-        // Return social and warranties part of the store data
+        // Return full store data
         return {
             success: true,
+            data,
             social: data.social || {},
             warranties: data.warranties || {}
         };
     } catch (error) {
         console.error("Error fetching store settings:", error);
         return { success: false, message: "Error fetching settings" };
+    }
+}
+
+/**
+ * Updates the store settings with validation and sanitization
+ */
+export async function updateStoreSettings(settingsData: StoreSettingsUpdate): Promise<StoreSettingsResponse> {
+    const session = await getServerSession(authOptions);
+    if (!session?.user) return { success: false, message: "Unauthorized" };
+
+    const wpToken = (session as any)?.wpToken;
+    const userId = (session as any)?.user?.id;
+
+    if (!wpToken || !userId) return { success: false, message: "No token or user ID" };
+
+    // Validate and sanitize input using Zod
+    const validation = storeSettingsUpdateSchema.safeParse(settingsData);
+
+    if (!validation.success) {
+        const errors = validation.error.issues.map((e: any) => `${e.path.join('.')}: ${e.message}`).join(', ');
+        return { success: false, message: `Validation error: ${errors}` };
+    }
+
+    const sanitizedData = validation.data;
+    const url = `${WC_API_URL}/wp-json/dokan/v1/stores/${userId}?_locale=user`;
+
+    try {
+        const response = await fetch(url, {
+            method: "POST",
+            headers: {
+                "Authorization": `Bearer ${wpToken}`,
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(sanitizedData),
+        });
+
+        const result = await response.json();
+
+        if (!response.ok) {
+            return {
+                success: false,
+                message: result.message || "Failed to update settings"
+            };
+        }
+
+        // Revalidate cache
+        revalidateTag('store-settings');
+
+        return {
+            success: true,
+            message: "Store settings updated successfully",
+            data: result
+        };
+    } catch (error) {
+        console.error("Error updating store settings:", error);
+        return { success: false, message: "Update error" };
     }
 }
 

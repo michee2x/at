@@ -108,7 +108,7 @@ export function buildQueryParams(params: QueryParams): Record<string, string> {
 // Fetch WooCommerce products
 // -----------------------------
 export async function fetchWCProducts<T = WooProduct>(params: QueryParams): Promise<WCProductResponse<T>> {
-    const base = process.env.WC_BASE_URL! || "https://atlaze.com";
+    const base = process.env.WC_BASE_URL! || "https://api.atlaze.com";
     const key = process.env.WC_CONSUMER_KEY!;
     const secret = process.env.WC_CONSUMER_SECRET!;
 
@@ -140,7 +140,7 @@ export async function fetchWCProducts<T = WooProduct>(params: QueryParams): Prom
 // Fetch Dokan vendor products
 // -----------------------------
 export async function fetchDokanProducts<T = WooProduct>(params: QueryParams): Promise<WCProductResponse<T>> {
-    const base = process.env.WC_BASE_URL! || "https://atlaze.com";
+    const base = process.env.WC_BASE_URL! || "https://api.atlaze.com";
 
     // Logic to handle vendor/store ID mapping
     // If 'vendor' param is present, use it as store ID if 'store' is missing
@@ -180,7 +180,7 @@ export async function fetchDokanProducts<T = WooProduct>(params: QueryParams): P
 // Product Reviews
 // -----------------------------
 export async function fetchProductReviews(productId: number): Promise<WooProductReview[]> {
-    const base = process.env.WC_BASE_URL || "https://atlaze.com";
+    const base = process.env.WC_BASE_URL || "https://api.atlaze.com";
     const key = process.env.WC_CONSUMER_KEY!;
     const secret = process.env.WC_CONSUMER_SECRET!;
 
@@ -191,19 +191,19 @@ export async function fetchProductReviews(productId: number): Promise<WooProduct
 
     const res = await fetch(url.toString(), {
         headers: { Accept: "application/json" },
-        next: { revalidate: 3600 } 
+        next: { revalidate: 3600 }
     });
 
     if (!res.ok) {
         console.error("Failed to fetch reviews", await res.text());
         return [];
     }
-    
+
     return res.json() as Promise<WooProductReview[]>;
 }
 
 export async function createProductReview(data: ReviewData): Promise<WooProductReview> {
-    const base = process.env.WC_BASE_URL || "https://atlaze.com";
+    const base = process.env.WC_BASE_URL || "https://api.atlaze.com";
     const key = process.env.WC_CONSUMER_KEY!;
     const secret = process.env.WC_CONSUMER_SECRET!;
 
