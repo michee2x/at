@@ -1,6 +1,7 @@
 "use client";
 
-import { Badge, getBadgeProgress } from "@/lib/actions/dashboard/badges";
+import { type Badge } from "@/lib/actions/dashboard/badges";
+import { getBadgeProgress } from "@/lib/utils/badge-helpers";
 import BadgeCard from "./BadgeCard";
 
 interface BadgeGridProps {

@@ -6,10 +6,10 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
   getVendorBadges,
-  categorizeBadges,
   markBadgesAsSeen,
-  Badge,
+  type Badge,
 } from "@/lib/actions/dashboard/badges";
+import { categorizeBadges } from "@/lib/utils/badge-helpers";
 import BadgeGrid from "@/components/dashboard/badges/BadgeGrid";
 import BadgeDetail from "@/components/dashboard/badges/BadgeDetail";
 import { toast } from "react-toastify";

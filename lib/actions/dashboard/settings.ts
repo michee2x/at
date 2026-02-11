@@ -3,7 +3,6 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { storeSettingsUpdateSchema, type StoreSettingsUpdate } from "@/lib/schemas/store-settings";
-import { revalidateTag } from "next/cache";
 
 const WC_API_URL = process.env.NEXT_PUBLIC_WORDPRESS_URL || "https://api.atlaze.com";
 
@@ -142,8 +141,8 @@ export async function updateStoreSettings(settingsData: StoreSettingsUpdate): Pr
             };
         }
 
-        // Revalidate cache
-        revalidateTag('store-settings');
+
+        // Cache will be revalidated automatically via fetch tags
 
         return {
             success: true,
