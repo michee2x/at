@@ -29,7 +29,7 @@ export function StoreSettingsForm({ initialData }: StoreSettingsFormProps) {
       banner_id: initialData.banner_id || 0,
       gravatar: initialData.gravatar || "",
       gravatar_id: initialData.gravatar_id || 0,
-      address: initialData.address || [],
+      address: (Array.isArray(initialData.address) && initialData.address.length === 0) ? {} : (initialData.address || {}),
       company_name: initialData.company_name || "",
       company_id_number: initialData.company_id_number || "",
       vat_number: initialData.vat_number || "",
@@ -64,41 +64,35 @@ export function StoreSettingsForm({ initialData }: StoreSettingsFormProps) {
   };
 
   return (
-    <form onSubmit={form.handleSubmit(onSubmit)} className="bg-white max-w-4xl space-y-8">
+    <form onSubmit={form.handleSubmit(onSubmit)} className="max-w-5xl space-y-8 pb-10">
       {/* Basic Information Section */}
       <StoreBasicInfoSection form={form} />
-
-      <Separator />
 
       {/* Address Section */}
       <StoreAddressSection form={form} />
 
-      <Separator />
-
       {/* Company & Financial Section */}
       <StoreCompanySection form={form} />
-
-      <Separator />
 
       {/* Policies & Content Section */}
       <StorePoliciesSection form={form} />
 
       {/* Submit Button */}
-      <div className="pt-6 flex gap-4">
-        <Button
-          type="submit"
-          className="bg-purple-600 hover:bg-purple-700 text-white px-8"
-          disabled={isSaving}
-        >
-          {isSaving ? "Saving..." : "Save Changes"}
-        </Button>
+      <div className="flex justify-end gap-4 sticky bottom-6 bg-white/80 backdrop-blur-md p-4 rounded-xl border shadow-sm z-10">
         <Button
           type="button"
           variant="outline"
           onClick={() => form.reset()}
           disabled={isSaving}
         >
-          Reset
+          Reset Changes
+        </Button>
+        <Button
+          type="submit"
+          className="bg-violet-600 hover:bg-violet-700 text-white min-w-[150px]"
+          disabled={isSaving}
+        >
+          {isSaving ? "Saving..." : "Save Changes"}
         </Button>
       </div>
     </form>

@@ -27,18 +27,15 @@ export const socialLinksSchema = z.object({
 }).optional();
 
 // Address schema (flexible to accommodate different formats)
-export const addressSchema = z.union([
-    z.object({
-        street_1: z.string().trim().max(200).optional(),
-        street_2: z.string().trim().max(200).optional(),
-        city: z.string().trim().max(100).optional(),
-        zip: z.string().trim().max(20).optional(),
-        country: z.string().trim().max(100).optional(),
-        state: z.string().trim().max(100).optional(),
-    }),
-    z.array(z.any()),
-    z.any(),
-]).optional();
+// Address schema
+export const addressSchema = z.object({
+    street_1: z.string().trim().min(1, "Street address is required").max(200).optional().or(z.literal('')),
+    street_2: z.string().trim().max(200).optional().or(z.literal('')),
+    city: z.string().trim().min(1, "City is required").max(100).optional().or(z.literal('')),
+    zip: z.string().trim().min(1, "Post/Zip code is required").max(20).optional().or(z.literal('')),
+    country: z.string().trim().min(1, "Country is required").max(100).optional().or(z.literal('')),
+    state: z.string().trim().max(100).optional().or(z.literal('')),
+}).optional();
 
 // Main store settings schema
 export const storeSettingsSchema = z.object({

@@ -72,7 +72,7 @@ export async function getStoreSettings(): Promise<StoreSettingsResponse> {
 
     if (!wpToken || !userId) return { success: false, message: "No token or user ID" };
 
-    const url = `${WC_API_URL}/wp-json/dokan/v1/stores/${userId}?_locale=user`;
+    const url = `${WC_API_URL}/wp-json/dokan/v1/settings`;
 
     try {
         const response = await fetch(url, {
@@ -85,6 +85,11 @@ export async function getStoreSettings(): Promise<StoreSettingsResponse> {
         if (!response.ok) return { success: false, message: "Failed to fetch settings" };
 
         const data: FullStoreData = await response.json();
+
+        // Ensure address is an object even if API returns empty string or null
+        if (!data.address || typeof data.address !== 'object' || Array.isArray(data.address)) {
+            data.address = {};
+        }
 
         // Return full store data
         return {
@@ -120,7 +125,7 @@ export async function updateStoreSettings(settingsData: StoreSettingsUpdate): Pr
     }
 
     const sanitizedData = validation.data;
-    const url = `${WC_API_URL}/wp-json/dokan/v1/stores/${userId}?_locale=user`;
+    const url = `${WC_API_URL}/wp-json/dokan/v1/settings`;
 
     try {
         const response = await fetch(url, {
