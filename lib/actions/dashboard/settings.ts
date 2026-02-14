@@ -3,6 +3,7 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { storeSettingsUpdateSchema, type StoreSettingsUpdate } from "@/lib/schemas/store-settings";
+import { revalidatePath } from "next/cache";
 
 const WC_API_URL = process.env.NEXT_PUBLIC_WORDPRESS_URL || "https://api.atlaze.com";
 
@@ -79,7 +80,7 @@ export async function getStoreSettings(): Promise<StoreSettingsResponse> {
             headers: {
                 "Authorization": `Bearer ${wpToken}`,
             },
-            next: { tags: ['store-settings'] }
+            cache: 'no-store' // Force fresh fetch
         });
 
         if (!response.ok) return { success: false, message: "Failed to fetch settings" };
@@ -90,6 +91,16 @@ export async function getStoreSettings(): Promise<StoreSettingsResponse> {
         if (!data.address || typeof data.address !== 'object' || Array.isArray(data.address)) {
             data.address = {};
         }
+
+        console.log("----------------------------------------------------------------");
+        console.log("🛍️ FETCHED STORE SETTINGS (SERVER):", JSON.stringify({
+            store_name: data.store_name,
+            banner: data.banner,
+            banner_id: data.banner_id,
+            gravatar: data.gravatar,
+            gravatar_id: data.gravatar_id
+        }, null, 2));
+        console.log("----------------------------------------------------------------");
 
         // Return full store data
         return {
@@ -146,8 +157,8 @@ export async function updateStoreSettings(settingsData: StoreSettingsUpdate): Pr
             };
         }
 
-
-        // Cache will be revalidated automatically via fetch tags
+        // Revalidate cache to ensure fresh data on next fetch
+        revalidatePath('/dashboard/settings/store', 'page');
 
         return {
             success: true,

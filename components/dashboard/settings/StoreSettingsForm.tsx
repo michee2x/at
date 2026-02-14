@@ -20,6 +20,13 @@ interface StoreSettingsFormProps {
 export function StoreSettingsForm({ initialData }: StoreSettingsFormProps) {
   const [isSaving, setIsSaving] = useState(false);
 
+  console.log("🎨 STORE SETTINGS FORM INITIAL DATA:", {
+    banner: initialData.banner,
+    banner_id: initialData.banner_id,
+    gravatar: initialData.gravatar,
+    gravatar_id: initialData.gravatar_id
+  });
+
   const form = useForm<StoreSettingsUpdate>({
     resolver: zodResolver(storeSettingsUpdateSchema),
     defaultValues: {

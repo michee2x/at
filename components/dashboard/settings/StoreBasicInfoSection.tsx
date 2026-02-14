@@ -20,6 +20,7 @@ export function StoreBasicInfoSection({ form }: StoreBasicInfoSectionProps) {
 
   const bannerUrl = watch("banner");
   const gravatarUrl = watch("gravatar");
+  console.log("Watch out if u are getting the right url: ", gravatarUrl, "and the banner too: ", bannerUrl, watch())
 
   return (
     <Card>
@@ -92,6 +93,7 @@ export function StoreBasicInfoSection({ form }: StoreBasicInfoSectionProps) {
           </div>
           <div className="w-full">
             <MediaUpload
+              key={bannerUrl} // Force re-render when URL changes
               value={bannerUrl}
               onChange={(url, id) => {
                 setValue("banner", url);
@@ -113,6 +115,7 @@ export function StoreBasicInfoSection({ form }: StoreBasicInfoSectionProps) {
           </div>
           <div className="w-full">
             <MediaUpload
+              key={gravatarUrl} // Force re-render when URL changes
               value={gravatarUrl}
               onChange={(url, id) => {
                 setValue("gravatar", url);

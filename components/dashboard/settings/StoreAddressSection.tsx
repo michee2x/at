@@ -26,7 +26,8 @@ export function StoreAddressSection({ form }: StoreAddressSectionProps) {
 
   // Helper to get nested error
   const getAddressError = (field: string) => {
-    return errors.address?.[field as keyof typeof errors.address]?.message;
+    const error = errors.address?.[field as keyof typeof errors.address] as { message?: string } | undefined;
+    return error?.message;
   };
 
   return (
