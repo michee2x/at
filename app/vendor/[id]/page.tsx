@@ -1,5 +1,8 @@
 import { notFound } from "next/navigation";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth-options";
 import { getVendorByUsername, getVendorProducts } from "@/lib/actions/vendor/profile";
+import { isFollowingStore } from "@/lib/actions/store/follow";
 import { VendorHeader } from "@/components/vendor/VendorHeader";
 import { VendorSidebar } from "@/components/vendor/VendorSidebar";
 import { VendorTabs } from "@/components/vendor/VendorTabs";
@@ -20,6 +23,16 @@ export default async function VendorPage({ params }: VendorPageProps) {
 
   const vendor = result.data;
   
+  // Get current user session to check for "Edit Profile" vs "Follow"
+  const session = await getServerSession(authOptions);
+  const currentUserId = session?.user?.id ? parseInt(session.user.id) : null;
+  const isOwnProfile = currentUserId === vendor.id;
+  
+  let isFollowing = false;
+  if (currentUserId && !isOwnProfile) {
+    isFollowing = await isFollowingStore(vendor.id);
+  }
+
   // Fetch products using the vendor ID from the API response
   const productsResult = await getVendorProducts(vendor.id, 1, 12);
   const products = productsResult.success ? productsResult.data : [];
@@ -39,7 +52,11 @@ export default async function VendorPage({ params }: VendorPageProps) {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <VendorHeader vendor={vendor} />
+      <VendorHeader 
+        vendor={vendor} 
+        isFollowing={isFollowing}
+        isOwnProfile={isOwnProfile}
+      />
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8">

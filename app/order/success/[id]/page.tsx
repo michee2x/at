@@ -4,7 +4,7 @@ import { getUserOrderByIdAction } from "@/lib/actions/UserAction";
 import { toNumber } from "@/utils/to-number";
 import { redirect } from "next/navigation";
 import { getServerSession } from "next-auth/next";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { authOptions } from "@/lib/auth-options";
 
 interface OrderSuccessPageProps {
   params: Promise<{ id: string }>;

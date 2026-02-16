@@ -1,5 +1,5 @@
 import { getServerSession } from "next-auth/next";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { authOptions } from "@/lib/auth-options";
 import { NextResponse } from "next/server";
 
 const WP_URL = process.env.WC_API_URL!;
@@ -23,7 +23,7 @@ export async function GET(request: Request, props: { params: Promise<{ id: strin
         const id = params.id;
         const url = `${WP_URL}/wp-json/dokan/v1/products/${id}`;
         console.log(`[API] Fetching product ${id} from ${url}`);
-        
+
         // Fetch specific product by ID via Dokan/WC API
         const res = await fetch(url, {
             headers: {
@@ -110,9 +110,9 @@ export async function DELETE(request: Request, props: { params: Promise<{ id: st
         });
 
         if (!res.ok) {
-             const errorText = await res.text();
-             console.error("[API] Product Delete Error:", res.status, errorText);
-             return new NextResponse(`Failed to delete: ${errorText}`, { status: res.status });
+            const errorText = await res.text();
+            console.error("[API] Product Delete Error:", res.status, errorText);
+            return new NextResponse(`Failed to delete: ${errorText}`, { status: res.status });
         }
 
         return new NextResponse(null, { status: 204 });

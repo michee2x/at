@@ -2,7 +2,7 @@ import DashboardSidebar from "@/components/dashboard/sidebar";
 import { DashboardHeader } from "@/components/dashboard/header";
 import AtlazeLoader from "@/components/lottie/AtlazeLoader";
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { authOptions } from "@/lib/auth-options";
 import { redirect } from "next/navigation";
 import { Metadata } from "next";
 import {Suspense} from "react"

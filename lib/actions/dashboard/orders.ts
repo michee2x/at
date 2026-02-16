@@ -2,7 +2,7 @@
 
 import { wooCommerceRequest } from "@/lib/dashboard/woocomerce";
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { authOptions } from "@/lib/auth-options";
 import { WooOrder, VendorOrderDisplay } from "@/lib/user/types";
 
 export interface Order {
@@ -121,7 +121,7 @@ export async function getVendorOrders(
     }
 
     // Note: No need to append seller_id, as JWT token identifies the vendor
-    
+
     const orders = await dokanRequest<WooOrder[]>({
       endpoint: `orders?${params.toString()}`,
     });
@@ -132,7 +132,7 @@ export async function getVendorOrders(
     // Pagination total might be missing if we don't return headers. For now, use array length or fetched size.
     // Ideally, we'd need headers. dokanRequest returns JSON. 
     // Given usage, let's assume simple pagination for now (next page until empty).
-    
+
     // Transform orders to vendor display format
     const vendorOrders = orders.map(transformToVendorDisplay);
 

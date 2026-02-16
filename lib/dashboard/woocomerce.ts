@@ -2,7 +2,7 @@
 // lib/woocommerce.ts
 // ==========================================
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { authOptions } from "@/lib/auth-options";
 
 const WC_API_URL = process.env.NEXT_PUBLIC_WORDPRESS_URL || "";
 const WC_CONSUMER_KEY = process.env.WC_CONSUMER_KEY || "";

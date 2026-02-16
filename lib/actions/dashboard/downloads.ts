@@ -2,7 +2,7 @@
 
 import { wooCommerceRequest } from "@/lib/dashboard/woocomerce";
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { authOptions } from "@/lib/auth-options";
 
 export interface Download {
   download_id: string;

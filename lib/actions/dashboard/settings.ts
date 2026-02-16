@@ -1,7 +1,7 @@
 "use server";
 
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { authOptions } from "@/lib/auth-options";
 import { storeSettingsUpdateSchema, type StoreSettingsUpdate } from "@/lib/schemas/store-settings";
 import { revalidatePath } from "next/cache";
 

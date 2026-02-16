@@ -1,7 +1,7 @@
 // app/(root)/dashboard/page.tsx
 import { ArrowRight, CreditCard, Package, Sparkles, Store, TrendingUp, User, Zap, ShoppingCart } from "lucide-react";
 import { getServerSession } from "next-auth/next";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { authOptions } from "@/lib/auth-options";
 import Link from "next/link";
 
 export default async function DashboardPage() {

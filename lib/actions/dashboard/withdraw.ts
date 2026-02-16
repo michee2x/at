@@ -1,7 +1,7 @@
 "use server";
 
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { authOptions } from "@/lib/auth-options";
 
 const WC_API_URL = process.env.NEXT_PUBLIC_WORDPRESS_URL || "https://api.atlaze.com";
 
@@ -143,9 +143,9 @@ export async function getWithdrawRequests(status: string = "pending", page: numb
     // The user provided URL: .../withdraw?page=1&status=pending&per_page=10&user_id=1&_locale=user
     // We should include user_id if we can get it, or hope the token handles it. 
     // Usually Dokan REST API uses the token to identify the vendor.
-    
+
     // Status handling: pending, approved, cancelled
-    
+
     const url = `${WC_API_URL}/wp-json/dokan/v1/withdraw?per_page=${per_page}&page=${page}&status=${status}&_locale=user`;
 
     const response = await fetch(url, {

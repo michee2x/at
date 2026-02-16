@@ -2,15 +2,18 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { ExternalLink, Star, Facebook, Instagram, Twitter, Linkedin, Youtube } from "lucide-react";
+import { ExternalLink, Star, Facebook, Instagram, Twitter, Linkedin, Youtube, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { VendorProfile } from "@/lib/actions/vendor/profile";
+import { FollowStoreButton } from "@/components/product/FollowStoreButton";
 
 interface VendorHeaderProps {
   vendor: VendorProfile;
+  isFollowing?: boolean;
+  isOwnProfile?: boolean;
 }
 
-export function VendorHeader({ vendor }: VendorHeaderProps) {
+export function VendorHeader({ vendor, isFollowing = false, isOwnProfile = false }: VendorHeaderProps) {
   const socialIcons = {
     fb: Facebook,
     instagram: Instagram,
@@ -112,9 +115,22 @@ export function VendorHeader({ vendor }: VendorHeaderProps) {
 
           {/* Action Buttons */}
           <div className="flex flex-wrap gap-2 sm:gap-3 w-full sm:w-auto">
-            <Button className="flex-1 sm:flex-none bg-violet-600 hover:bg-violet-700">
-              Follow
-            </Button>
+            {isOwnProfile ? (
+              <Link href="/dashboard/settings/store" className="flex-1 sm:flex-none">
+                <Button className="w-full bg-slate-900 hover:bg-slate-800 gap-2">
+                  <Settings className="h-4 w-4" />
+                  Edit Profile
+                </Button>
+              </Link>
+            ) : (
+                <FollowStoreButton 
+                    storeId={vendor.id} 
+                    storeName={vendor.store_name} 
+                    initialIsFollowing={isFollowing}
+                    className="flex-1 sm:flex-none w-full sm:w-auto"
+                />
+            )}
+            
             <Button variant="outline" className="flex-1 sm:flex-none">
               Get Support
             </Button>

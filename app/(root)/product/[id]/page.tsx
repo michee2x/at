@@ -244,14 +244,15 @@ async function ProductHeader({ product }: { product: WooProduct }) {
 
       {/* Vendor / Store Info */}
       {product.store && (
-        <div className="mt-2 flex items-center gap-3 text-sm">
+        <div className="mt-2 flex items-center gap-2 text-sm">
           <span className="text-muted-foreground">Sold by:</span>
-          <span className="font-medium text-primary">{product.store.shop_name || product.store.name}</span>
-          <FollowStoreButton 
-            storeId={product.store.id} 
-            storeName={product.store.shop_name || product.store.name}
-            initialIsFollowing={isFollowing}
-          />
+          <Link 
+            href={`/vendor/${product.store.id}`}
+            className="font-medium text-primary hover:text-violet-600 hover:underline transition-colors flex items-center gap-1"
+          >
+            {product.store.shop_name || product.store.name}
+            <GoArrowUpRight className="h-3 w-3" />
+          </Link>
         </div>
       )}
 
