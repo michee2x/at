@@ -19,6 +19,7 @@ import {
   ChevronRight,
   UserCog,
   Award,
+  Truck,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -86,6 +87,12 @@ const navigationItems: NavItem[] = [
     label: "Reviews",
     icon: Star,
     href: "/dashboard/reviews",
+  },
+  {
+    id: "shipping",
+    label: "Shipping",
+    icon: Truck,
+    href: "/dashboard/shipping",
   },
   {
     id: "withdraw",
