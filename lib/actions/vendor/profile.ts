@@ -213,3 +213,34 @@ export async function getVendorCategories(vendorId: number) {
         return { success: false, data: [] };
     }
 }
+/**
+ * Send a contact message to the vendor
+ */
+export async function sendVendorContactMessage(vendorId: number, data: { name: string; email: string; message: string }) {
+    try {
+        const url = `${WC_API_URL}/wp-json/dokan/v1/stores/${vendorId}/contact`;
+        
+        const response = await fetch(url, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+            cache: "no-store",
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}));
+            console.error("Error sending message to vendor:", errorData);
+            return { success: false, message: errorData.message || "Failed to send message" };
+        }
+
+        const responseData = await response.json().catch(() => ({}));
+        console.log("✅ API Response for Contact Vendor:", responseData);
+
+        return { success: true, message: "Message sent successfully", data: responseData };
+    } catch (error) {
+        console.error("Error sending message to vendor:", error);
+        return { success: false, message: "An error occurred while sending the message" };
+    }
+}

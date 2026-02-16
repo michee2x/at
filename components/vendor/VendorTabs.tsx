@@ -18,19 +18,19 @@ export function VendorTabs({ vendorId, vendorBio, initialProducts }: VendorTabsP
       <TabsList className="w-full justify-start border-b rounded-none h-auto p-0 bg-transparent gap-6 mb-8">
         <TabsTrigger 
           value="products"
-          className="rounded-none border-b-2 border-transparent data-[state=active]:border-violet-600 data-[state=active]:text-violet-600 data-[state=active]:shadow-none px-0 py-3 font-medium bg-transparent"
+          className="rounded-none border-b-2 border-transparent data-[state=active]:border-b-violet-600 data-[state=active]:text-violet-600 data-[state=active]:shadow-none px-0 py-3 font-medium bg-transparent hover:text-violet-600 transition-colors"
         >
           Products
         </TabsTrigger>
         <TabsTrigger 
           value="reviews"
-          className="rounded-none border-b-2 border-transparent data-[state=active]:border-violet-600 data-[state=active]:text-violet-600 data-[state=active]:shadow-none px-0 py-3 font-medium bg-transparent"
+          className="rounded-none border-b-2 border-transparent data-[state=active]:border-b-violet-600 data-[state=active]:text-violet-600 data-[state=active]:shadow-none px-0 py-3 font-medium bg-transparent hover:text-violet-600 transition-colors"
         >
           Reviews
         </TabsTrigger>
         <TabsTrigger 
           value="bio"
-          className="rounded-none border-b-2 border-transparent data-[state=active]:border-violet-600 data-[state=active]:text-violet-600 data-[state=active]:shadow-none px-0 py-3 font-medium bg-transparent"
+          className="rounded-none border-b-2 border-transparent data-[state=active]:border-b-violet-600 data-[state=active]:text-violet-600 data-[state=active]:shadow-none px-0 py-3 font-medium bg-transparent hover:text-violet-600 transition-colors"
         >
           Vendor Biography
         </TabsTrigger>
