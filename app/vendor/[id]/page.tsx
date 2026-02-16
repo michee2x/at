@@ -1,0 +1,48 @@
+import { notFound } from "next/navigation";
+import { getVendorByUsername, getVendorProducts } from "@/lib/actions/vendor/profile";
+import { VendorHeader } from "@/components/vendor/VendorHeader";
+import { VendorSidebar } from "@/components/vendor/VendorSidebar";
+import { VendorTabs } from "@/components/vendor/VendorTabs";
+
+interface VendorPageProps {
+  params: Promise<{
+    id: string;
+  }>;
+}
+
+export default async function VendorPage({ params }: VendorPageProps) {
+  const { id } = await params;
+  const result = await getVendorByUsername(id);
+
+  if (!result.success || !result.data) {
+    notFound();
+  }
+
+  const vendor = result.data;
+  
+  // Fetch products using the vendor ID from the API response
+  const productsResult = await getVendorProducts(vendor.id, 1, 12);
+  const products = productsResult.success ? productsResult.data : [];
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      <VendorHeader vendor={vendor} />
+      
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8">
+          <aside className="lg:col-span-3">
+            <VendorSidebar vendor={vendor} />
+          </aside>
+          
+          <main className="lg:col-span-9">
+            <VendorTabs 
+              vendorId={vendor.id} 
+              vendorBio={vendor.vendor_biography}
+              initialProducts={products}
+            />
+          </main>
+        </div>
+      </div>
+    </div>
+  );
+}

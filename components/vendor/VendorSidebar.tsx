@@ -27,69 +27,72 @@ export function VendorSidebar({ vendor }: VendorSidebarProps) {
   return (
     <div className="space-y-6">
       {/* Store Product Category */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-lg">Store Product Category</CardTitle>
+      <Card className="shadow-sm">
+        <CardHeader className="pb-3">
+          <CardTitle className="text-base font-semibold">Store Product Category</CardTitle>
         </CardHeader>
-        <CardContent>
-          <ul className="space-y-2">
-            <li>
-              <a href="#" className="text-violet-600 hover:underline">
-                Cushion Covers
-              </a>
-            </li>
-            <li>
-              <a href="#" className="text-violet-600 hover:underline">
-                Curtains
-              </a>
-            </li>
-          </ul>
+        <CardContent className="space-y-2">
+          <a href="#" className="block text-violet-600 hover:text-violet-700 hover:underline text-sm">
+            Cushion Covers
+          </a>
+          <a href="#" className="block text-violet-600 hover:text-violet-700 hover:underline text-sm">
+            Curtains
+          </a>
         </CardContent>
       </Card>
 
       {/* Contact Vendor */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-lg">Contact Vendor</CardTitle>
+      <Card className="shadow-sm">
+        <CardHeader className="pb-3">
+          <CardTitle className="text-base font-semibold">Contact Vendor</CardTitle>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <Label htmlFor="contact-name">{vendor.first_name || "Vendor Name"}</Label>
+            <div className="space-y-1.5">
+              <Label htmlFor="contact-name" className="text-sm font-medium">
+                {vendor.first_name || "Name"}
+              </Label>
               <Input
                 id="contact-name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Your name"
                 required
+                className="h-9"
               />
             </div>
 
-            <div>
-              <Label htmlFor="contact-email">{vendor.email || "vendor@example.com"}</Label>
+            <div className="space-y-1.5">
+              <Label htmlFor="contact-email" className="text-sm font-medium">
+                Email
+              </Label>
               <Input
                 id="contact-email"
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="Your email"
+                placeholder={vendor.email || "your@email.com"}
                 required
+                className="h-9"
               />
             </div>
 
-            <div>
-              <Label htmlFor="contact-message">Type your message...</Label>
+            <div className="space-y-1.5">
+              <Label htmlFor="contact-message" className="text-sm font-medium">
+                Message
+              </Label>
               <Textarea
                 id="contact-message"
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
-                placeholder="Your message"
+                placeholder="Type your message..."
                 rows={4}
                 required
+                className="resize-none"
               />
             </div>
 
-            <Button type="submit" className="w-full bg-violet-600 hover:bg-violet-700">
+            <Button type="submit" className="w-full bg-violet-600 hover:bg-violet-700 h-9">
               <Send className="mr-2 h-4 w-4" />
               Send Message
             </Button>

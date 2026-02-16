@@ -2,17 +2,23 @@ import Link from "next/link";
 import { ArrowLeft, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { getShippingPolicy } from "@/lib/actions/dashboard/shipping";
+import { getStoreSettings } from "@/lib/actions/dashboard/settings";
 import { ShippingPolicyForm } from "@/components/dashboard/settings/ShippingPolicyForm";
 
 export default async function ShippingSettingsPage() {
   const { data: policyData } = await getShippingPolicy();
+  const { data: storeData } = await getStoreSettings();
+  
+  // Extract username from shop_url (e.g., "https://api.atlaze.com/vendor/michee5x/" -> "michee5x")
+  const username = storeData?.shop_url?.split('/vendor/')[1]?.replace('/', '') || '';
+  const vendorProfileUrl = username ? `/vendor/${username}` : '#';
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
             <h1 className="text-3xl font-bold tracking-tight">Shipping Policy</h1>
-             <Link href="/vendor/shipping-policy" target="_blank" className="text-violet-600 hover:text-violet-700">
+             <Link href={vendorProfileUrl} target="_blank" className="text-violet-600 hover:text-violet-700">
                 <ExternalLink className="h-5 w-5" />
             </Link>
         </div>

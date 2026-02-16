@@ -89,6 +89,7 @@ export async function getVendorByUsername(username: string) {
         }
 
         const vendors = await response.json();
+        console.log("this is the vendors: ", vendors)
         
         // Find exact match or first result
         const vendor = vendors.find((v: any) => 
@@ -135,7 +136,8 @@ export async function getVendorById(id: number) {
  */
 export async function getVendorProducts(vendorId: number, page: number = 1, perPage: number = 12) {
     try {
-        const url = `${WC_API_URL}/wp-json/wc/v3/products?author=${vendorId}&page=${page}&per_page=${perPage}`;
+        // Use Dokan endpoint which is more reliable for vendor-specific products
+        const url = `${WC_API_URL}/wp-json/dokan/v1/stores/${vendorId}/products?page=${page}&per_page=${perPage}`;
         
         const response = await fetch(url, {
             cache: "no-store",
@@ -162,7 +164,12 @@ export async function getVendorReviews(vendorId: number, page: number = 1, perPa
         // WooCommerce reviews endpoint filtered by vendor
         const url = `${WC_API_URL}/wp-json/wc/v3/products/reviews?author=${vendorId}&page=${page}&per_page=${perPage}`;
         
+        const authHeader = "Basic " + Buffer.from(`${process.env.WC_CONSUMER_KEY}:${process.env.WC_CONSUMER_SECRET}`).toString("base64");
+
         const response = await fetch(url, {
+            headers: {
+                "Authorization": authHeader
+            },
             cache: "no-store",
         });
 

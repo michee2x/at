@@ -2,14 +2,21 @@ import Link from "next/link";
 import { ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { getStoreSettings } from "@/lib/actions/dashboard/settings";
 
-export default function ShippingPage() {
+export default async function ShippingPage() {
+  const { data: storeData } = await getStoreSettings();
+  
+  // Extract username from shop_url (e.g., "https://api.atlaze.com/vendor/michee5x/" -> "michee5x")
+  const username = storeData?.shop_url?.split('/vendor/')[1]?.replace('/', '') || '';
+  const vendorProfileUrl = username ? `/vendor/${username}` : '#';
+
   return (
     <div className="space-y-6">
       {/* Header */}
       <div className="flex items-center gap-2">
         <h1 className="text-3xl font-bold tracking-tight">Shipping</h1>
-        <Link href="/vendor/shipping" target="_blank" className="text-violet-600 hover:text-violet-700">
+        <Link href={vendorProfileUrl} target="_blank" className="text-violet-600 hover:text-violet-700">
           <ExternalLink className="h-5 w-5" />
         </Link>
       </div>
