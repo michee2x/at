@@ -20,6 +20,7 @@ import {
   UserCog,
   Award,
   Truck,
+  RotateCcw,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -87,6 +88,12 @@ const navigationItems: NavItem[] = [
     label: "Reviews",
     icon: Star,
     href: "/dashboard/reviews",
+  },
+  {
+    id: "return-requests",
+    label: "Return Requests",
+    icon: RotateCcw,
+    href: "/dashboard/return-requests",
   },
   {
     id: "shipping",
@@ -197,7 +204,7 @@ export default function SellerSidebar({
                       variant={isActive ? "secondary" : "ghost"}
                       className={cn(
                         "w-full justify-start h-10 px-3 font-normal",
-                        isActive && "bg-secondary font-medium"
+                        isActive && "bg-secondary font-medium",
                       )}
                     >
                       <Icon className="mr-3 h-4 w-4 flex-shrink-0" />
@@ -205,7 +212,7 @@ export default function SellerSidebar({
                       <ChevronRight
                         className={cn(
                           "h-4 w-4 transition-transform flex-shrink-0",
-                          hoveredItem === item.id && "rotate-90"
+                          hoveredItem === item.id && "rotate-90",
                         )}
                       />
                     </Button>
@@ -214,7 +221,9 @@ export default function SellerSidebar({
                     <div
                       className={cn(
                         "transition-all duration-200 ease-in-out overflow-hidden",
-                        hoveredItem === item.id ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
+                        hoveredItem === item.id
+                          ? "max-h-96 opacity-100"
+                          : "max-h-0 opacity-0",
                       )}
                     >
                       <SubMenu
@@ -240,7 +249,7 @@ export default function SellerSidebar({
                     variant={isActive ? "secondary" : "ghost"}
                     className={cn(
                       "w-full justify-start h-10 px-3 font-normal",
-                      isActive && "bg-secondary font-medium"
+                      isActive && "bg-secondary font-medium",
                     )}
                   >
                     <Icon className="mr-3 h-4 w-4 flex-shrink-0" />
