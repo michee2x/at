@@ -100,6 +100,12 @@ export async function getVendorByUsername(username: string) {
             return { success: false, message: "Vendor not found" };
         }
 
+        // Fetch full vendor details to get all fields including biography
+        const fullProfile = await getVendorById(vendor.id);
+        if (fullProfile.success && fullProfile.data) {
+             return { success: true, data: fullProfile.data };
+        }
+
         return { success: true, data: vendor as VendorProfile };
     } catch (error) {
         console.error("Error fetching vendor by username:", error);
