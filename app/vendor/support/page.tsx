@@ -1,4 +1,7 @@
-import { getVendorSupportStats, getVendorSupportTickets } from "@/lib/actions/vendor/support";
+import {
+  getVendorSupportStats,
+  getVendorSupportTickets,
+} from "@/lib/actions/vendor/support";
 import { TicketStats } from "@/components/dashboard/support/ticket-stats";
 import { VendorTicketsTable } from "@/components/vendor/support/TicketsTable";
 import { Card, CardContent } from "@/components/ui/card";
@@ -7,7 +10,11 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export const revalidate = 60;
 
-export default async function VendorSupportPage({ searchParams }: { searchParams?: any }) {
+export default async function VendorSupportPage({
+  searchParams,
+}: {
+  searchParams?: any;
+}) {
   // basic filters from query
   const params = searchParams || {};
 
@@ -34,7 +41,9 @@ export default async function VendorSupportPage({ searchParams }: { searchParams
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold">Support Tickets</h1>
-        <p className="text-sm text-muted-foreground mt-1">Vendor support tickets and messages</p>
+        <p className="text-sm text-muted-foreground mt-1">
+          Vendor support tickets and messages
+        </p>
       </div>
 
       <Suspense fallback={<StatsLoading />}>
