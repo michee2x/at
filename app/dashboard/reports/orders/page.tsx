@@ -1,4 +1,8 @@
-import { fetchOrdersReport, fetchOrdersStats } from "@/lib/actions/dashboard/orders-reports";
+import {
+  fetchOrdersReport,
+  fetchOrdersStats,
+  OrdersReportStats,
+} from "@/lib/actions/dashboard/orders-reports";
 import { SalesChart } from "@/components/dashboard/SalesChart";
 import { OrdersTable } from "@/components/dashboard/reports/OrdersTable";
 import { format, startOfMonth, endOfDay } from "date-fns";
@@ -13,22 +17,35 @@ function formatRangeDates(start: Date, end: Date) {
   return { after: toLocal(start), before: toLocal(end) };
 }
 
-export default async function OrdersReportPage({ searchParams }: { searchParams?: any }) {
-  const params = searchParams || {};
-  const start = params?.after ? new Date(params.after) : startOfMonth(new Date());
+export default async function OrdersReportPage({
+  searchParams,
+}: {
+  searchParams?: Record<string, string> | undefined;
+}) {
+  const params = (searchParams as Record<string, string>) || {};
+  const start = params?.after
+    ? new Date(params.after)
+    : startOfMonth(new Date());
   const end = params?.before ? new Date(params.before) : endOfDay(new Date());
   const { after, before } = formatRangeDates(start, end);
 
   const [orders, stats] = await Promise.all([
-    fetchOrdersReport(after, before, params?.page ? Number(params.page) : 1, params?.per_page ? Number(params.per_page) : 25),
+    fetchOrdersReport(
+      after,
+      before,
+      params?.page ? Number(params.page) : 1,
+      params?.per_page ? Number(params.per_page) : 25,
+    ),
     fetchOrdersStats(after, before),
   ]);
 
-  const chartData = (stats?.intervals || []).map((it: any) => ({
-    date: it.interval,
-    current: it.subtotals?.net_revenue ?? 0,
-    previous: 0,
-  }));
+  const chartData = (stats?.intervals || []).map(
+    (it: OrdersReportStats["intervals"][number]) => ({
+      date: it.interval,
+      current: it.subtotals?.net_revenue ?? 0,
+      previous: 0,
+    }),
+  );
 
   const totals = stats?.totals ?? {
     orders_count: 0,
@@ -43,7 +60,9 @@ export default async function OrdersReportPage({ searchParams }: { searchParams?
     <div className="space-y-6">
       <div>
         <h1 className="text-3xl font-bold tracking-tight">Orders Report</h1>
-        <p className="text-muted-foreground mt-2">Analyze your order patterns and trends.</p>
+        <p className="text-muted-foreground mt-2">
+          Analyze your order patterns and trends.
+        </p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
@@ -53,7 +72,9 @@ export default async function OrdersReportPage({ searchParams }: { searchParams?
         </div>
         <div className="rounded-lg border bg-card p-6">
           <p className="text-sm text-muted-foreground">Net Revenue</p>
-          <p className="text-2xl font-bold mt-2">₦{(totals.net_revenue ?? 0).toLocaleString()}</p>
+          <p className="text-2xl font-bold mt-2">
+            ₦{(totals.net_revenue ?? 0).toLocaleString()}
+          </p>
         </div>
         <div className="rounded-lg border bg-card p-6">
           <p className="text-sm text-muted-foreground">Items Sold</p>
@@ -61,7 +82,10 @@ export default async function OrdersReportPage({ searchParams }: { searchParams?
         </div>
       </div>
 
-      <SalesChart data={chartData} title={`Orders (${format(start, "MMM d, yyyy")} - ${format(end, "MMM d, yyyy")})`} />
+      <SalesChart
+        data={chartData}
+        title={`Orders (${format(start, "MMM d, yyyy")} - ${format(end, "MMM d, yyyy")})`}
+      />
 
       <OrdersTable orders={orders} />
     </div>
