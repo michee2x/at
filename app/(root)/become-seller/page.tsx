@@ -12,6 +12,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Breadcrumbs } from "@/components/ui/breadcrumbs";
+import { useRouter } from "next/navigation";
 
 export default function BecomeSellerPage() {
   const [formData, setFormData] = useState({
@@ -32,9 +33,11 @@ export default function BecomeSellerPage() {
     { icon: TrendingUp, title: "Grow Sales", description: "Marketing support included" }
   ];
 
+  const router = useRouter();
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    alert("Application submitted! We'll review it and get back to you within 2-3 business days.");
+    router.push("/vendor-setup");
   };
 
   return (

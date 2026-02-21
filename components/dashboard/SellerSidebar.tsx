@@ -21,6 +21,7 @@ import {
   Award,
   Truck,
   RotateCcw,
+  User,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -265,8 +266,17 @@ export default function SellerSidebar({
         <Separator />
 
         {/* Footer */}
-        <div className="p-4">
-          <div className="text-xs text-muted-foreground text-center">
+        <div className="p-4 space-y-2">
+          <Link href="/my-account" onClick={onLinkClick}>
+            <Button
+              variant="ghost"
+              className="w-full justify-start h-10 px-3 font-normal text-gray-600 hover:text-primary hover:bg-primary/5"
+            >
+              <User className="mr-3 h-4 w-4 flex-shrink-0" />
+              <span className="flex-1 text-left">My Account</span>
+            </Button>
+          </Link>
+          <div className="text-xs text-muted-foreground text-center pt-1">
             v1.0.0
           </div>
         </div>

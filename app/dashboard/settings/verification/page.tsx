@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-import { AlertCircle, Loader2, RefreshCw } from "lucide-react";
+import { AlertCircle, Loader2, RefreshCw, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import type { VendorVerificationResponse } from "@/types/verification.types";
@@ -188,12 +188,15 @@ export default function VerificationSettingsPage() {
       {requiredCount > 0 && (
         <Card className="border-violet-200 bg-violet-50">
           <CardContent className="pt-6">
-            <p className="text-sm text-violet-900">
-              You must complete all{" "}
-              <span className="font-semibold">required verification(s)</span> to
-              unlock full marketplace access. Optional verifications help boost
-              your seller credibility.
-            </p>
+            <div className="flex items-start">
+              <Info className="h-4 w-4 text-violet-600 mr-2 shrink-0 mt-0.5" />
+              <p className="text-sm text-violet-900">
+                You must complete all{" "}
+                <span className="font-semibold">required verification(s)</span> to
+                unlock full marketplace access. Optional verifications help boost
+                your seller credibility.
+              </p>
+            </div>
           </CardContent>
         </Card>
       )}

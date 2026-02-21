@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Menu, ShoppingBag } from "lucide-react";
+import { Menu, ShoppingBag, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import SellerSidebar from "./SellerSidebar"; // Uses SellerSidebar instead of generic Sidebar
@@ -71,6 +71,14 @@ export function SellerHeader() {
         role="navigation"
         aria-label="Dashboard navigation"
       >
+        {/* My Account Button - Switch back to customer view */}
+        <Button asChild variant="ghost" className="hidden lg:flex gap-2 text-gray-600 hover:text-[#6a00f3] hover:bg-purple-50">
+          <Link href="/my-account">
+            <User className="w-4 h-4" />
+            <span className="font-medium">My Account</span>
+          </Link>
+        </Button>
+
         {/* Shop Button */}
         <Button asChild variant="ghost" className="hidden lg:flex gap-2 text-gray-600 hover:text-[#6a00f3] hover:bg-purple-50">
           <Link href="/categories" target="_blank" rel="noopener noreferrer">
