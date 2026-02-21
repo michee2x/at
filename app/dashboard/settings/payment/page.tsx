@@ -38,7 +38,7 @@ export default function PaymentSettingsPage() {
                     <DropdownMenuContent align="end">
                         <DropdownMenuItem asChild>
                             <Link href="/dashboard/settings/payment-manage-dokan_paystack" className="flex items-center cursor-pointer">
-                                <span className="text-primary mr-2">☰</span> Direct to Paystack
+                                Direct to Paystack
                             </Link>
                         </DropdownMenuItem>
                     </DropdownMenuContent>

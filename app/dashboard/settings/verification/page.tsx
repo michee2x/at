@@ -189,7 +189,7 @@ export default function VerificationSettingsPage() {
         <Card className="border-violet-200 bg-violet-50">
           <CardContent className="pt-6">
             <p className="text-sm text-violet-900">
-              ℹ️ You must complete all{" "}
+              You must complete all{" "}
               <span className="font-semibold">required verification(s)</span> to
               unlock full marketplace access. Optional verifications help boost
               your seller credibility.

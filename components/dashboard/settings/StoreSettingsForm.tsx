@@ -22,7 +22,7 @@ export function StoreSettingsForm({ initialData }: StoreSettingsFormProps) {
   const [isSaving, setIsSaving] = useState(false);
   const router = useRouter();
 
-  console.log("🎨 STORE SETTINGS FORM INITIAL DATA:", {
+  console.log("STORE SETTINGS FORM INITIAL DATA:", {
     banner: initialData.banner,
     banner_id: initialData.banner_id,
     gravatar: initialData.gravatar,
