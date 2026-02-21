@@ -20,9 +20,9 @@ export default function PaymentSettingsPage() {
     return (
         <div className="p-6">
             <h1 className="text-2xl font-bold mb-2">Payment Method <span className="text-gray-400">→</span></h1>
-            <p className="text-purple-600 text-lg mb-6">Visit Store</p>
+            <p className="text-primary text-lg mb-6">Visit Store</p>
 
-            <div className="bg-blue-50 border border-blue-100 rounded-lg p-4 mb-8 text-sm text-gray-600 italic">
+            <div className="bg-primary/10 border border-primary/20 rounded-lg p-4 mb-8 text-sm text-gray-600 italic">
                 These are the withdraw methods available for you. Please update your payment information below to submit withdraw requests and get your store payments seamlessly.
             </div>
 
@@ -38,7 +38,7 @@ export default function PaymentSettingsPage() {
                     <DropdownMenuContent align="end">
                         <DropdownMenuItem asChild>
                             <Link href="/dashboard/settings/payment-manage-dokan_paystack" className="flex items-center cursor-pointer">
-                                <span className="text-blue-500 mr-2">☰</span> Direct to Paystack
+                                <span className="text-primary mr-2">☰</span> Direct to Paystack
                             </Link>
                         </DropdownMenuItem>
                     </DropdownMenuContent>

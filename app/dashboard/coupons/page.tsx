@@ -10,10 +10,10 @@ export default async function CouponsPage() {
   return (
     <div className="space-y-6">
       {/* Banner from screenshot */}
-      <div className="relative rounded-lg border border-blue-100 bg-blue-50/50 p-4 text-blue-600">
-        <p className="pr-8">
+      <div className="relative rounded-lg border border-primary/20 bg-primary/10 p-4 text-primary">
+        <div className="flex items-center gap-3">
           Start with adding a Banner to gain profile progress
-        </p>
+        </div>
         <button className="absolute right-4 top-4 hover:opacity-70">
           <X className="h-4 w-4" />
         </button>

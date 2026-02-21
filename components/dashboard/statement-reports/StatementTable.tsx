@@ -40,7 +40,7 @@ export function StatementTable({ transactions }: StatementTableProps) {
         <div className="bg-white border rounded-lg p-6">
             <div className="flex items-center justify-between mb-4">
                 <h3 className="text-lg font-semibold">Transaction History</h3>
-                <Button variant="default" size="sm" onClick={handleExport} className="bg-purple-600 hover:bg-purple-700">
+                <Button variant="default" size="sm" onClick={handleExport} className="bg-primary hover:bg-primary/90 text-primary-foreground">
                     <Download className="h-4 w-4 mr-2" />
                     Export Statement
                 </Button>

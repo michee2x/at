@@ -38,7 +38,7 @@ export function WithdrawScheduleModal({
                         <div>
                             <h4 className="text-sm font-semibold text-yellow-800">No payment methods found.</h4>
                             <p className="text-sm text-yellow-700 mt-1">
-                                Please set up your <Link href="/dashboard/settings/payment" className="text-purple-600 underline cursor-pointer">payment methods</Link> first.
+                                Please set up your <Link href="/dashboard/settings/payment" className="text-primary underline cursor-pointer">payment methods</Link> first.
                             </p>
                         </div>
                     </div>
@@ -54,11 +54,11 @@ export function WithdrawScheduleModal({
                 )}
 
                 <DialogFooter>
-                    <Button variant="outline" onClick={onClose} className="text-purple-600 border-purple-200">
+                    <Button variant="outline" onClick={onClose} className="text-primary border-primary/20 hover:bg-primary/10">
                         Close
                     </Button>
                     {hasPaymentMethods && (
-                        <Button className="bg-purple-600 hover:bg-purple-700 text-white">
+                        <Button className="bg-primary hover:bg-primary/90 text-primary-foreground">
                             Save Changes
                         </Button>
                     )}

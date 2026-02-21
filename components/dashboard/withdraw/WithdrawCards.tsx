@@ -89,7 +89,7 @@ export function WithdrawPaymentDetailsCard({
                      </p>
                 </div>
                 <Link href="/dashboard/withdraw/requests">
-                    <Button className="bg-purple-600 hover:bg-purple-700 text-white text-xs px-4 h-9">
+                    <Button className="bg-primary hover:bg-primary/90 text-primary-foreground text-xs px-4 h-9">
                         View Payments
                     </Button>
                 </Link>
@@ -103,7 +103,7 @@ export function WithdrawPaymentDetailsCard({
                         <Switch 
                             checked={isScheduleEnabled} 
                             onCheckedChange={setIsScheduleEnabled}
-                            className="data-[state=checked]:bg-purple-600"
+                            className="data-[state=checked]:bg-primary"
                         />
                     </div>
                     <p className="text-gray-500 text-sm">
@@ -114,7 +114,7 @@ export function WithdrawPaymentDetailsCard({
                 {isScheduleEnabled && (
                     <Button 
                         onClick={() => setIsModalOpen(true)}
-                        className="bg-purple-600 hover:bg-purple-700 text-white text-xs px-4 h-9"
+                        className="bg-primary hover:bg-primary/90 text-primary-foreground text-xs px-4 h-9"
                     >
                         Edit schedule
                     </Button>

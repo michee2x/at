@@ -12,6 +12,7 @@ import { StoreAddressSection } from "./StoreAddressSection";
 import { StoreCompanySection } from "./StoreCompanySection";
 import { StorePoliciesSection } from "./StorePoliciesSection";
 import { Separator } from "@/components/ui/separator";
+import { useRouter } from "next/navigation";
 
 interface StoreSettingsFormProps {
   initialData: FullStoreData;
@@ -19,6 +20,7 @@ interface StoreSettingsFormProps {
 
 export function StoreSettingsForm({ initialData }: StoreSettingsFormProps) {
   const [isSaving, setIsSaving] = useState(false);
+  const router = useRouter();
 
   console.log("🎨 STORE SETTINGS FORM INITIAL DATA:", {
     banner: initialData.banner,
@@ -57,8 +59,7 @@ export function StoreSettingsForm({ initialData }: StoreSettingsFormProps) {
       
       if (result.success) {
         toast.success(result.message || "Store settings updated successfully!");
-        // Optionally refresh the page or update local state
-        window.location.reload();
+        router.refresh();
       } else {
         toast.error(result.message || "Failed to update store settings");
       }

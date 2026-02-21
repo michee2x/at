@@ -152,8 +152,8 @@ export default function ProductsPage() {
   if (products.length === 0 && !search && statusFilter === "all") {
     return (
       <div className="h-[calc(100vh-10rem)] flex flex-col items-center justify-center animate-in fade-in zoom-in duration-500">
-        <div className="w-48 h-48 bg-purple-50 rounded-full flex items-center justify-center mb-6">
-           <PackageX className="h-20 w-20 text-purple-200" />
+        <div className="w-48 h-48 bg-primary/10 rounded-full flex items-center justify-center mb-6">
+           <PackageX className="h-20 w-20 text-primary/30" />
         </div>
         <h2 className="text-2xl font-bold text-gray-900 mb-2">No Products Found!</h2>
         <p className="text-muted-foreground mb-8 max-w-sm text-center">
@@ -279,7 +279,7 @@ export default function ProductsPage() {
                   </td>
                   <td className="p-4">
                      <Link href={`/dashboard/products/edit/${product.slug}`} className="block">
-                        <div className="font-medium text-gray-900 group-hover:text-purple-600 transition-colors cursor-pointer line-clamp-2 max-w-xs">{product.name}</div>
+                        <div className="font-medium text-gray-900 group-hover:text-primary transition-colors cursor-pointer line-clamp-2 max-w-xs">{product.name}</div>
                         <div className="text-xs text-gray-500">ID: {product.id}</div>
                      </Link>
                   </td>

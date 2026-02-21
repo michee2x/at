@@ -12,6 +12,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { SessionProvider } from "next-auth/react";
 import { type Session } from "next-auth";
 import { AuthProvider } from "@/contexts/auth-context";
+import { Toaster } from "sonner";
 
 const Providers = ({ children, session }: { children: ReactNode, session?: Session | null }) => {
   const [client] = useState(() => new QueryClient());
@@ -36,6 +37,7 @@ const Providers = ({ children, session }: { children: ReactNode, session?: Sessi
                     pauseOnHover
                     theme="light"
                   />
+                  <Toaster position="top-right" richColors />
                 </CartProvider>
               </SearchProvider>
             </FilterProvider>

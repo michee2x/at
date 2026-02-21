@@ -33,7 +33,7 @@ export default async function StoreSettingsPage() {
         <h1 className="text-3xl font-normal text-gray-800 flex items-center gap-2 mb-1">
           Settings <ArrowRight className="h-6 w-6 text-gray-400" />
         </h1>
-        <Link href={data.shop_url || "#"} className="text-purple-600 text-xl font-normal hover:underline">
+        <Link href={data.shop_url || "#"} className="text-primary text-xl font-normal hover:underline">
           Visit Store
         </Link>
       </div>

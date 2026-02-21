@@ -28,9 +28,9 @@ interface TicketsTableProps {
 }
 
 const statusConfig = {
-    open: { label: "Open", color: "bg-blue-100 text-blue-700" },
+    open: { label: "Open", color: "bg-primary/10 text-primary" },
     closed: { label: "Closed", color: "bg-gray-100 text-gray-700" },
-    pending: { label: "Pending", color: "bg-yellow-100 text-yellow-700" },
+    pending: { label: "Pending", color: "bg-orange-100 text-orange-700" },
 };
 
 export function TicketsTable({ tickets }: TicketsTableProps) {

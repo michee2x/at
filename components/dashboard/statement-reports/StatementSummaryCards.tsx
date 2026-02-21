@@ -16,7 +16,7 @@ export function StatementSummaryCards({ totalDebit, totalCredit, balance }: Stat
             {stats.map((stat) => (
                 <div key={stat.label} className="bg-white border rounded-lg p-6 text-center">
                     <div className="text-sm text-gray-600 mb-2">{stat.label}</div>
-                    <div className="text-3xl font-bold text-purple-600">{stat.value}</div>
+                    <div className="text-3xl font-bold text-primary">{stat.value}</div>
                 </div>
             ))}
         </div>

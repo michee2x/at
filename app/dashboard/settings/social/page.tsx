@@ -11,7 +11,7 @@ export default async function SocialSettingsPage() {
         <div className="p-6">
             <h1 className="text-2xl font-bold mb-2 flex items-center gap-2">
                 Social Profiles 
-                <ExternalLink className="h-5 w-5 text-purple-600 cursor-pointer" />
+                <ExternalLink className="h-5 w-5 text-primary cursor-pointer" />
             </h1>
             
             <p className="text-gray-500 mb-8 max-w-2xl text-sm leading-relaxed">

@@ -27,9 +27,9 @@ export default function PaystackManagePage() {
     return (
         <div className="p-6">
             <h1 className="text-2xl font-bold mb-2">Paystack Settings <span className="text-gray-400">→</span></h1>
-            <p className="text-purple-600 text-lg mb-6">Visit Store</p>
+            <p className="text-primary text-lg mb-6">Visit Store</p>
 
-            <Link href="/dashboard/settings/payment" className="text-purple-600 mb-6 inline-flex items-center hover:underline">
+            <Link href="/dashboard/settings/payment" className="text-primary mb-6 inline-flex items-center hover:underline">
                 <ArrowLeft className="h-4 w-4 mr-1" /> Back
             </Link>
 
@@ -49,7 +49,7 @@ export default function PaystackManagePage() {
                                     Your account is not connected with Paystack. Please click Sign Up button to connect your Paystack account.
                                 </p>
                                 <Button 
-                                    className="bg-purple-600 hover:bg-purple-700 text-white w-full max-w-[200px]"
+                                    className="bg-primary hover:bg-primary/90 text-primary-foreground w-full max-w-[200px]"
                                     onClick={() => setIsModalOpen(true)}
                                 >
                                     Connect Account
@@ -61,7 +61,7 @@ export default function PaystackManagePage() {
                 </div>
                 
                 <div className="border-t p-4 flex justify-center bg-gray-50">
-                    <Button className="bg-purple-600 hover:bg-purple-700 text-white">
+                    <Button className="bg-primary hover:bg-primary/90 text-primary-foreground">
                         Update Settings
                     </Button>
                 </div>

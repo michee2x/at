@@ -1,11 +1,13 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { TicketCounts } from "@/lib/actions/dashboard/support";
-import { 
-    TicketIcon, 
-    CheckCircle2, 
-    Clock, 
-    Activity, 
-    Mail 
+import {
+    TicketIcon,
+    CheckCircle2,
+    Clock,
+    Activity,
+    Mail,
+    FileText,
+    MessageSquare
 } from "lucide-react";
 
 interface TicketStatsProps {
@@ -16,8 +18,8 @@ const statCards = [
     {
         key: "open" as const,
         label: "Open",
-        icon: TicketIcon,
-        color: "text-blue-600",
+        icon: FileText,
+        color: "text-primary",
         bgColor: "bg-blue-50",
     },
     {
@@ -37,8 +39,8 @@ const statCards = [
     {
         key: "active" as const,
         label: "Active",
-        icon: Activity,
-        color: "text-purple-600",
+        icon: MessageSquare,
+        color: "text-primary/80",
         bgColor: "bg-purple-50",
     },
     {
@@ -60,7 +62,7 @@ export function TicketStats({ counts }: TicketStatsProps) {
                             <div>
                                 <p className="text-sm font-medium text-gray-600">{label}</p>
                                 <p className="text-2xl font-bold text-gray-900 mt-1">
-                                    {counts[key]}
+                                    {counts[key] || 0}
                                 </p>
                             </div>
                             <div className={`${bgColor} p-3 rounded-lg`}>

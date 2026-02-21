@@ -137,8 +137,8 @@ export default function BadgesPage() {
 
         <div className="bg-card rounded-lg border p-4">
           <div className="flex items-center gap-3">
-            <div className="p-2 bg-blue-100 rounded-lg">
-              <Target className="h-5 w-5 text-blue-600" />
+            <div className="p-2 bg-primary/10 rounded-lg">
+              <Target className="h-5 w-5 text-primary" />
             </div>
             <div>
               <p className="text-sm text-muted-foreground">Available Badges</p>
@@ -199,7 +199,7 @@ export default function BadgesPage() {
               {filteredAvailable.length > 0 && (
                 <div className="space-y-3 mt-8">
                   <h2 className="text-xl font-semibold flex items-center gap-2">
-                    <Target className="h-5 w-5 text-blue-600" />
+                    <Target className="h-5 w-5 text-primary" />
                     Available Badges ({filteredAvailable.length})
                   </h2>
                   <BadgeGrid

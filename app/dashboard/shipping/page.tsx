@@ -22,9 +22,9 @@ export default async function ShippingPage() {
       </div>
 
       {/* Banner to add shipping policies */}
-      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+      <div className="bg-primary/10 border border-primary/20 rounded-lg p-4">
         <div className="flex items-center justify-between">
-          <p className="text-blue-800">Add Banner to gain 15% progress</p>
+          <p className="text-primary">Add Banner to gain 15% progress</p>
           <Link href="/dashboard/settings/shipping">
             <Button size="sm" className="bg-violet-600 hover:bg-violet-700">
               Click here to add Shipping Policies

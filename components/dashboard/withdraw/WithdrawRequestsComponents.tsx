@@ -21,8 +21,8 @@ export function WithdrawRequestTabs({ activeTab }: WithdrawRequestTabsProps) {
                     key={tab.value}
                     href={`/dashboard/withdraw/requests?status=${tab.value}`}
                     className={`
-                        text-sm font-medium hover:text-purple-600 transition-colors
-                        ${activeTab === tab.value ? "text-purple-600" : "text-gray-500"}
+                        text-sm font-medium hover:text-primary transition-colors
+                        ${activeTab === tab.value ? "text-primary border-b-2 border-primary" : "text-gray-500"}
                     `}
                 >
                     {tab.label}

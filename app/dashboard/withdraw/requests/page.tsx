@@ -35,7 +35,7 @@ export default function WithdrawRequestsPage() {
              <div className="flex items-center justify-between mb-6">
                 <h1 className="text-2xl font-bold">Withdraw</h1>
                 <Link href="/dashboard/withdraw">
-                    <Button variant="outline" size="sm" className="text-purple-600 border-purple-200 hover:bg-purple-50">
+                    <Button variant="outline" size="sm" className="text-primary border-primary/20 hover:bg-primary/10">
                         <ArrowLeft className="h-4 w-4 mr-2" />
                         Back
                     </Button>
